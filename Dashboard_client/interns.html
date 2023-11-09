@@ -7,19 +7,12 @@
 
 	<meta name="viewport" content="width=device-width" /> 
 
-	<!--Datatable plugin CSS file -->
-	<link rel="stylesheet" href= 
-"https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" /> 
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 
-	<!--jQuery library file -->
-	<script type="text/javascript"
-		src="https://code.jquery.com/jquery-3.5.1.js"> 
-	</script> 
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-	<!--Datatable plugin JS library file -->
-	<script type="text/javascript" src= 
-"https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"> 
-	</script> 
 <!-- Font Awesome -->
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -295,12 +288,12 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table   style="width:100%" id="tableID" class=" table display bg-white "
+        <table   style="width:100%" id="jquery-datatable-ajax-php"  class="table align-middle mb-0 bg-white"
       > 
         
         <thead class="bg-light"> 
           <tr> 
-            <th></th> 
+        
             <th>code profile</th> 
             <th>competence</th> 
             <th>Designation</th> 
@@ -321,108 +314,29 @@
 
 </main>
 
-	<script> 
 
-		/* Function for child row details*/ 
-		function getChildRow(data) { 
-			
-			// `data` is the data object for the row 
-			return '<table cellpadding="5" cellspacing="0"' 
-				+ ' style="padding-left:50px;">' + 
-        '<tr>' + 
-				'<td>' + data.code_prof + '</td>' + 
-				'</tr>' + 
-				'<tr>' + 
-				'<td>' + data.code_prof + '</td>' + 
-				'</tr>' + 
-				'<tr>' + 
-			
-				'<td>' + data.competences + '</td>' + 
-				'</tr>' + 
-				'<tr>' + 
-				'<td>' + data.designation + '</td>' + 
-				'</tr>' + 
-        '<tr>' + 
-				'<td>' + data.disponibility + '</td>' + 
-				'</tr>' + 
-        '<tr>' + 
-				'<td>' + data.edit+ '</td>' + 
-				'</tr>' + 
-				'</table>'; 
-		} 
 
-		$(document).ready(function () { 
-			
-			/* Initialization of datatables */ 
-			var table = $('#tableID').DataTable({ 
-				
-  "data": [
-    {
-      "Student_id": "emp1",
-      "code_prof": "SZ_99",
-      "designation": "Architect",
-      "competences": "list",     
-      "disponibility": "immediately",
-      "edit":'edit',
+<script type="text/javascript">
+		$(document).ready(function() {
+		    $('#jquery-datatable-ajax-php').DataTable({
+		      	'processing': true,
+		      	'serverSide': true,
+		      	'serverMethod': 'post',
+		      	'ajax': {
+		          	'url':'./internsData.php'
+		      	},
+		      	'columns': [
+		         	{ data: 'code_profile' },
+		         	{ data: 'competence' },
+		         	{ data: 'designation' },
+		         	{ data: 'disponibility' },
+               { data: 'edit' }
+		      	]
+		   });
 
-    },
+		} );
+	</script>
 
-    {
-      "Student_id": "emp1",
-      "code_prof": "SZ_89",
-      "designation": "Architect",
-      "competences": "JS",     
-      "disponibility": "immediately",
-      "edit":'edit',
-
-    }
-  ]
-,
-				"columns": [{ 
-					"className": 'details-control', 
-					"orderable": true, 
-					"data": null, 
-					"defaultContent": '' ,
-          "targets": "_all"
-				}, 
-					{ "data": "code_prof" }, 
-					{ "data": "designation" }, 
-					{ "data": "competences" }, 
-					{ "data": "disponibility" } ,
-          { "data": "edit" } ,
-          
-				], 
-				"order": [[1, 'asc']] 
-			}); 
-
-			// Click events for expanding and 
-			// closing using up/down arrows 
-			$('#tableID tbody').on('click', 
-			'td.details-control', function () { 
-
-				var tr = $(this).closest('tr'); 
-				var row = table.row(tr); 
-
-				if (row.child.isShown()) { 
-
-					// Closing the already opened row		 
-					row.child.hide(); 
-
-					// Removing class to hide 
-					tr.removeClass('shown'); 
-				} 
-				else { 
-
-					// Show the child row for detail 
-					// information 
-					row.child(getChildRow(row.data())).show(); 
-
-					// To show details,add the below class 
-					tr.addClass('shown'); 
-				} 
-			}); 
-		});		 
-	</script> 
   
   <!-- MDB -->
   <footer class="bg-light text-center text-white">
