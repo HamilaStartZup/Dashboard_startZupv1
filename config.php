@@ -1,10 +1,10 @@
 <?php
 //connection locale
-/*$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "start_zup";*/
-//connection OVH
+// $servername = "localhost";
+// $username = "root";
+// $password = "";
+// $dbname = "start_zup";
+// connection OVH
 $servername = "startzldashboard.mysql.db";
 $username = "startzldashboard";
 $password = "ENgiML0xml6uzxqr";
@@ -21,3 +21,4 @@ try {
 }
 
 ?>
+
