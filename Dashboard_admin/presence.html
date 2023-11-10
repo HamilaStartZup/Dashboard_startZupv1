@@ -81,6 +81,91 @@ rel="stylesheet"
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 </style>
+<style>
+    thead{
+        background-color: #2ecc71;
+        color: white;
+    }
+    .feuille{
+        margin: 1rem;
+        padding: 0; /* pour enlever les marges */
+        border: 1px solid rgb(241, 236, 236); 
+    
+    }
+    .feuille h1{
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        width: 100%;
+        text-align: center; /* pour centrer le titre */
+    }
+    .headerTableau{
+        display: flex;
+        justify-content: space-evenly; /* pour que les nom de champs soient espacés de manière égale */
+        width: 100%;
+        background-color: #2ecc71;
+        color: white;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        font-size: 1.2rem;
+    }
+    
+    .listeTableau{
+        display: flex;
+        justify-content: space-evenly; /* pour que les noms d'éléves soient espacés de manière égale */
+        align-items: center;
+        width: 100%;
+        background-color: white;
+        color: black;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        font-size: 1.2rem;
+    }
+    
+    .feuille table{
+        width: 100%; /* largeur du tableau à 100% de la div */
+    }
+    
+    .feuille td{
+        padding: 5px;
+        width: 25%; /*donner une width au td pour que tout soit aligner */
+        text-align: center;
+    }
+    
+    .feuille input[type="text"]:disabled{
+        border: none !important;
+        width: 100%;
+        color: black;
+        text-align: center;
+    }
+    
+    .feuille input[type="text"]{
+        border: 1px solid black!important;
+        border-radius: 5px;
+        width: 100%;
+        color: black;
+        text-align: center;
+    }
+    
+    .feuille input[type="checkbox"]{
+        width: 100%;
+        height: 25px;
+    }
+    
+    .feuille input[type="submit"]{
+        width: 100%;
+        height: 60px;
+        border-radius: 3px;
+        border: none;
+        background-color: #3ad177;
+        color: white;
+        padding: 5px;
+        box-shadow: #d6e4dc;
+    }
+    .feuille input[type="submit"]:hover{
+        background-color: #d6e4dc;
+    }
+    </style>
 <script>
 
   </script>
@@ -89,12 +174,13 @@ rel="stylesheet"
 
 <body>
   <!--Main Navigation-->
-<header>
+  <header>
     <!-- Sidebar -->
     <nav
     id="sidebarMenu"
     class="collapse d-lg-block sidebar collapse bg-white"
     >
+   
  <div class="position-sticky">
    <div class="list-group list-group-flush mx-3 mt-4">
      <a
@@ -158,62 +244,17 @@ rel="stylesheet"
         ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
        >
      <a
-        href="../logout.php"
+        href="#"
         class="list-group-item list-group-item-action py-2 ripple"
         ><i class="fas fa-arrow-right-from-bracket fa-fw me-3"></i><span>Logout</span></a
-       >
+       
    </div>
  </div>
 </nav>
     <!-- Sidebar -->
   
     <!-- Navbar -->
-    <nav
-         id="main-navbar"
-         class="navbar navbar-expand-lg navbar-light bg-white fixed-top"
-         >
-      <!-- Container wrapper -->
-      <div class="container-fluid">
-        <!-- Toggle button -->
-        <button
-                class="navbar-toggler"
-                type="button"
-                data-mdb-toggle="collapse"
-                data-mdb-target="#sidebarMenu"
-                aria-controls="sidebarMenu"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-                >
-          <i class="fas fa-bars"></i>
-        </button>
-  
-        <!-- Brand -->
-        <a class="navbar-brand" href="#">
-          <img
-               src="../images/icon.png"
-               height="25"
-               alt="KJJJ"
-         
-               />
-        </a>
-        <!-- Search form -->
-        <form class="d-none d-md-flex input-group w-auto my-auto">
-          <input
-                 autocomplete="off"
-                 type="search"
-                 class="form-control rounded"
-                 placeholder='Search (ctrl + "/" to focus)'
-                 style="min-width: 225px"
-                 />
-          <span class="input-group-text border-0"
-                ><i class="fas fa-search"></i
-            ></span>
-        </form>
-  
-    
-      </div>
-      <!-- Container wrapper -->
-    </nav>
+
     <!-- Navbar -->
   </header>
   <!--Main Navigation-->
@@ -277,67 +318,67 @@ rel="stylesheet"
         <div class="card">
           <div class="card-header text-center py-3">
             <h5 class="mb-0 text-center">
-              <strong>List candidat  </strong>
+              <strong>    
+                <% const formattedDate = dateDuJour.toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric'}); %>  <!-- pour formater la date -->
+                <h1>Feuille de présence - <%= formattedDate %></h1>
+           
+         </strong>
             </h5>
           </div>
           <div class="card-body">
-           
             <div class="table-responsive">
-           
-                    <table class="table align-middle mb-0 bg-white">
-                        <thead class="bg-light">
-                          <tr>
-                            <th>Name</th>
-                            <th>commentaire</th>
-                            <th>Status</th>
-                            <th>Promotion</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <% etudiants.forEach(function(etudiant, index) { %>
-                          <tr>
+         <!--Feuille de présence-->
+         <div class="row">
+          <div class="col-sm feuille ">
+            <form action="/excel" method="post">
+                <table>
+              
+                    <tbody>
+                        <tr class="headerTableau shadow p-3 mb-5  rounded">
                             <td>
-                              <div class="d-flex align-items-center">
-                                <img
-                                    src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                                    alt=""
-                                    style="width: 45px; height: 45px"
-                                    class="rounded-circle"
-                                    />
-                                <div class="ms-3">
-                                  <p class="fw-bold mb-1"><%= etudiant.prenom %><span></span> <%= etudiant.nom %></p>
-                                  <p class="text-muted mb-0">john.doe@gmail.com</p>
-                                </div>
-                              </div>
+                                Nom               
                             </td>
                             <td>
-                              <p class="fw-normal mb-1">Software engineer</p>
-                              <p class="text-muted mb-0">IT department</p>
+                                Prénom
                             </td>
                             <td>
-                                <% if(etudiant.Status=="active"){ %>
-                              <span class="badge badge-success rounded-pill d-inline"><%= etudiant.Status %></span>
-                              <% }else{ %>
-                              
-                              <span class="badge badge-secondary rounded-pill d-inline"><%= etudiant.Status %></span>
-                              <% }%>
+                                Matin
                             </td>
-                            <td> <%= etudiant.promotion %></td>
                             <td>
-                              <form action="./profile.html">
-                              <button type="submit"  class="btn btn-link btn-sm btn-rounded">
-                                Edit
-                              </button>
-                            </form>
-                           
+                                Après-midi
                             </td>
-                          </tr>
-                          <% }); %> 
-                        </tbody>
-                      </table>
-            
-            </div>
+                            <td>
+                                Retard
+                            </td>
+                          
+                        </tr>
+                        <% etudiants.forEach(function(etudiant, index) { %>
+                            <tr class="listeTableau">
+                                <td class="nom">
+                                    <input type="text" name="nom" value="<%= etudiant.nom %>" disabled="disabled">
+                                </td>
+                                <td class="prenom">
+                                    <input type="text" name="prenom" value="<%= etudiant.prenom %>" disabled="disabled">
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="presentM<%= index %>" name="presentM"><br><br>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="presentAM<%= index %>" name="presentAM"><br><br>
+                                </td>
+                                <td>
+                                    <input type="text" id="retard<%= index %>" name="retard<%= index %>"><br><br>
+                                </td>
+                            
+                            </tr>
+                        <% }); %>                        
+                    </tbody>
+                </table>
+                <input type="submit" value="Valider">
+            </form>
+          </div>
+        </div>
+    </div>
           </div>
         </div>
       </section>

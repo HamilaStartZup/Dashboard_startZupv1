@@ -1,5 +1,5 @@
 <?php
-include('config.php');
+require('config.php');
 $query= $conn->prepare("SELECT*FROM users WHERE Email = ?");
 $query->execute([$_POST['email']]);
 $user=$query->fetch();
@@ -17,7 +17,11 @@ if ($user &&($_POST['password']==$user['password']))
        }
    
 }else{
-    header("Location:index.php");
+    echo "<script >
+    window.alert('email ou mot de passe incorrect');
+    window.location.href='index.php';
+    </script>";
+    //header("Location:index.php");
 }
 //require('config.php');
 ?>
