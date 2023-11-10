@@ -1,14 +1,14 @@
 <?php
 //connection locale
-// $servername = "localhost";
-// $username = "root";
-// $password = "";
-// $dbname = "start_zup";
-// connection OVH
-$servername = "startzldashboard.mysql.db";
-$username = "startzldashboard";
-$password = "ENgiML0xml6uzxqr";
-$dbname = "startzldashboard";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "start_zup";
+//connection OVH
+// $servername = "startzldashboard.mysql.db";
+// $username = "startzldashboard";
+// $password = "ENgiML0xml6uzxqr";
+// $dbname = "startzldashboard";
 
 
 try {
