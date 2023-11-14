@@ -1,94 +1,16 @@
 <?php
-require '../vendor/autoload.php';
-include('../config.php');
-$query= $conn->prepare("SELECT*FROM student");
-$query->execute();
-$etudiants=$query->fetchAll();
-$length = count($etudiants);
-$actif = 0;
-foreach ($etudiants as $index => $etudiant) {
-    if ($etudiant['status'] === 'active') {
-        $actif++;
-    }
-}
-$pourcentageActif = ($actif / $length) * 100;
-
-
-// Vérifiez si la requête est de type POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $data = [];
-  $retards = [];
-
+  include('../config.php');
+  $query= $conn->prepare("SELECT*FROM student");
+  $query->execute();
+  $etudiants=$query->fetchAll();
+  $length = count($etudiants);
+  $actif = 0;
   foreach ($etudiants as $index => $etudiant) {
-    // Vérifiez si l'étudiant est actif
-    if ($etudiant['status'] == 'active') {
-        // Utilisez $_POST pour récupérer les données du formulaire
-        $retard = isset($_POST["retard{$index}"]) ? $_POST["retard{$index}"] : "absent";
-        $presentM = isset($_POST["presentM{$index}"]) ? "Présent le matin" : "Absent le matin";
-        $presentAM = isset($_POST["presentAM{$index}"]) ? "Présent l'après-midi" : "Absent l'après-midi";
-    } else {
-        // Si l'étudiant est inactif, attribuez des valeurs par défaut
-        $retard = "absent";
-        $presentM = "absent";
-        $presentAM = "absent";
-    }
-
-    $retards[] = $retard;
-
-    // Obtenez la date actuelle
-    $dateEnregistrement = new DateTime();
-
-    // Formatez la date comme une chaîne de caractères
-    $dateEnregistrementString = $dateEnregistrement->format('d/m/Y');
-
-    $data[] = [
-        $etudiant['nom'],
-        $etudiant['prenom'],
-        $presentM,
-        $presentAM,
-        $retard,
-        $dateEnregistrementString,
-        $etudiant['status']
-    ];
-  }
-
-  // Générez un nouveau fichier Excel
-  $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-  $sheet = $spreadsheet->getActiveSheet();
-
-  // Définir les en-têtes de colonne
-  $headers = ['Nom', 'Prénom', 'Matin', 'Après-midi', 'Retard', 'Date d\'enregistrement', 'Status'];
-  foreach ($headers as $index => $header) {
-      $sheet->setCellValueByColumnAndRow($index + 1, 1, $header);
-  }
-
-  // Remplir le tableau avec les données
-  foreach ($data as $rowIndex => $row) {
-      foreach ($row as $cellIndex => $cell) {
-          if ($cell !== null) {
-              $sheet->setCellValueByColumnAndRow($cellIndex + 1, $rowIndex + 2, $cell);
-          }
+      if ($etudiant['status'] === 'active') {
+          $actif++;
       }
   }
-
-  // Enregistrez le fichier Excel avec un nom basé sur la date
-  $dateEnregistrement = new DateTime();
-  $nomFichierExcel = 'appel_' . $dateEnregistrement->format('Y-m-d') . '.xls';
-
-  $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-  $writer->save($nomFichierExcel);
-
-  // Envoyer le fichier en téléchargement
-  header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  header('Content-Disposition: attachment; filename="' . $nomFichierExcel . '"');
-  readfile($nomFichierExcel);
-
-  // Supprimer le fichier après l'envoi
-  unlink($nomFichierExcel);
-}
-
-// Le reste de votre code PHP...
-
+  $pourcentageActif = ($actif / $length) * 100;
 ?>
 
 <!DOCTYPE html>
@@ -270,7 +192,7 @@ body {
  <div class="position-sticky">
    <div class="list-group list-group-flush mx-3 mt-4">
      <a
-        href="./dashboard.html"
+        href="./dashboard.php"
         class="list-group-item list-group-item-action py-2 ripple active"
         aria-current="true"
         >
@@ -593,73 +515,62 @@ body {
                         <!-- Feuille de présence -->
                         <div class="row">
                             <div class="col-sm feuille ">
-                              <form action="" method="post">
-                                  <table>
-
-                                      <tbody>
-                                          <tr class="headerTableau shadow p-3 mb-5  rounded">
-                                              <td>
-                                                  Nom
-                                              </td>
-                                              <td>
-                                                  Prénom
-                                              </td>
-                                              <td>
-                                                  Matin
-                                              </td>
-                                              <td>
-                                                  Après-midi
-                                              </td>
-                                              <td>
-                                                  Retard
-                                              </td>
-
-                                          </tr>
-                                          <?php foreach ($etudiants as $index => $etudiant) : ?>
-                                              <?php if ($etudiant['status'] !== 'active') : ?>
-                                                  <tr class="listeTableau" style="opacity: 0.5;pointer-events:none; background-image: repeating-linear-gradient(135deg, rgba(0,0,0, 0.46) 0px, rgba(0,0,0, 0.46) 2px,transparent 2px, transparent 4px),linear-gradient(90deg, rgba(213,213,213, 0.23),rgba(213,213,213, 0.23));">
-                                                      <td class="nom">
-                                                          <input type="text" name="nom" value="<?php echo $etudiant['nom']; ?>" disabled="disabled">
-                                                      </td>
-                                                      <td class="prenom">
-                                                          <input type="text" name="prenom" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
-                                                      </td>
-                                                      <td>
-                                                          <input type="checkbox" value="🚫" disabled><br><br>
-                                                      </td>
-                                                      <td>
-                                                          <input type="checkbox" value="🚫" disabled><br><br>
-                                                      </td>
-                                                      <td>
-                                                          <input type="text" value="🚫" disabled><br><br>
-                                                      </td>
-
-                                                  </tr>
-                                              <?php else : ?>
-                                                  <tr class="listeTableau">
-                                                      <td class="nom">
-                                                          <input type="text" name="nom" value="<?php echo $etudiant['nom']; ?>" disabled="disabled">
-                                                      </td>
-                                                      <td class="prenom">
-                                                          <input type="text" name="prenom" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
-                                                      </td>
-                                                      <td>
-                                                          <input type="checkbox" id="presentM<?php echo $index; ?>" name="presentM<?php echo $index; ?>"><br><br>
-                                                      </td>
-                                                      <td>
-                                                          <input type="checkbox" id="presentAM<?php echo $index; ?>" name="presentAM<?php echo $index; ?>"><br><br>
-                                                      </td>
-                                                      <td>
-                                                          <input type="text" id="retard<?php echo $index; ?>" name="retard<?php echo $index; ?>"><br><br>
-                                                      </td>
-
-                                                  </tr>
-                                              <?php endif; ?>
-                                          <?php endforeach; ?>
-                                      </tbody>
-                                  </table>
-                                  <input type="submit" value="Valider">
-                              </form>
+                            <form action="./fonctions/saveAppel.php" method="POST">
+                              <table>
+                                  <tbody>
+                                      <tr class="headerTableau shadow p-3 mb-5 rounded">
+                                          <td>Nom</td>
+                                          <td>Prénom</td>
+                                          <td>Matin</td>
+                                          <td>Après-midi</td>
+                                          <td>Commentaire</td>
+                                      </tr>
+                                      <?php foreach ($etudiants as $index => $etudiant) : ?>
+                                          <?php if ($etudiant['status'] !== 'active') : ?>
+                                              <tr class="listeTableau" style="opacity: 0.5;pointer-events:none; background-image: repeating-linear-gradient(135deg, rgba(0,0,0, 0.46) 0px, rgba(0,0,0, 0.46) 2px,transparent 2px, transparent 4px),linear-gradient(90deg, rgba(213,213,213, 0.23),rgba(213,213,213, 0.23));">
+                                                  <td class="nom">
+                                                      <input type="text" name="nom[<?php echo $index; ?>]" value="<?php echo $etudiant['nom']; ?>" disabled="disabled">
+                                                  </td>
+                                                  <td class="prenom">
+                                                      <input type="text" name="prenom[<?php echo $index; ?>]" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
+                                                  </td>
+                                                  <td><input type="checkbox" value="🚫" disabled><br><br></td>
+                                                  <td><input type="checkbox" value="🚫" disabled><br><br></td>
+                                                  <td><input type="text" value="🚫" disabled><br><br></td>
+                                              </tr>
+                                          <?php else : ?>
+                                              <tr class="listeTableau">
+                                                  <td class="nom">
+                                                      <input type="text" name="nom[<?php echo $index; ?>]" value="<?php echo $etudiant['nom']; ?>" disabled="disabled">
+                                                  </td>
+                                                  <td class="prenom">
+                                                      <input type="text" name="prenom[<?php echo $index; ?>]" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
+                                                  </td>
+                                                  <td>
+                                                      <input type="checkbox" id="presentM<?php echo $index; ?>" name="presentM[<?php echo $index; ?>]"><br><br>
+                                                  </td>
+                                                  <td>
+                                                      <input type="checkbox" id="presentAM<?php echo $index; ?>" name="presentAM[<?php echo $index; ?>]"><br><br>
+                                                  </td>
+                                                  <td>
+                                                      <input type="text" id="commentaire<?php echo $index; ?>" name="commentaire<?php echo $index; ?>"><br><br>
+                                                  </td>
+                                              </tr>
+                                          <?php endif; ?>
+                                      <?php endforeach; ?>
+                                        <?php foreach ($etudiants as $index => $etudiant) : ?>
+                                          <?php if ($etudiant['status'] == 'active') { ?>
+                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][nom]" value="<?php echo $etudiant['nom']; ?>">
+                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][prenom]" value="<?php echo $etudiant['prenom']; ?>">
+                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][presentM]" value="<?php echo isset($_POST['presentM'][$index]) ? 'présent' : 'absent'; ?>"> 
+                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][presentAM]" value="<?php echo isset($_POST['presentAM'][$index]) ? 'présent' : 'absent'; ?>"> 
+                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][commentaire]" value="<?php echo isset($_POST['commentaire'][$index]) ? $_POST['commentaire'][$index] : ''; ?>">
+                                          <?php } ?>
+                                        <?php endforeach; ?>
+                                  </tbody>
+                              </table>
+                              <input type="submit" value="Valider">
+                            </form>
                             </div>
                         </div>
                     </div>
