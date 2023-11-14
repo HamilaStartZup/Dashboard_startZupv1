@@ -193,18 +193,19 @@ body {
    <div class="list-group list-group-flush mx-3 mt-4">
      <a
         href="./dashboard.php"
-        class="list-group-item list-group-item-action py-2 ripple active"
-        aria-current="true"
+        class="list-group-item list-group-item-action py-2 ripple "
+      
         >
        <i class="fas fa-tachometer-alt fa-fw me-3"></i
          ><span>Main dashboard</span>
      </a>
      <a
         href="#"
-        class="list-group-item list-group-item-action py-2 ripple "
+        class="list-group-item list-group-item-action py-2 ripple  "
+       
         >
-       <i class="fas fa-chart-area fa-fw me-3"></i
-         ><span>Webiste traffic</span>
+       <i class="fas fa-user-graduate me-3"></i
+         ><span>Ajouter des candidats</span>
      </a>
      <a
         href="#"
@@ -242,9 +243,10 @@ body {
        >
      <a
         href="./presence.php"
-        class="list-group-item list-group-item-action py-2 ripple"
+        class="list-group-item list-group-item-action py-2 ripple active"
+        aria-current="true"
         ><i class="fas fa-calendar fa-fw me-3"></i
-       ><span>Présences</span></a
+       ><span>Présence</span></a
        >
      <a
         href="#"
@@ -252,9 +254,9 @@ body {
         ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
        >
      <a
-        href="#"
+        href="../logout.php"
         class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a
+        ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
        >
    </div>
  </div>

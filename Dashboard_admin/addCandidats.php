@@ -177,7 +177,7 @@ button:hover {
  <div class="position-sticky">
    <div class="list-group list-group-flush mx-3 mt-4">
      <a
-        href="./dashboard.html"
+        href="./dashboard.php"
         class="list-group-item list-group-item-action py-2 ripple "
       
         >
@@ -238,7 +238,7 @@ button:hover {
         ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
        >
      <a
-        href="#"
+     href="../logout.php"
         class="list-group-item list-group-item-action py-2 ripple"
         ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
        >
