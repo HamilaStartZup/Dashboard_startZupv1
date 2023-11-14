@@ -177,7 +177,7 @@ button:hover {
  <div class="position-sticky">
    <div class="list-group list-group-flush mx-3 mt-4">
      <a
-        href="/dashboard"
+        href="./dashboard.html"
         class="list-group-item list-group-item-action py-2 ripple "
       
         >
