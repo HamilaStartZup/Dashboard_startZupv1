@@ -200,7 +200,7 @@ body {
          ><span>Main dashboard</span>
      </a>
      <a
-        href="#"
+        href="./addCandidats.php"
         class="list-group-item list-group-item-action py-2 ripple  "
        
         >
