@@ -1,6 +1,20 @@
 <!-- rajouter la date du jour en variable dynamique dans le titre de la page -->
 <!-- enregistrer la date du jour en variable dynamique dans le back -->
 <!-- ajouter les retards -->
+<?php
+  include("../config.php");
+
+  session_start();
+// requête pour récupérer profile Etudiant
+  $queryProfilEtudiant = "SELECT * FROM student WHERE id=$_GET[id]";
+  $stmtEtudiant = $conn->prepare($queryProfilEtudiant);
+  $stmtEtudiant ->execute();
+  $etudiant = $stmtEtudiant ->fetchAll(PDO::FETCH_ASSOC);
+
+  //profile 
+   $Profile =$etudiant[0];
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -102,19 +116,20 @@
  <div class="position-sticky">
    <div class="list-group list-group-flush mx-3 mt-4">
      <a
-        href="./dashboard.html"
-        class="list-group-item list-group-item-action py-2 ripple active"
+        href="./dashboard.php"
+        class="list-group-item list-group-item-action py-2 ripple active "
         aria-current="true"
         >
        <i class="fas fa-tachometer-alt fa-fw me-3"></i
          ><span>Main dashboard</span>
      </a>
      <a
-        href="#"
+        href="./addCandidats.php"
         class="list-group-item list-group-item-action py-2 ripple "
+       
         >
-       <i class="fas fa-chart-area fa-fw me-3"></i
-         ><span>Webiste traffic</span>
+       <i class="fas fa-user-graduate me-3"></i
+         ><span>Ajouter des candidats</span>
      </a>
      <a
         href="#"
@@ -151,10 +166,10 @@
        ><span>Partners</span></a
        >
      <a
-        href="./presence.html"
+        href="./presence.php"
         class="list-group-item list-group-item-action py-2 ripple"
         ><i class="fas fa-calendar fa-fw me-3"></i
-       ><span>Présences</span></a
+       ><span>Présence</span></a
        >
      <a
         href="#"
@@ -162,10 +177,10 @@
         ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
        >
      <a
-        href="#"
+     href="../logout.php"
         class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-arrow-right-from-bracket fa-fw me-3"></i><span>Logout</span></a
-       
+        ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
+       >
    </div>
  </div>
 </nav>
@@ -188,13 +203,13 @@
                 <div class="card-body text-center">
                   <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3">HGJHGJH</h5>
-                  <p class="text-muted mb-1">Full Stack Developer</p>
-                  <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                  <h5 class="my-3"> <?php echo "$Profile[nom]";?> </h5>
+                  <p class="text-muted mb-1"> <?php echo "$Profile[designation]";?> </p>
+                  <p class="text-muted mb-4"><?php echo "$Profile[adresse]";?></p>
                   <div class="d-flex justify-content-center mb-2">
                     <button type="button" class="btn btn-primary" onclick="print()">Télécharger le profil</button>
 
-                    <button type="button"  onclick="window.location.href='mailto:example@example.com';"class="btn btn-outline-primary ms-1">Envoyer un email</button>
+                    <button type="button"  onclick="window.location.href='mailto:<?php echo "$Profile[email]";?>';"class="btn btn-outline-primary ms-1">Envoyer un email</button>
                   </div>
                 </div>
               </div>
@@ -233,7 +248,7 @@
                       <p class="mb-0">Full Name</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Johnatan Smith</p>
+                      <p class="text-muted mb-0"> <?php echo "$Profile[prenom]";?>  <span></span>  <?php echo "$Profile[nom]";?> </p>
                     </div>
                   </div>
                   <hr>
@@ -242,7 +257,7 @@
                       <p class="mb-0">Email</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">example@example.com</p>
+                      <p class="text-muted mb-0"> <?php echo "$Profile[email]";?></p>
                     </div>
                   </div>
                   <hr>
@@ -251,16 +266,16 @@
                       <p class="mb-0">Phone</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">(097) 234-5678</p>
+                      <p class="text-muted mb-0"> <?php echo "$Profile[phone]";?></p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Mobile</p>
+                      <p class="mb-0">Code Profile</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">(098) 765-4321</p>
+                      <p class="text-muted mb-0"> <?php echo "$Profile[code_profile]";?> </p>
                     </div>
                   </div>
                   <hr>
@@ -269,7 +284,7 @@
                       <p class="mb-0">Address</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Bay Area, San Francisco, CA</p>
+                      <p class="text-muted mb-0"> <?php echo "$Profile[adresse]";?> </p>
                     </div>
                   </div>
                 </div>
