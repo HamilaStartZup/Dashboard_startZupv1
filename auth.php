@@ -11,7 +11,7 @@ if ($user &&($_POST['password']==$user['password']))
     $_SESSION['email']=$user['Email'];
     //compare different permission
     if($user['status']=='Admin'){
-        header("Location:Dashboard_admin/dashboard.html");
+        header("Location:Dashboard_admin/dashboard.php");
        }else{
         header("Location:Dashboard_client/dashboard_client.html");
        }
