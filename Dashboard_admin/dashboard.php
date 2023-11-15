@@ -299,9 +299,11 @@
                                   echo "</td>";
                                   echo "<td> $etudiant[designation]</td>";
                                   echo "<td>";
-                                  echo "<form action='./profile/$etudiant[id]'>";
-                                  echo "<button type='submit' class='btn btn-link btn-sm btn-rounded'>Modifier</button>";
-                                  echo "</form>";
+                                $url="./profile.php?id=$etudiant[id]";
+                                
+                                  echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Modifier</a>";
+
+                                  
                                   echo "</td>";
                                   echo "</tr>";
                               }
