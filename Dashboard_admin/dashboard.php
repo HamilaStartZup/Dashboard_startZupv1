@@ -157,9 +157,9 @@
        ><span>Présence</span></a
        >
      <a
-        href="#"
+        href="./add_client_admin.php"
         class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
+        ><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a
        >
      <a
      href="../logout.php"
