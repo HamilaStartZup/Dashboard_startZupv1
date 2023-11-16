@@ -1,16 +1,35 @@
+<!-- Ce document va lister tout les appels  -->
 <?php
-  include('../config.php');
-  $query= $conn->prepare("SELECT*FROM student");
-  $query->execute();
-  $etudiants=$query->fetchAll();
-  $length = count($etudiants);
-  $actif = 0;
-  foreach ($etudiants as $index => $etudiant) {
-      if ($etudiant['status'] === 'active') {
-          $actif++;
-      }
+  session_start();
+  require('../config.php');
+  if ($_SESSION['status'] == "Admin") {
+    // Nombre d'appels à afficher par page
+    $nombreParPage = 10;
+
+    // Page actuelle, par défaut 1
+    $page = isset($_GET['page']) ? $_GET['page'] : 1; 
+
+    // Calcul de l'offset pour la requête SQL
+    $offset = ($page - 1) * $nombreParPage;
+
+    // Requête SQL avec LIMIT et OFFSET
+    $sql = "SELECT date_enregistrement FROM `appel` GROUP BY `appel`.`date_enregistrement` ORDER BY `appel`.`date_enregistrement` DESC LIMIT $nombreParPage OFFSET $offset";
+    $result = $conn->prepare($sql);
+    $result->execute();
+    $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+
+    // Compter le nombre total d'appels
+    $sqlCount = "SELECT COUNT(DISTINCT date_enregistrement) as total FROM `appel`";
+    $resultCount = $conn->prepare($sqlCount);
+    $resultCount->execute();
+    $countResult = $resultCount->fetch(PDO::FETCH_ASSOC);
+    $totalAppels = $countResult['total'];
+
+    // Calcul du nombre total de pages
+    $nombreDePages = ceil($totalAppels / $nombreParPage);
+  } else{
+    header("location:../index.php");
   }
-  $pourcentageActif = ($actif / $length) * 100;
 ?>
 
 <!DOCTYPE html>
@@ -54,45 +73,36 @@
     ></script>
 </head>
 <style>
-body {
-  background-color: #fbfbfb;
-}
-@media (min-width: 991.98px) {
-  main {
-    padding-left: 240px;
+  body {
+    background-color: #fbfbfb;
   }
-}
+  @media (min-width: 991.98px) {
+    main {
+      padding-left: 240px;
+    }
+  }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  padding: 58px 0 0; /* Height of navbar */
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
-  width: 240px;
-  z-index: 600;
-}
-
-@media (max-width: 991.98px) {
+  /* Sidebar */
   .sidebar {
-    width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 58px 0 0; /* Height of navbar */
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+    width: 240px;
+    z-index: 600;
   }
-}
-.sidebar .active {
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
-}
 
-.sidebar-sticky {
-  position: relative;
-  top: 0;
-  height: calc(100vh - 48px);
-  padding-top: 0.5rem;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-}
+  @media (max-width: 991.98px) {
+    .sidebar {
+      width: 100%;
+    }
+  }
+  .sidebar .active {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  }
 
   thead{
     background-color: #2ecc71;
@@ -102,6 +112,9 @@ body {
     margin: 1rem;
     padding: 0; /* pour enlever les marges */
     border: 1px solid rgb(241, 236, 236); 
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
   }
   .feuille h1{
     font-family: 'Montserrat', sans-serif;
@@ -109,27 +122,8 @@ body {
     font-size: 2rem;
     width: 100%;
     text-align: center; /* pour centrer le titre */
-  }
-  .headerTableau{
-    display: flex;
-    justify-content: space-evenly; /* pour que les nom de champs soient espacés de manière égale */
-    width: 100%;
-    background-color: #2ecc71;
-    color: white;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-size: 1.2rem;
-  }
-  .listeTableau{
-    display: flex;
-    justify-content: space-evenly; /* pour que les noms d'éléves soient espacés de manière égale */
-    align-items: center;
-    width: 100%;
-    background-color: white;
-    color: black;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-size: 1.2rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgb(241, 236, 236);
   }
   
   .feuille table{
@@ -179,6 +173,26 @@ body {
   .feuille input[type="submit"]:hover{
     background-color: #d6e4dc;
   }
+  .pagination{
+    margin: 1rem;
+    padding: 0; /* pour enlever les marges */
+    width: 100%;
+    text-align: center;
+    align-items: baseline;
+  }
+  .pagination a{
+    text-decoration: none;
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  .pagination a:hover{
+    background-color: #d6e4dc;
+  }
+  .pagination a.active{
+    background-color: #3ad177;
+    color: white;
+  }
 </style>
 
 <body>
@@ -200,7 +214,7 @@ body {
          ><span>Main dashboard</span>
      </a>
      <a
-        href="addCandidats.php"
+        href="./addCandidats.php"
         class="list-group-item list-group-item-action py-2 ripple  "
        
         >
@@ -237,13 +251,13 @@ body {
        >
        <a
         href="listeAppels.php"
-        class="list-group-item list-group-item-action py-2 ripple ripple "
+        class="list-group-item list-group-item-action py-2 ripple ripple active"
         ><i class="fa-sharp fa-solid fa-list me-3"></i>
         <span>Liste d'appels</span></a
        >
      <a
         href="./presence.php"
-        class="list-group-item list-group-item-action py-2 ripple active"
+        class="list-group-item list-group-item-action py-2"
         aria-current="true"
         ><i class="fas fa-calendar fa-fw me-3"></i
        ><span>Présence</span></a
@@ -449,138 +463,47 @@ body {
   </header>
 <!--Main Navigation-->
 
-<!-- Main layout -->
-<main style="margin-top: 58px">
-    <div class="container pt-4">
-        <!-- Section: Statistics with subtitles -->
-        <section>
-            <div class="row">
-                <div class="col-xl-6 col-md-12 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between p-md-1">
-                                <div class="d-flex flex-row">
-                                    <div class="align-self-center">
-                                        <i class="fas fa-user text-success fa-3x me-4"></i>
-                                    </div>
-                                    <div>
-                                        <h4>Nombre total de candidats</h4>
-                                        <p class="mb-0"></p>
-                                    </div>
-                                </div>
-                                <div class="align-self-center">
-                                    <h2 class="h1 mb-0"><?php echo $length; ?></h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-md-12 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between p-md-1">
-                                <div class="d-flex flex-row">
-                                    <div class="align-self-center">
-                                        <i class="fas fa-chart-pie text-warning fa-3x me-4"></i>
-                                    </div>
-                                    <div>
-                                        <h4>candidats actifs</h4>
-                                        <p class="mb-0"></p>
-                                    </div>
-                                </div>
-                                <div class="align-self-center">
-                                    <h2 class="h1 mb-0"><?php echo number_format($pourcentageActif, 0); ?> %</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Section: Main chart -->
+<!--Main layout-->
 
-        <!-- Section: Sales Performance KPIs -->
-        <section class="mb-4">
-            <div class="card">
-                <div class="card-header text-center py-3">
-                    <h5 class="mb-0 text-center">
-                        <strong>
-                            <?php
-                            $formattedDate = date('d/m/Y');
-                            echo "<h1>Feuille de présence - $formattedDate</h1>";
-                            ?>
-                        </strong>
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <!-- Feuille de présence -->
-                        <div class="row">
-                            <div class="col-sm feuille ">
-                            <form action="./fonctions/saveAppel.php" method="POST">
-                              <table>
-                                  <tbody>
-                                      <tr class="headerTableau shadow p-3 mb-5 rounded">
-                                          <td>Nom</td>
-                                          <td>Prénom</td>
-                                          <td>Matin</td>
-                                          <td>Après-midi</td>
-                                          <td>Commentaire</td>
-                                      </tr>
-                                      <?php foreach ($etudiants as $index => $etudiant) : ?>
-                                          <?php if ($etudiant['status'] !== 'active') : ?>
-                                              <tr class="listeTableau" style="opacity: 0.5;pointer-events:none; background-image: repeating-linear-gradient(135deg, rgba(0,0,0, 0.46) 0px, rgba(0,0,0, 0.46) 2px,transparent 2px, transparent 4px),linear-gradient(90deg, rgba(213,213,213, 0.23),rgba(213,213,213, 0.23));">
-                                                  <td class="nom">
-                                                      <input type="text" name="nom[<?php echo $index; ?>]" value="<?php echo $etudiant['nom']; ?>" disabled="disabled">
-                                                  </td>
-                                                  <td class="prenom">
-                                                      <input type="text" name="prenom[<?php echo $index; ?>]" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
-                                                  </td>
-                                                  <td><input type="checkbox" value="🚫" disabled><br><br></td>
-                                                  <td><input type="checkbox" value="🚫" disabled><br><br></td>
-                                                  <td><input type="text" value="🚫" disabled><br><br></td>
-                                              </tr>
-                                          <?php else : ?>
-                                              <tr class="listeTableau">
-                                                  <td class="nom">
-                                                      <input type="text" name="nom[<?php echo $index; ?>]" value="<?php echo $etudiant['nom']; ?>" disabled="disabled">
-                                                  </td>
-                                                  <td class="prenom">
-                                                      <input type="text" name="prenom[<?php echo $index; ?>]" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
-                                                  </td>
-                                                  <td>
-                                                      <input type="checkbox" id="presentM<?php echo $index; ?>" name="presentM[<?php echo $index; ?>]"><br><br>
-                                                  </td>
-                                                  <td>
-                                                      <input type="checkbox" id="presentAM<?php echo $index; ?>" name="presentAM[<?php echo $index; ?>]"><br><br>
-                                                  </td>
-                                                  <td>
-                                                      <input type="text" id="commentaire<?php echo $index; ?>" name="commentaire<?php echo $index; ?>"><br><br>
-                                                  </td>
-                                              </tr>
-                                          <?php endif; ?>
-                                      <?php endforeach; ?>
-                                        <?php foreach ($etudiants as $index => $etudiant) : ?>
-                                          <?php if ($etudiant['status'] == 'active') { ?>
-                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][nom]" value="<?php echo $etudiant['nom']; ?>">
-                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][prenom]" value="<?php echo $etudiant['prenom']; ?>">
-                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][presentM]" value="<?php echo isset($_POST['presentM'][$index]) ? 'présent' : 'absent'; ?>"> 
-                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][presentAM]" value="<?php echo isset($_POST['presentAM'][$index]) ? 'présent' : 'absent'; ?>"> 
-                                              <input type="hidden" name="etudiants[<?php echo $index; ?>][commentaire]" value="<?php echo isset($_POST['commentaire'][$index]) ? $_POST['commentaire'][$index] : ''; ?>">
-                                          <?php } ?>
-                                        <?php endforeach; ?>
-                                  </tbody>
-                              </table>
-                              <input type="submit" value="Valider">
-                            </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Section: Statistics with subtitles -->
+<main class="pt-5 mx-lg-5">
+  <div class="container-fluid mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="feuille">
+          <table>
+            <thead>
+              <tr>
+                <h1>Liste des appels</h1>
+              </tr>
+            </thead>
+            <br>
+            <tbody>
+              <?php
+                foreach ($rows as $row) {
+                  $date_enregistrement = $row['date_enregistrement'];
+                  $date_Appel = date("d/m/Y", strtotime($date_enregistrement));
+                  echo "<tr>";
+                  echo "<td> <h3> Appel du <b> <a href='detailsAppel.php?date=".$date_Appel."'>".$date_Appel."</a> </b> </h3> </td>";
+                  echo "</tr>";
+                }
+              ?>
+            </tbody>
+          </table>
+          
+          <!-- Ajout des boutons de navigation -->
+          <div class="pagination">
+            <?php
+              echo "Page:" ;
+              for ($i = 1; $i <= $nombreDePages; $i++) {
+                echo " <a href='?page=".$i."'>".$i."</a> ";
+              }
+            ?>
+          </div>
+          
+        </div>
+      </div>
     </div>
+  </div>
 </main>
-<!-- Main layout -->
 
+</body>
