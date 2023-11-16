@@ -159,11 +159,11 @@
         ><i class="fas fa-globe fa-fw me-3"></i
        ><span>International</span></a
        >
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-building fa-fw me-3"></i
-       ><span>Partners</span></a
+       <a
+        href="listeAppels.php"
+        class="list-group-item list-group-item-action py-2 ripple ripple "
+        ><i class="fa-sharp fa-solid fa-list me-3"></i>
+        <span>Liste d'appels</span></a
        >
      <a
         href="./presence.php"
