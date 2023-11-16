@@ -1,5 +1,11 @@
 <?php
   include('../config.php');
+  session_start();
+    // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
+    if ($_SESSION['status'] != "Admin") {
+      header("Location: ../failedAccess.php");
+    }
+  
   $query= $conn->prepare("SELECT*FROM student");
   $query->execute();
   $etudiants=$query->fetchAll();
