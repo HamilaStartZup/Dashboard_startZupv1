@@ -6,7 +6,7 @@
    $stmtEtudiants = $conn->prepare($queryEtudiants);
    $stmtEtudiants ->execute();
    $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
- 
+  
 
 ?> 
 <!DOCTYPE html> 
@@ -218,7 +218,7 @@
           <a class="nav-link" href="#">Accueil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="./interns.html"> Les stagiaires</a>
+          <a class="nav-link" href="./interns.php"> Les stagiaires</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="./contact_us.html">Contact</a>
