@@ -12,8 +12,6 @@ if(!isset($_SESSION['email'])){
   $query = $conn->prepare("SELECT * FROM student WHERE code_profile = '$code_profile'"); // $code_profile est récupéré dans l'url
   $query->execute();
   $result = $query->fetch();
-
-  echo $result['code_profile'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -188,7 +186,7 @@ if(!isset($_SESSION['email'])){
           aria-expanded="false"
         >
           <img
-            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+            src="https://images.pexels.com/photos/191415/pexels-photo-191415.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             class="rounded-circle"
             height="25"
             alt="Black and White Portrait of a Man"
@@ -229,15 +227,15 @@ if(!isset($_SESSION['email'])){
             <div class="col-lg-4">
               <div class="card mb-4">
                 <div class="card-body text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                  <img src="https://images.pexels.com/photos/191415/pexels-photo-191415.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3">HGJHGJH</h5>
-                  <p class="text-muted mb-1">Full Stack Developer</p>
-                  <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                  <h5 class="my-3">Etudiant <?php echo $result['code_profile'] ?></h5>
+                  <p class="text-muted mb-1"><?php echo $result['designation'] ?></p>
+                  <p class="text-muted mb-4"><b>LOCATION A RAJOUTER EN BDD</b></p>
                   <div class="d-flex justify-content-center mb-2">
-                    <button type="button" class="btn btn-primary" onclick="print()">Télécharger le profil</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadPDF()">Télécharger le profil</button>
 
-                    <button type="button"  onclick="window.location.href='mailto:example@example.com';"class="btn btn-outline-primary ms-1">Envoyer un email</button>
+                    <button type="button"  onclick="" class="btn btn-outline-primary ms-1">Envoyer un email</button>
                   </div>
                 </div>
               </div>
@@ -273,7 +271,7 @@ if(!isset($_SESSION['email'])){
                 <div class="card-body">
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Code de l'étudiant</p>
+                      <p class="mb-0">Code étudiant</p>
                     </div>
                     <div class="col-sm-9">
                       <p class="text-muted mb-0"><?php echo $result['code_profile'] ?></p>
@@ -285,16 +283,16 @@ if(!isset($_SESSION['email'])){
                       <p class="mb-0">Email</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">example@example.com</p>
+                      <p class="text-muted mb-0">Indisponible</p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Phone</p>
+                      <p class="mb-0">Téléphone</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">(097) 234-5678</p>
+                      <p class="text-muted mb-0">Indisponible</p>
                     </div>
                   </div>
                   <hr>
@@ -303,16 +301,16 @@ if(!isset($_SESSION['email'])){
                       <p class="mb-0">Mobile</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">(098) 765-4321</p>
+                      <p class="text-muted mb-0">Indisponible</p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Address</p>
+                      <p class="mb-0">Addresse</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Bay Area, San Francisco, CA</p>
+                      <p class="text-muted mb-0"><b>LOCATION A RAJOUTER EN BDD</b></p>
                     </div>
                   </div>
                 </div>
@@ -321,7 +319,7 @@ if(!isset($_SESSION['email'])){
                 <div class="col-md-6">
                   <div class="card mb-4 mb-md-0">
                     <div class="card-body">
-                      <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
+                      <p class="mb-4"><span class="text-primary font-italic me-1">Statut</span> des project afféctés</p>
                       </p>
                       <p class="mb-1" style="font-size: .77rem;">Web Design</p>
                       <div class="progress rounded" style="height: 5px;">
@@ -374,6 +372,21 @@ if(!isset($_SESSION['email'])){
   <!-- MDB -->
 
   <script>
+    // var docPDF = new jsPDF();
+
+    // function downloadPDF() {
+    //   var elementHTML = document.getElementById("Profile");
+
+    //   html2canvas(elementHTML).then(function (canvas) {
+    //     var imgData = canvas.toDataURL('image/png');
+    //     docPDF.addImage(imgData, 'PNG', 15, 15, 180, 180);
+
+    //     // Sauvegarder le fichier PDF
+    //     docPDF.save('profil_<?php echo $result['code_profile']?>.pdf');
+    //   });
+    // }
+
+    
     //bar
     var ctxB = document.getElementById("barChart").getContext('2d');
     var myBarChart = new Chart(ctxB, {
