@@ -235,7 +235,7 @@ if(!isset($_SESSION['email'])){
                   <div class="d-flex justify-content-center mb-2">
                     <button type="button" class="btn btn-primary" onclick="downloadPDF()">Télécharger le profil</button>
 
-                    <button type="button"  onclick="" class="btn btn-outline-primary ms-1">Envoyer un email</button>
+                    <button type="button"  onclick="sendEmail();" class="btn btn-outline-primary ms-1">Envoyer un email</button>
                   </div>
                 </div>
               </div>
@@ -372,6 +372,12 @@ if(!isset($_SESSION['email'])){
   <!-- MDB -->
 
   <script>
+    function sendEmail() {
+        var email = 'start-zup@gmail.com';
+        var subject = 'Intérêt pour le profil <?php echo $result['code_profile'] ?>';
+        var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject); 
+        window.location.href = mailtoLink;
+    }
     // var docPDF = new jsPDF();
 
     // function downloadPDF() {
