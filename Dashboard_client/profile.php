@@ -186,7 +186,7 @@ if(!isset($_SESSION['email'])){
           aria-expanded="false"
         >
           <img
-            src="https://images.pexels.com/photos/191415/pexels-photo-191415.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            src="https://img.freepik.com/photos-gratuite/icone-profil-utilisateur-recto_187299-39596.jpg?w=826&t=st=1700233197~exp=1700233797~hmac=ecf017b3fc31a8df3b9f1610d6b32041d2d9f7610b1d33ab8664b0e0ec680208"
             class="rounded-circle"
             height="25"
             alt="Black and White Portrait of a Man"
@@ -227,7 +227,7 @@ if(!isset($_SESSION['email'])){
             <div class="col-lg-4">
               <div class="card mb-4">
                 <div class="card-body text-center">
-                  <img src="https://images.pexels.com/photos/191415/pexels-photo-191415.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="avatar"
+                  <img src="https://img.freepik.com/photos-gratuite/icone-profil-utilisateur-recto_187299-39596.jpg?w=826&t=st=1700233197~exp=1700233797~hmac=ecf017b3fc31a8df3b9f1610d6b32041d2d9f7610b1d33ab8664b0e0ec680208" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
                   <h5 class="my-3">Etudiant <?php echo $result['code_profile'] ?></h5>
                   <p class="text-muted mb-1"><?php echo $result['designation'] ?></p>
@@ -235,7 +235,7 @@ if(!isset($_SESSION['email'])){
                   <div class="d-flex justify-content-center mb-2">
                     <button type="button" class="btn btn-primary" onclick="downloadPDF()">Télécharger le profil</button>
 
-                    <button type="button"  onclick="" class="btn btn-outline-primary ms-1">Envoyer un email</button>
+                    <button type="button"  onclick="sendEmail();" class="btn btn-outline-primary ms-1">Envoyer un email</button>
                   </div>
                 </div>
               </div>
@@ -372,6 +372,13 @@ if(!isset($_SESSION['email'])){
   <!-- MDB -->
 
   <script>
+    function sendEmail() {
+        var email = 'start-zup@gmail.com';
+        var subject = 'Intérêt pour le profil <?php echo $result['code_profile'] ?>';
+        var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject); 
+        window.location.href = mailtoLink;
+    }
+
     // var docPDF = new jsPDF();
 
     // function downloadPDF() {
