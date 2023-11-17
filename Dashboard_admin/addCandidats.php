@@ -368,10 +368,10 @@ button:hover {
  <label class="form-label" for="form6Example11">competences</label>
 <select  name="ary[]" id="competences" multiple>
 <option value="javascript">javascript </option>
-    <option value="html">html</option>
-    <option value="css">css</option>
-    <option value="sql">sql</option>
-    <option value="php">php</option>
+    <option value="HTML">html</option>
+    <option value="CSS">css</option>
+    <option value="SQL">sql</option>
+    <option value="PHP">php</option>
 </select>
 
   </div>

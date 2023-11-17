@@ -335,13 +335,12 @@
                                    $Disponibility='immédiatement';}
                                    echo'<td><span class="badge bg-success">'.$Disponibility.'</span></td>';
                                    
-                                  echo' <td><span class="badge bg-success">'.$row["competence"].'</span></td>
-                                   <td><form action="./profile.html">
-                                   <button type="submit"  class="btn btn-link btn-sm btn-rounded">
-                                     Edit
-                                   </button></td>  
+                                  echo' <td><span class="badge bg-warning">'.$row["competence"].'</span></td>';
+                                  $url="./profile.php?code_profile=".$row["code_profile"];
+                                   echo"<td><a  href='$url'> Edit</a>
+                                   </td>  
                               </tr>  
-                              ';  
+                              ";  
                          }  
                          ?>  
                     </table>  

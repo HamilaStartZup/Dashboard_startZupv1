@@ -2,7 +2,7 @@
 session_start();
         require('../config.php');
       
-
+       
        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $Nom = $_POST['Nom'];
             $Prenom = $_POST['Prenom'];
@@ -13,9 +13,13 @@ session_start();
            $Designation=$_POST['designation'];
            $Disponibility=$_POST['disponibility'];
            $code_profile='SZ_'.rand(100, 900);
-           //$competences =$_POST['ary'];
-
-           //echo'hi'.$competences;
+       
+           $competences =$_POST['ary'];
+           $C=$competences[0];
+           for($i=1;$i<count($competences);$i++){
+              $C.= ','.$competences[$i];
+           }
+           echo'hi'. var_dump($competences);
            // $filename = $_FILES["uploadfile"]["name"];
             //$tempname = $_FILES["uploadfile"]["tmp_name"];
            // $folder = "./image/" . $filename;
@@ -28,7 +32,7 @@ session_start();
             // Insertion dans DB
             if ($verif->fetchColumn() == 0) {
               
-                    $sql = " INSERT INTO student (nom, Prenom, phone, adresse, email,date_naissance,disponibility,designation,code_profile) VALUES ('$Nom', '$Prenom','$Tel', '$Adresse', '$Email', '$Birthday','$Disponibility','$Designation','$code_profile')";
+                    $sql = " INSERT INTO student (nom, Prenom, phone, adresse, email,date_naissance,disponibility,designation,code_profile,competence) VALUES ('$Nom', '$Prenom','$Tel', '$Adresse', '$Email', '$Birthday','$Disponibility','$Designation','$code_profile','$C')";
                     $conn->exec($sql);
              echo '<script> alert("Le candidat a été ajouté avec succès.");
                    location.replace("addCandidats.php");
@@ -43,8 +47,8 @@ session_start();
             }
         }
    
-        
-        
+   
+   
         
         ?>
 
