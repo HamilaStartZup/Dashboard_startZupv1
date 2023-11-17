@@ -1,80 +1,68 @@
-<?php
+<?php  
+
    // Database Connection
    include '../config.php';
+   $queryEtudiants = "SELECT * FROM student";
+   $stmtEtudiants = $conn->prepare($queryEtudiants);
+   $stmtEtudiants ->execute();
+   $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+ 
 
-   // Reading value
-   $draw = $_POST['draw'];
-   $row = $_POST['start'];
-   $rowperpage = $_POST['length']; // Rows display per page
-   $columnIndex = $_POST['order'][0]['column']; // Column index
-   $columnName = $_POST['columns'][$columnIndex]['data']; // Column name
-   $columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
-   $searchValue = $_POST['search']['value']; // Search value
+?>  
+<!DOCTYPE html>  
+<html>  
+     <head>  
+          <title>Webslesson Tutorial | Datatables Jquery Plugin with Php MySql and Bootstrap</title>  
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
+          <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  
+          <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>            
+          <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />  
+     </head>  
+     <body>  
 
-   $searchArray = array();
+          <div class="container">  
+               <h3 align="center">Datatables Jquery Plugin with Php MySql and Bootstrap</h3>  
+               <br />  
+               <div class="table-responsive">  
+                    <table id="employee_data" class="table table-striped table-bordered">  
+                         <thead>  
+                              <tr>  
+                                   <td>code profile</td>  
+                                   <td>Designation</td>  
+                                   <td>disponibility</td>
+                                   <td>competences</td>  
+                                   <td>more details</td>  
 
-   // Search
-   $searchQuery = " ";
-   if($searchValue != ''){
-      $searchQuery = " AND (code_profile LIKE :code_profile OR 
-           competence LIKE :competence OR
-           designation LIKE :designation OR 
-           disponibility LIKE :disponibility ) ";
-      $searchArray = array( 
-           'code_profile'=>"%$searchValue%",
-           'competence'=>"%$searchValue%",
-           'designation'=>"%$searchValue%",
-           'disponibility'=>"%$searchValue%"
-      );
-   }
+                                 
 
-   // Total number of records without filtering
-   $stmt = $conn->prepare("SELECT COUNT(*) AS allcount FROM student ");
-   $stmt->execute();
-   $records = $stmt->fetch();
-   $totalRecords = $records['allcount'];
-
-   // Total number of records with filtering
-   $stmt = $conn->prepare("SELECT COUNT(*) AS allcount FROM student WHERE 1 ".$searchQuery);
-   $stmt->execute($searchArray);
-   $records = $stmt->fetch();
-   $totalRecordwithFilter = $records['allcount'];
-
-   // Fetch records
-   $stmt = $conn->prepare("SELECT * FROM student WHERE 1 ".$searchQuery." ORDER BY ".$columnName." ".$columnSortOrder." LIMIT :limit,:offset");
-
-   // Bind values
-   foreach ($searchArray as $key=>$search) {
-      $stmt->bindValue(':'.$key, $search,PDO::PARAM_STR);
-   }
-
-   $stmt->bindValue(':limit', (int)$row, PDO::PARAM_INT);
-   $stmt->bindValue(':offset', (int)$rowperpage, PDO::PARAM_INT);
-   $stmt->execute();
-   $empRecords = $stmt->fetchAll();
-
-   $data = array();
-   $Edit ='<form action="./profile.html">
-   <button type="submit"  class="btn btn-link btn-sm btn-rounded">
-     Edit
-   </button>';
-   foreach ($empRecords as $row) {
-      $data[] = array(
-         "code_profile"=> ' <span class="badge badge-primary rounded-pill d-inline"
-         >'.$row['code_profile'].'</span>',
-         "competence"=>'<span class="badge bg-secondary">'.$row['competence'].'</span>',
-         "designation"=>$row['designation'],
-         "disponibility"=>$row['disponibility'],
-         "edit" =>$Edit
-      );
-   }
-
-   // Response
-   $response = array(
-      "draw" => intval($draw),
-      "iTotalRecords" => $totalRecords,
-      "iTotalDisplayRecords" => $totalRecordwithFilter,
-      "aaData" => $data
-   );
-
-   echo json_encode($response);
+                              </tr>  
+                         </thead>  
+                         <?php  
+                     foreach ($etudiants as $row) 
+                         {  
+                              echo '  
+                              <tr>  
+                                   <td>'.$row["code_profile"].'</td>  
+                                   <td>'.$row["designation"].'</td>  
+                                   
+                                   <td>'.$row["disponibility"].'</td>
+                                   <td>competence</td>
+                                   <td><form action="./profile.html">
+                                   <button type="submit"  class="btn btn-link btn-sm btn-rounded">
+                                     Edit
+                                   </button></td>  
+                              </tr>  
+                              ';  
+                         }  
+                         ?>  
+                    </table>  
+               </div>  
+          </div>  
+     </body>  
+</html>  
+<script>  
+$(document).ready(function(){  
+     $('#employee_data').DataTable();  
+});  
+</script>
