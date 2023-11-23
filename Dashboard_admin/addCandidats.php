@@ -7,7 +7,15 @@ session_start();
   if ($_SESSION['status'] != "Admin") {
     header("Location: ../failedAccess.php");
   }
+//conx
+require('../config.php');
+  // requête pour requpere les competences
+  $queryEtudiants = "SELECT * FROM skills";
+  $stmtEtudiants = $conn->prepare($queryEtudiants);
+  $stmtEtudiants ->execute();
+  $Skills = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
 
+ 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -316,10 +324,10 @@ button:hover {
 
           </div>
           <div class="card-body">
-          <form method="POST" action="./Ajouter_candidats_DB.php">
+          <form method="POST" action="./Ajouter_candidats_DB.php" enctype="multipart/form-data">
             <!-- file import --> 
           <div class="form-outline mb-4">
-          <input type="file" class="form-control" id="inputGroupFile02" name="uploadfile"
+          <input type="file" class="form-control" id="inputGroupFile02" name="avatar"
                                         value="">
     
   </div>
@@ -366,12 +374,16 @@ button:hover {
  <!--  competence -->
  <div class="form-outline mb-4">
  <label class="form-label" for="form6Example11">competences</label>
-<select  name="ary[]" id="competences" multiple>
-<option value="javascript">javascript </option>
-    <option value="HTML">html</option>
-    <option value="CSS">css</option>
-    <option value="SQL">sql</option>
-    <option value="PHP">php</option>
+ <select  name="ary[]" id="competences" multiple>
+<?php foreach ($Skills as $row) {
+$r=$row['id'];
+ 
+ echo"<option value='$r'>".$row['nom_skills']."</option>";
+
+  ?>
+<?php }?>
+
+
 </select>
 
   </div>
