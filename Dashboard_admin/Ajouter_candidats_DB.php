@@ -39,9 +39,9 @@ session_start();
                   
    
                    echo'jddjeje'.$resultlastId['id'];
-            // echo '<script> alert("Le candidat a été ajouté avec succès.");
-                   //location.replace("addCandidats.php");
-//</script>';
+            echo '<script> alert("Le candidat a été ajouté avec succès.");
+               location.replace("addCandidats.php");
+</script>';
                      
                   
                 
