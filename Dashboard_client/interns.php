@@ -6,7 +6,7 @@
    $stmtEtudiants = $conn->prepare($queryEtudiants);
    $stmtEtudiants ->execute();
    $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
-  
+
 
 ?> 
 <!DOCTYPE html> 
@@ -334,8 +334,19 @@
                                 } else {
                                    $Disponibility='immédiatement';}
                                    echo'<td><span class="badge bg-success">'.$Disponibility.'</span></td>';
-                                   
-                                  echo' <td><span class="badge bg-warning">'.$row["competence"].'</span></td>';
+                                   //récupérer les compétence de candidat
+                                   $querySkills = "SELECT `nom_skills` FROM `skills` WHERE `id`IN (SELECT `id_skills`FROM `student_skills` WHERE `id_student`=$row[id])";
+                                   $stmtSkills = $conn->prepare($querySkills);
+                                   $stmtSkills ->execute();
+                                   $Skills =  $stmtSkills ->fetchAll(PDO::FETCH_ASSOC);
+                                   echo' <td>';
+                                   foreach($Skills as $x) {
+                                 
+                                  
+                                
+                               echo '<span class="badge bg-warning">'.$x["nom_skills"].'</span>';
+                                } 
+                                echo '</span></td>';
                                   $url="./profile.php?code_profile=".$row["code_profile"];
                                    echo"<td><a  href='$url'> Edit</a>
                                    </td>  
@@ -349,7 +360,7 @@
   </div>
 </div>
 </div>
-</div>
+</div>-->
 
 
 
