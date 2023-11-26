@@ -2,6 +2,7 @@
 
    // Database Connection
    include '../config.php';
+   session_start();
    $queryEtudiants = "SELECT * FROM student where status='active'";
    $stmtEtudiants = $conn->prepare($queryEtudiants);
    $stmtEtudiants ->execute();
@@ -17,7 +18,7 @@
 		user-scalable=0" name="viewport" /> 
 
 	<meta name="viewport" content="width=device-width" /> 
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">    
 	<!--Datatable plugin CSS file -->
 	<link rel="stylesheet" href= 
 "https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" /> 
@@ -221,6 +222,9 @@
           <a class="nav-link" href="./interns.php"> Les stagiaires</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="./listFavorites.php">List des favoris</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="./contact_us.html">Contact</a>
         </li>
       </ul>
@@ -313,9 +317,10 @@
                               <tr>  
                                    <td>code profile</td>  
                                    <td>Designation</td>  
-                                   <td>disponibility</td>
-                                   <td>competences</td>  
-                                   <td>more details</td>  
+                                   <td>Disponibility</td>
+                                   <td>Competences</td>  
+                                   <td>Ajouter favoris</td>  
+                                   <td>Plus de détails</td>  
 
                                  
 
@@ -347,9 +352,24 @@
                                echo '<span class="badge bg-warning">'.$x["nom_skills"].'</span>';
                                 } 
                                 echo '</span></td>';
+                                //TEST Favorites EXIST
+                                $condidatId=$row['id'];
+                                $query= $conn->prepare("SELECT `id_client`,`id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id] AND `id_candidate`=$condidatId");
+                                $query->execute();
+                                $Favorites=$query->fetch();
+                                echo"<td>";
+                                if ($Favorites){
+                                  echo "<form action='./removeFavorites.php' method='POST'><button type='submit'  class='btn btn-secondary' value='$condidatId' name='condidatId'>Retirer de la liste de favoris <span class='bi bi-bookmark'></span></button> </form>";
+                                  }
+                                  else{
+                                
+                                echo" <form action='./addFavorites.php' method='POST'><button type='submit'  class='btn btn-info' value='$condidatId' name='condidatId'>Ajouter  aux favoris <span class='bi bi-bookmark'></span></button></form>
+                                 ";
+                              }
+                              echo"</td> ";
                                   $url="./profile.php?code_profile=".$row["code_profile"];
-                                   echo"<td><a  href='$url'> Edit</a>
-                                   </td>  
+                                   echo"<td> <a  href='$url'><button type='button' class=btn btn-primary'> Edit<span class='bi bi-pencil-square'></span></button>
+                                   </a></td>  
                               </tr>  
                               ";  
                          }  
@@ -360,7 +380,7 @@
   </div>
 </div>
 </div>
-</div>-->
+</div>
 
 
 
