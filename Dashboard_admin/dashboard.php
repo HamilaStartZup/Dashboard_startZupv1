@@ -7,6 +7,27 @@
     header("Location: ../failedAccess.php");
   }
 
+  // Script qui permet d'afficher les étudiants 10 par 10
+  $limit = 10;
+  $page = isset($_GET['page']) ? $_GET['page'] : 1;
+  $start = ($page - 1) * $limit;
+
+  $query = "SELECT * FROM student LIMIT $start, $limit";
+  $stmt = $conn->prepare($query);
+  $stmt->execute();
+  $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  $queryTotal = "SELECT COUNT(*) AS total FROM student";
+  $stmtTotal = $conn->prepare($queryTotal);
+  $stmtTotal->execute();
+
+  $resultTotal = $stmtTotal->fetch(PDO::FETCH_ASSOC);
+  $total = $resultTotal['total'];
+  $pages = ceil($total / $limit);
+
+  $Previous = $page - 1;
+  $Next = $page + 1;
+
   // requête pour compter le nombre total d'étudiants
   $queryTotalCandidates = "SELECT COUNT(*) AS totalCandidates FROM student";
   $TotalEtudiants = $conn->prepare($queryTotalCandidates);
@@ -18,7 +39,7 @@
   $queryEtudiants = "SELECT * FROM student";
   $stmtEtudiants = $conn->prepare($queryEtudiants);
   $stmtEtudiants ->execute();
-  $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+  // $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
 
   $etuActif = array_filter($etudiants, function($etudiant) { // on filtre le tableau pour ne garder que les étudiants actifs
     return $etudiant['status'] === "active";
@@ -86,6 +107,15 @@
         padding-top: 0.5rem;
         overflow-x: hidden;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    }
+    .pagination{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .pagination a{
+        margin: 0 0.5rem;
     }
   </style>
 </head>
@@ -310,6 +340,12 @@
                             ?>
                             </tbody>
                         </table>
+                        <!-- Ajout des boutons de navigation -->
+                        <div class="pagination">
+                            <?php for ($i = 1; $i <= $pages; $i++): ?>
+                                <a href="dashboard.php?page=<?php echo $i; ?>" class="btn btn-info"><?php echo $i; ?></a>
+                            <?php endfor; ?>
+                        </div>
                     </div>
                 </div>
             </div>
