@@ -8,6 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      $Email = $_POST['emailClient'];
      $Designation = $_POST['descriptionClient'];
      $Comment = $_POST['comentaireClient'];
+     $Password = $_POST['passwordClient']; 
+     $HashPass = password_hash($Password, PASSWORD_DEFAULT);
 
 
      // Verification de la présence dans la DB avec l'email
@@ -18,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      // Insertion dans DB
      if ($verif->fetchColumn() == 0) {
 
-          $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`) VALUES ('$Email','$Nom','$Designation','$Comment','Client')";
+          $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`) VALUES ('$Email','$Nom','$Designation','$Comment','Client', '$HashPass')";
           $conn->exec($sql);
           echo '<script> alert("Le client a été enregistré avec succès.");
                    location.replace("add_client_admin.php");
