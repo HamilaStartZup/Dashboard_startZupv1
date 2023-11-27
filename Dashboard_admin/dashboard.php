@@ -8,7 +8,7 @@
   }
 
   // Script qui permet d'afficher les étudiants 10 par 10
-  $limit = 10;
+  $limit = 8;
   $page = isset($_GET['page']) ? $_GET['page'] : 1;
   $start = ($page - 1) * $limit;
 
