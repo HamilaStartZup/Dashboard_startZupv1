@@ -17,6 +17,17 @@ $result = $query->fetch();
 <html lang="en">
 
 <head>
+     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+
+    <!-- Material Dashboard CSS -->
+    <link rel="stylesheet" href="assets/css/material-dashboard?v=2.1.2.css">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
@@ -98,6 +109,37 @@ $result = $query->fetch();
       color: inherit;
       text-decoration: none;
     }
+
+    ul.timeline-3 {
+  list-style-type: none;
+  position: relative;
+}
+ul.timeline-3:before {
+  content: " ";
+  background: #d4d9df;
+  display: inline-block;
+  position: absolute;
+  left: 29px;
+  width: 2px;
+  height: 100%;
+  z-index: 400;
+}
+ul.timeline-3 > li {
+  margin: 20px 0;
+  padding-left: 20px;
+}
+ul.timeline-3 > li:before {
+  content: " ";
+  background: white;
+  display: inline-block;
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid #22c0e8;
+  left: 20px;
+  width: 20px;
+  height: 20px;
+  z-index: 400;
+}
   </style>
 
 </head>
@@ -209,30 +251,18 @@ $result = $query->fetch();
                 </div>
               </div>
             </div>
-            <div class="card mb-4 mb-lg-0">
-              <div class="card-body p-0">
-                <ul class="list-group list-group-flush rounded-3">
-                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i class="fas fa-globe fa-lg text-warning"></i>
-                    <p class="mb-0">https://mdbootstrap.com</p>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i class="fab fa-github fa-lg" style="color: #333333;"></i>
-                    <p class="mb-0">mdbootstrap</p>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
-                    <p class="mb-0">@mdbootstrap</p>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
-                    <p class="mb-0">mdbootstrap</p>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
-                    <p class="mb-0">mdbootstrap</p>
-                  </li>
-                </ul>
+            <div class="card mb-4 ">
+            <div class="shadow-lg p-3 mb-5 bg-body  rounded"><p class="text-muted"><b>PROFIL</b></p></div>
+              <div class="card-body ">
+               
+              <P>  <?php echo $result['description'] ?></P>
+              </div>
+            </div>
+            <div class="card mb-4 ">
+            <div class="shadow-lg p-3 mb-5 bg-body  rounded"><p class="text-muted"><b>PROFIL</b></p></div>
+              <div class="card-body ">
+               
+              <P>  <?php echo $result['description'] ?></P>
               </div>
             </div>
           </div>
@@ -282,7 +312,7 @@ $result = $query->fetch();
               <div class="col-md-6">
                 <div class="card mb-4 mb-md-0">
                   <div class="card-body">
-                    <p class="mb-4"><span class="text-primary font-italic me-1"> <img src="../images/competence.png" alt="competences" style="width: 100px;"></span> COMPÉTENCES</p>
+                    <p class="mb-4"><span class="text-primary font-italic me-1"> <img src="../images/competence.png" alt="competences" style="width: 100px;"></span> COMPÉTENCES </p>
                     </p>
                     <?php 
                     //récupération des compétences du candidat 
@@ -320,7 +350,60 @@ $result = $query->fetch();
                 </div>
 
               </div>
+           
             </div>
+              <!-- end time line -->
+            <div class="row" style='margin-top: 5%;'>
+                <!-- parcours de formation -->
+             
+              <div class="card">
+  <div class="card-body">
+  <div class="container my-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h4 style="margin-left: 1.2rem;">Latest News</h4>
+      <ul class="timeline-3">
+        <li>
+          <a href="#!">New Web Design</a>
+          <a href="#!" class="float-end">21 March, 2014</a>
+          <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque scelerisque diam
+            non nisi semper, et elementum lorem ornare. Maecenas placerat facilisis mollis. Duis sagittis
+            ligula in sodales vehicula....</p>
+        </li>
+        <li>
+          <a href="#!">21 000 Job Seekers</a>
+          <a href="#!" class="float-end">4 March, 2014</a>
+          <p class="mt-2">Curabitur purus sem, malesuada eu luctus eget, suscipit sed turpis. Nam pellentesque
+            felis vitae justo accumsan, sed semper nisi sollicitudin...</p>
+        </li>
+        <li>
+          <a href="#!">Awesome Employers</a>
+          <a href="#!" class="float-end">1 April, 2014</a>
+          <p class="mt-2">Fusce ullamcorper ligula sit amet quam accumsan aliquet. Sed nulla odio, tincidunt
+            vitae nunc vitae, mollis pharetra velit. Sed nec tempor nibh...</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+           
+            </div>
+            <!-- end time line -->
+
+             <!--CENTRES D'INTERET-->
+             <div class="row" style='margin-top: 5%;'>
+             <div class="card">
+  <h5 class="card-header">CENTRES D'INTERET</h5>
+  <div class="card-body">
+    <h5 class="card-title">Special title treatment</h5>
+    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    <a href="#" class="btn btn-primary" data-mdb-ripple-init>Go somewhere</a>
+  </div>
+</div>
+             </div>
+             <!-- end CENTRES D'INTERET-->
           </div>
         </div>
         </section>
