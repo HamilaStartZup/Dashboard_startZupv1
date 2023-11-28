@@ -27,7 +27,7 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
         } else {
             echo "<script >
             window.alert('email ou mot de passe incorrect');
-            // window.location.href='index.php';
+            window.location.href='index.php';
             </script>";
         }
     }
