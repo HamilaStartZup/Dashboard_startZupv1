@@ -258,13 +258,37 @@ ul.timeline-3 > li:before {
               <P>  <?php echo $result['description'] ?></P>
               </div>
             </div>
+            <!--langues-->
             <div class="card mb-4 ">
-            <div class="shadow-lg p-3 mb-5 bg-body  rounded"><p class="text-muted"><b>PROFIL</b></p></div>
+            <div class="shadow-lg p-3 mb-5 bg-body  rounded"><p class="text-muted"><b>LANGUES</b></p></div>
               <div class="card-body ">
+              <ul>
+                
+             <?php 
+             //get list of  Languages
+             $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `language` WHERE `id_student`=101) as L ON languages.id=L.id_language;";
+                    $stmtLanguages = $conn->prepare($queryLanguages);
+                    $stmtLanguages->execute();
+                    $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($Languages as $Language) {
+                     echo" <li class='list-group-item d-flex justify-content-between align-items-center'>
+                      <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
+                      <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
+                    
+                    
+                      </li> <br>";
+
+                    }
+                    ?>
+             
+
+</ul>
+
                
-              <P>  <?php echo $result['description'] ?></P>
+              <P>  </P>
               </div>
             </div>
+            <!--langues end-->
           </div>
           <div class="col-lg-8">
             <div class="card mb-4">
@@ -316,7 +340,7 @@ ul.timeline-3 > li:before {
                     </p>
                     <?php 
                     //récupération des compétences du candidat 
-                    $querySkills = "SELECT * FROM `skills` RIGHT JOIN (SELECT `value_skills`,`id_skills` FROM `student_skills` WHERE `id_student`= $result[id]) as t ON skills.id=t.id_skills;   ";
+                    $querySkills = "SELECT * FROM `skills` INNER JOIN (SELECT `value_skills`,`id_skills` FROM `student_skills` WHERE `id_student`= $result[id]) as t ON skills.id=t.id_skills;   ";
                     $stmtSkills = $conn->prepare($querySkills);
                     $stmtSkills->execute();
                     $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
