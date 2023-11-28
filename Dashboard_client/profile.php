@@ -145,6 +145,9 @@ if(!isset($_SESSION['email'])){
           <a class="nav-link" href="./interns.php"> Les stagiaires</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="./listFavorites.php">List des favoris</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="./contact_us.html">Contact</a>
         </li>
       </ul>
@@ -227,9 +230,9 @@ if(!isset($_SESSION['email'])){
             <div class="col-lg-4">
               <div class="card mb-4">
                 <div class="card-body text-center">
-                  <img src="https://img.freepik.com/photos-gratuite/icone-profil-utilisateur-recto_187299-39596.jpg?w=826&t=st=1700233197~exp=1700233797~hmac=ecf017b3fc31a8df3b9f1610d6b32041d2d9f7610b1d33ab8664b0e0ec680208" alt="avatar"
-                    class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3">Etudiant <?php echo $result['code_profile'] ?></h5>
+                  <img src="../images/competence (1).png" alt="avatar"
+                 style="width: 250px;">
+                  <h5 class="my-3">Etudiant : <?php echo $result['code_profile'] ?></h5>
                   <p class="text-muted mb-1"><?php echo $result['designation'] ?></p>
                   <p class="text-muted mb-4"><b>LOCATION A RAJOUTER EN BDD</b></p>
                   <div class="d-flex justify-content-center mb-2">
@@ -280,37 +283,30 @@ if(!isset($_SESSION['email'])){
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Email</p>
+                      <p class="mb-0">Véhiculé</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Indisponible</p>
+                      <p class="text-muted mb-0"><?php echo $result['Vehicule'] ?></p>
+                    </div>
+                  </div>
+                
+
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Disponibilité</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"> <?php echo $result['disponibility'] ?><b></b></p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Téléphone</p>
+                      <p class="mb-0">Mobilité</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Indisponible</p>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Mobile</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0">Indisponible</p>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Addresse</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"><b>LOCATION A RAJOUTER EN BDD</b></p>
+                      <p class="text-muted mb-0"><b></b></p>
                     </div>
                   </div>
                 </div>
@@ -319,7 +315,8 @@ if(!isset($_SESSION['email'])){
                 <div class="col-md-6">
                   <div class="card mb-4 mb-md-0">
                     <div class="card-body">
-                      <p class="mb-4"><span class="text-primary font-italic me-1">Statut</span> des project afféctés</p>
+                      <p class="mb-4"><span class="text-primary font-italic me-1">  <img src="../images/competence.png" alt="competences"
+                     style="width: 100px;"></span> COMPÉTENCES</p>
                       </p>
                       <p class="mb-1" style="font-size: .77rem;">Web Design</p>
                       <div class="progress rounded" style="height: 5px;">
