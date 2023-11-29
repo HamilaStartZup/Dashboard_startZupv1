@@ -487,19 +487,19 @@ ul.timeline-3 > li:before {
       var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject);
       window.location.href = mailtoLink;
     }
-    // var docPDF = new jsPDF();
+    var docPDF = new jsPDF();
 
-    // function downloadPDF() {
-    //   var elementHTML = document.getElementById("Profile");
+    function downloadPDF() {
+      var elementHTML = document.getElementById("Profile");
 
-    //   html2canvas(elementHTML).then(function (canvas) {
-    //     var imgData = canvas.toDataURL('image/png');
-    //     docPDF.addImage(imgData, 'PNG', 15, 15, 180, 180);
+     html2canvas(elementHTML).then(function (canvas) {
+     var imgData = canvas.toDataURL('image/png');
+     docPDF.addImage(imgData, 'PNG', 15, 15, 180, 180);
 
-    //     // Sauvegarder le fichier PDF
-    //     docPDF.save('profil_<?php echo $result['code_profile'] ?>.pdf');
-    //   });
-    // }
+    //  Sauvegarder le fichier PDF
+     docPDF.save('profil_<?php echo $result['code_profile'] ?>.pdf');
+     });
+  }
 
 
     //bar
