@@ -16,9 +16,17 @@
   $stmtEtudiant ->execute();
   $etudiant = $stmtEtudiant ->fetchAll(PDO::FETCH_ASSOC);
 
-  //profile 
-   $Profile =$etudiant[0];
+//profile 
+  $Profile =$etudiant[0];
 
+// requête pour récupérer les mobilité
+  $queryMobility = "SELECT * FROM villes_france_free 
+  INNER JOIN student_mobility ON villes_france_free.ville_id = student_mobility.ville_id
+  INNER JOIN student ON student_mobility.student_id = student.id
+  WHERE student_id=$_GET[id]";
+  $stmtMobility = $conn->prepare($queryMobility);
+  $stmtMobility ->execute();
+  $mobility = $stmtMobility ->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -290,6 +298,23 @@
                     </div>
                     <div class="col-sm-9">
                       <p class="text-muted mb-0"> <?php echo "$Profile[adresse]";?> </p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Mobilité</p>
+                    </div>
+                    <div class="col-sm-9">
+                    <?php
+                      foreach ($mobility as $key => $value) {
+                        echo "<div class='col-sm-9' style='display: flex;'>";
+                        echo "<p class='text-muted mb-0'> $value[ville_code_postal] </p>";
+                        echo "<span> - </span>";
+                        echo "<p class='text-muted mb-0'> $value[ville_nom_reel] </p>";
+                        echo "</div>";
+                      }
+                      ?>
                     </div>
                   </div>
                 </div>
