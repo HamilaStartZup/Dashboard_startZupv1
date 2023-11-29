@@ -56,7 +56,7 @@ $result = $query->fetch();
         padding-left: 240px;
       }
     }
-
+   
     /* Sidebar */
     .sidebar {
       position: fixed;
@@ -266,7 +266,7 @@ ul.timeline-3 > li:before {
                 
              <?php 
              //get list of  Languages
-             $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `language` WHERE `id_student`=101) as L ON languages.id=L.id_language;";
+             $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `language` WHERE `id_student`=$result[id]) as L ON languages.id=L.id_language;";
                     $stmtLanguages = $conn->prepare($queryLanguages);
                     $stmtLanguages->execute();
                     $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
@@ -327,7 +327,21 @@ ul.timeline-3 > li:before {
                     <p class="mb-0">Mobilité</p>
                   </div>
                   <div class="col-sm-9">
-                    <p class="text-muted mb-0"><b></b></p>
+                  <?php
+      // recuperation mobilite 
+          $queryMobility = "SELECT * FROM `villes_france_free` RIGHT JOIN (SELECT * FROM `student_mobility` WHERE `student_id`=113) as mo ON mo.id=villes_france_free.ville_id";
+          $stmtMobility = $conn->prepare($queryMobility);
+          $stmtMobility->execute();
+          $Mobility =  $stmtMobility->fetchAll(PDO::FETCH_ASSOC);
+
+          foreach ($Mobility as $ville) {
+            echo "                  <label class='form-label' for='textAreaExample'><b>$ville[ville_code_postal]</b>_$ville[ville_nom]</label>  <span>&ensp;</span>; <span>&ensp;</span>";
+          }
+       ?>
+                  
+
+
+                    
                   </div>
                 </div>
               </div>
@@ -336,11 +350,11 @@ ul.timeline-3 > li:before {
               <div class="col-md-6">
                 <div class="card mb-4 mb-md-0">
                   <div class="card-body">
-                    <p class="mb-4"><span class="text-primary font-italic me-1"> <img src="../images/competence.png" alt="competences" style="width: 100px;"></span> COMPÉTENCES </p>
+                    <p class="mb-4"><b> COMPÉTENCES & LOGICIELS </b> </p>
                     </p>
                     <?php 
                     //récupération des compétences du candidat 
-                    $querySkills = "SELECT * FROM `skills` INNER JOIN (SELECT `value_skills`,`id_skills` FROM `student_skills` WHERE `id_student`= $result[id]) as t ON skills.id=t.id_skills;   ";
+                    $querySkills = "SELECT * FROM `skills` RIGHT JOIN (SELECT `value_skills`,`id_skills` FROM `student_skills` WHERE `id_student`= $result[id]) as t ON skills.id=t.id_skills;   ";
                     $stmtSkills = $conn->prepare($querySkills);
                     $stmtSkills->execute();
                     $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
@@ -348,12 +362,13 @@ ul.timeline-3 > li:before {
                     foreach ($Skills as $x) {
                       $skill = $x["nom_skills"];
                       $valueSkill = $x["value_skills"];
+                      if( $valueSkill!=0){
                       echo "<p class='mb-1' style='font-size: .77rem;'>$skill</p>
    
     <div class='progress   rounded'  style='height: 25px;'>
     <div class='progress-bar' role='progressbar' style='width:$valueSkill%;' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>$valueSkill%</div>
  
-    </div>";
+    </div>";}
                     }
                     ?>
 
@@ -366,10 +381,24 @@ ul.timeline-3 > li:before {
                 <div class="card mb-4 mb-md-0">
                   <h5 class="card-header shadow-inner">Compétences générales</h5>
                   <div class="card-body">
-                    <canvas id="barChart"></canvas>
-                    <!-- <h5 class="card-header shadow-inner">Featured</h5>
-                     
-                      <canvas id="doughnutChart1"></canvas>-->
+                  <ul>
+      <?php
+      // recuperation CENTRES D'INTERET
+          $querySkills = "SELECT * FROM `soft_skills` RIGHT JOIN (SELECT * FROM `student_soft_skills` WHERE `student_id`=113) as SF ON soft_skills.id=SF.soft_skills_id;";
+          $stmtSkills = $conn->prepare($querySkills);
+          $stmtSkills->execute();
+          $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
+
+          foreach ($Skills as $Skill) {
+            echo " <li>
+            <p class='card-text'>$Skill[soft_skills_name]</p>
+            </li>";
+          }
+       ?>
+   
+
+    </ul>
+                
                   </div>
                 </div>
 
@@ -385,27 +414,26 @@ ul.timeline-3 > li:before {
   <div class="container my-5">
   <div class="row">
     <div class="col-md-6 offset-md-3">
-      <h4 style="margin-left: 1.2rem;">Latest News</h4>
+      <h4 style="margin-left: 1.2rem;">FORMATION</h4>
       <ul class="timeline-3">
-        <li>
-          <a href="#!">New Web Design</a>
-          <a href="#!" class="float-end">21 March, 2014</a>
-          <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque scelerisque diam
-            non nisi semper, et elementum lorem ornare. Maecenas placerat facilisis mollis. Duis sagittis
-            ligula in sodales vehicula....</p>
-        </li>
-        <li>
-          <a href="#!">21 000 Job Seekers</a>
-          <a href="#!" class="float-end">4 March, 2014</a>
-          <p class="mt-2">Curabitur purus sem, malesuada eu luctus eget, suscipit sed turpis. Nam pellentesque
-            felis vitae justo accumsan, sed semper nisi sollicitudin...</p>
-        </li>
-        <li>
-          <a href="#!">Awesome Employers</a>
-          <a href="#!" class="float-end">1 April, 2014</a>
-          <p class="mt-2">Fusce ullamcorper ligula sit amet quam accumsan aliquet. Sed nulla odio, tincidunt
-            vitae nunc vitae, mollis pharetra velit. Sed nec tempor nibh...</p>
-        </li>
+     <?php $queryFormations = "SELECT * FROM `formation` RIGHT JOIN (SELECT * FROM `student_formation` WHERE `student_id`=113) as F ON formation.id=F.formation_id ORDER BY `F`.`start_date` DESC";
+          $stmtFormations = $conn->prepare($queryFormations);
+          $stmtFormations->execute();
+          $Formations =  $stmtFormations->fetchAll(PDO::FETCH_ASSOC);
+
+          foreach ($Formations as $Formation) {
+           echo" <li>
+            <a href='#!'>$Formation[nom_formation]</a><br>
+            <a href='#!' class='float-end'>$Formation[start_date], $Formation[end_date]</a><br>
+            <p class='mt-2'>$Formation[description]</p>
+          </li>";
+
+          } ?>
+
+      
+     
+      
+  
       </ul>
     </div>
   </div>
@@ -421,9 +449,24 @@ ul.timeline-3 > li:before {
              <div class="card">
   <h5 class="card-header">CENTRES D'INTERET</h5>
   <div class="card-body">
-    <h5 class="card-title">Special title treatment</h5>
-    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    <a href="#" class="btn btn-primary" data-mdb-ripple-init>Go somewhere</a>
+    <ul>
+      <?php
+      // recuperation CENTRES D'INTERET
+          $queryHobbies = "SELECT * FROM `hobbies` WHERE `id_student`=$result[id]";
+          $stmtHobbies = $conn->prepare($queryHobbies);
+          $stmtHobbies->execute();
+          $Hobbies =  $stmtHobbies->fetchAll(PDO::FETCH_ASSOC);
+
+          foreach ($Hobbies as $Hobbie) {
+            echo " <li>
+            <p class='card-text'>$Hobbie[hobbies_name]</p>
+            </li>";
+          }
+       ?>
+   
+
+    </ul>
+
   </div>
 </div>
              </div>
@@ -460,35 +503,8 @@ ul.timeline-3 > li:before {
 
 
     //bar
-    var ctxB = document.getElementById("barChart").getContext('2d');
-    var myBarChart = new Chart(ctxB, {
-      type: 'bar',
-      data: {
-        labels: ["communication", "apprentissage"],
-        datasets: [{
-          label: '# compétences générales',
-          data: [10, 90, 100],
-          backgroundColor: [
-            'rgba(25, 255, 255)',
-            'rgba(54, 162, 235)',
-            'rgba(255, 206, 86)',
-            'rgba(75, 192, 192)',
-
-          ],
-
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
-        }
-      }
-    });
+   
+     
   </script>
   <script>
     window.jsPDF = window.jspdf.jsPDF;
