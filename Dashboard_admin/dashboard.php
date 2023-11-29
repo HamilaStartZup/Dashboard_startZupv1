@@ -7,6 +7,27 @@
     header("Location: ../failedAccess.php");
   }
 
+  // Script qui permet d'afficher les étudiants 8 par 8
+  $limit = 8;
+  $page = isset($_GET['page']) ? $_GET['page'] : 1;
+  $start = ($page - 1) * $limit;
+
+  $query = "SELECT * FROM student LIMIT $start, $limit";
+  $stmt = $conn->prepare($query);
+  $stmt->execute();
+  $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  $queryTotal = "SELECT COUNT(*) AS total FROM student";
+  $stmtTotal = $conn->prepare($queryTotal);
+  $stmtTotal->execute();
+
+  $resultTotal = $stmtTotal->fetch(PDO::FETCH_ASSOC);
+  $total = $resultTotal['total'];
+  $pages = ceil($total / $limit);
+
+  $Previous = $page - 1;
+  $Next = $page + 1;
+
   // requête pour compter le nombre total d'étudiants
   $queryTotalCandidates = "SELECT COUNT(*) AS totalCandidates FROM student";
   $TotalEtudiants = $conn->prepare($queryTotalCandidates);
@@ -18,7 +39,7 @@
   $queryEtudiants = "SELECT * FROM student";
   $stmtEtudiants = $conn->prepare($queryEtudiants);
   $stmtEtudiants ->execute();
-  $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+  // $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
 
   $etuActif = array_filter($etudiants, function($etudiant) { // on filtre le tableau pour ne garder que les étudiants actifs
     return $etudiant['status'] === "active";
@@ -87,6 +108,15 @@
         overflow-x: hidden;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
     }
+    .pagination{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .pagination a{
+        margin: 0 0.5rem;
+    }
   </style>
 </head>
 
@@ -94,80 +124,77 @@
 <!-- Main Navigation -->
 <header>
     <!-- Sidebar -->
-    <nav
-    id="sidebarMenu"
-    class="collapse d-lg-block sidebar collapse bg-white"
-    >
- <div class="position-sticky">
-   <div class="list-group list-group-flush mx-3 mt-4">
-     <a
-        href="./dashboard.php"
-        class="list-group-item list-group-item-action py-2 ripple active "
-        aria-current="true"
+<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+  <div class="position-sticky">
+    <div class="list-group list-group-flush mx-3 mt-4">
+      <a
+          href="./dashboard.php"
+          class="list-group-item list-group-item-action py-2 ripple active "
+          aria-current="true"
+          >
+        <i class="fas fa-tachometer-alt fa-fw me-3"></i
+          ><span>Main dashboard</span>
+      </a>
+      <a
+          href="./addCandidats.php"
+          class="list-group-item list-group-item-action py-2 ripple "
+        
+          >
+        <i class="fas fa-user-graduate me-3"></i
+          ><span>Ajouter des candidats</span>
+      </a>
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a
         >
-       <i class="fas fa-tachometer-alt fa-fw me-3"></i
-         ><span>Main dashboard</span>
-     </a>
-     <a
-        href="./addCandidats.php"
-        class="list-group-item list-group-item-action py-2 ripple "
-       
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-line fa-fw me-3"></i
+        ><span>Analytics</span></a
         >
-       <i class="fas fa-user-graduate me-3"></i
-         ><span>Ajouter des candidats</span>
-     </a>
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a
-       >
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-chart-line fa-fw me-3"></i
-       ><span>Analytics</span></a
-       >
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          >
+        <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
+      </a>
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
         >
-       <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
-     </a>
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
-       >
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-globe fa-fw me-3"></i
-       ><span>International</span></a
-       >
-       <a
-        href="listeAppels.php"
-        class="list-group-item list-group-item-action py-2 ripple ripple s"
-        ><i class="fa-sharp fa-solid fa-list me-3"></i>
-        <span>Liste d'appels</span></a
-       >
-     <a
-        href="./presence.php"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-calendar fa-fw me-3"></i
-       ><span>Présence</span></a
-       >
-     <a
-        href="./add_client_admin.php"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a
-       >
-     <a
-     href="../logout.php"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
-       >
-   </div>
- </div>
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-globe fa-fw me-3"></i
+        ><span>International</span></a
+        >
+        <a
+          href="listeAppels.php"
+          class="list-group-item list-group-item-action py-2 ripple ripple s"
+          ><i class="fa-sharp fa-solid fa-list me-3"></i>
+          <span>Liste d'appels</span></a
+        >
+      <a
+          href="./presence.php"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-calendar fa-fw me-3"></i
+        ><span>Présence</span></a
+        >
+      <a
+          href="./add_client_admin.php"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a
+        >
+      <a
+      href="../logout.php"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
+        >
+    </div>
+  </div>
 </nav>
     <!-- Sidebar -->
 
@@ -258,7 +285,7 @@
             <div class="card">
                 <div class="card-header text-center py-3">
                     <h5 class="mb-0 text-center">
-                        <strong>List candidat</strong>
+                        <strong>Liste candidat</strong>
                     </h5>
                 </div>
                 <div class="card-body">
@@ -310,6 +337,12 @@
                             ?>
                             </tbody>
                         </table>
+                        <!-- Ajout des boutons de navigation -->
+                        <div class="pagination">
+                            <?php for ($i = 1; $i <= $pages; $i++): ?>
+                                <a href="dashboard.php?page=<?php echo $i; ?>" class="btn btn-info"><?php echo $i; ?></a>
+                            <?php endfor; ?>
+                        </div>
                     </div>
                 </div>
             </div>

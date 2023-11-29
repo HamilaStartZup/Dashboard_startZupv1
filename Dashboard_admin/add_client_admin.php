@@ -15,9 +15,6 @@
   $stmtUsers ->execute();
   $Users = $stmtUsers ->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -202,32 +199,50 @@
                         <strong>List Users</strong>
                     </h5>
                     <div class="input-group">
-  <div class="form-outline">
-    <input type="search" id="form1" class="form-control" />
-    <label class="form-label" for="form1">Search</label>
-  </div>
-  <button type="button" class="btn btn-primary">
-    <i class="fas fa-search"></i>
-  </button>
-</div>
-
-                </div>
-                <div class="card-body">
+                      <div class="form-outline">
+                        <form method="get" action="" class="d-none d-md-flex input-group w-auto my-auto form-outline">
+                          <input type="search" id="searchProfil" name="searchProfil" class="form-control" />
+                          <label class="form-label" for="searchProfil">Search</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </form>
+                    </div>
+                    
+                  </div>
+                  <div class="card-body">
                     
                     <div class="table-responsive">
-                        <table class="table align-middle mb-0 bg-white">
-                            <thead class="bg-light">
-                            <tr>
-                                <th>Name</th>
-                                <th>description</th>
-                                <th>Status</th>
-                                <th>commentaire</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php
-                              foreach ($Users as $user) {
+                      <table class="table align-middle mb-0 bg-white">
+                        <thead class="bg-light">
+                          <tr>
+                            <th>Name</th>
+                            <th>description</th>
+                            <th>Status</th>
+                            <th>commentaire</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php
+                              $UsersSearch = array(); 
+
+                              if (isset($_GET['searchProfil']) && !empty($_GET['searchProfil'])) {
+                                $searchProfil = $_GET['searchProfil'];
+                                $queryUsers = "SELECT * FROM users WHERE firstname LIKE '$searchProfil' OR lastname LIKE '$searchProfil' OR Email LIKE '$searchProfil'";
+                                $stmtUsers = $conn->prepare($queryUsers);
+                                $stmtUsers->bindParam(':searchProfil', $searchProfil, PDO::PARAM_STR);
+                                $stmtUsers->execute();
+                                $UsersSearch = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+                              } else {
+                                $queryUsers = "SELECT * FROM users";
+                                $stmtUsers = $conn->prepare($queryUsers);
+                                $stmtUsers->execute();
+                                $UsersSearch = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+                              }
+                            
+                                foreach ($UsersSearch as $user) {
                                   echo "<tr>";
                                   echo "<td>";
                                   echo "<div class='d-flex align-items-center'>";
@@ -250,14 +265,14 @@
                                   echo "</td>";
                                   echo "<td> $user[comment]</td>";
                                   echo "<td>";
-                                $url="./profile.php?id=$user[id]";
+                                  $url="./profile.php?id=$user[id]";
                                 
                                   echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Modifier</a>";
 
                                   
                                   echo "</td>";
                                   echo "</tr>";
-                              }
+                                }
                             ?>
                             </tbody>
                         </table>
