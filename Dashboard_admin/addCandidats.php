@@ -21,161 +21,161 @@ require('../config.php');
 <html lang="en">
 <meta charset="UTF-8">
 <head>
-<!-- Font Awesome -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
-/>
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-  rel="stylesheet"
-/>
+  <!-- Font Awesome -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    rel="stylesheet"
+  />
 
 
-<!-- MDB -->
-<link
-href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css"
-rel="stylesheet"
-/>
-<!-- MDB -->
-<script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"
-></script>
-<style>
-    body {
-  background-color: #fbfbfb;
-}
-@media (min-width: 991.98px) {
-  main {
-    padding-left: 240px;
+  <!-- MDB -->
+  <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css"
+  rel="stylesheet"
+  />
+  <!-- MDB -->
+  <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"
+  ></script>
+  <style>
+      body {
+    background-color: #fbfbfb;
   }
-}
+  @media (min-width: 991.98px) {
+    main {
+      padding-left: 240px;
+    }
+  }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  padding: 58px 0 0; /* Height of navbar */
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
-  width: 240px;
-  z-index: 600;
-}
-
-@media (max-width: 991.98px) {
+  /* Sidebar */
   .sidebar {
-    width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 58px 0 0; /* Height of navbar */
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+    width: 240px;
+    z-index: 600;
   }
-}
-.sidebar .active {
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
-}
 
-.sidebar-sticky {
-  position: relative;
-  top: 0;
-  height: calc(100vh - 48px);
-  padding-top: 0.5rem;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-}
-* {
-  box-sizing: border-box;
-}
+  @media (max-width: 991.98px) {
+    .sidebar {
+      width: 100%;
+    }
+  }
+  .sidebar .active {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  }
+
+  .sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  }
+  * {
+    box-sizing: border-box;
+  }
 
 
 
 
-h1 {
-  text-align: center;  
-}
+  h1 {
+    text-align: center;  
+  }
 
-input {
-  padding: 10px;
-  width: 100%;
-  font-size: 17px;
-  font-family: Raleway;
-  border: 1px solid #aaaaaa;
-}
+  input {
+    padding: 10px;
+    width: 100%;
+    font-size: 17px;
+    font-family: Raleway;
+    border: 1px solid #aaaaaa;
+  }
 
-/* Mark input boxes that gets an error on validation: */
-input.invalid {
-  background-color: #04AA6D;
-}
+  /* Mark input boxes that gets an error on validation: */
+  input.invalid {
+    background-color: #04AA6D;
+  }
 
-/* Hide all steps by default: */
-.tab {
-  display: none;
-}
+  /* Hide all steps by default: */
+  .tab {
+    display: none;
+  }
 
-button {
-  background-color: #04AA6D;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 17px;
-  font-family: Raleway;
-  cursor: pointer;
-}
+  button {
+    background-color: #04AA6D;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 17px;
+    font-family: Raleway;
+    cursor: pointer;
+  }
 
-button:hover {
-  opacity: 0.8;
-}
+  button:hover {
+    opacity: 0.8;
+  }
 
-#prevBtn {
-  background-color: #bbbbbb;
-}
+  #prevBtn {
+    background-color: #bbbbbb;
+  }
 
-/* Make circles that indicate the steps of the form: */
-.step {
-  height: 15px;
-  width: 15px;
-  margin: 0 2px;
-  background-color: #bbbbbb;
-  border: none;  
-  border-radius: 50%;
-  display: inline-block;
-  opacity: 0.5;
-}
+  /* Make circles that indicate the steps of the form: */
+  .step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbbbbb;
+    border: none;  
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+  }
 
-.step.active {
-  opacity: 1;
-}
+  .step.active {
+    opacity: 1;
+  }
 
-/* Mark the steps that are finished and valid: */
-.step.finish {
-  background-color: #04AA6D;
-}
-.select2-selection__choice{
-  background-color: var(--bs-gray-200);
-  border: none !important;
-  font-size: 12px;
-  font-size: 0.85rem !important;
-}
-</style>
-<!-- Font Awesome -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
-/>
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-  rel="stylesheet"
-/>
-<!-- MDB -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css"
-  rel="stylesheet"
-/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
-<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.0/dist/js/multi-select-tag.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  /* Mark the steps that are finished and valid: */
+  .step.finish {
+    background-color: #04AA6D;
+  }
+  .select2-selection__choice{
+    background-color: var(--bs-gray-200);
+    border: none !important;
+    font-size: 12px;
+    font-size: 0.85rem !important;
+  }
+  </style>
+  <!-- Font Awesome -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- MDB -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
+  <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.0/dist/js/multi-select-tag.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 
 
@@ -327,8 +327,7 @@ button:hover {
           <form method="POST" action="./Ajouter_candidats_DB.php" enctype="multipart/form-data">
             <!-- file import --> 
           <div class="form-outline mb-4">
-          <input type="file" class="form-control" id="inputGroupFile02" name="avatar"
-                                        value="">
+          <input type="file" class="form-control" id="avatar" name="avatar" value="">
     
   </div>
   <!-- 2 column grid layout with text inputs for the first and last names -->
@@ -336,13 +335,13 @@ button:hover {
     <div class="col">
  
       <div class="form-outline">
-        <input type="text" id="Nom" class="form-control" name="Nom" />
+        <input type="text" id="Nom" class="form-control" name="Nom" required/>
         <label class="form-label" for="form6Example1">Nom</label>
       </div>
     </div>
     <div class="col">
       <div class="form-outline">
-        <input type="text" id="Prenom" class="form-control" name="Prenom" />
+        <input type="text" id="Prenom" class="form-control" name="Prenom" required/>
         <label class="form-label" for="form6Example2">Prénom</label>
       </div>
     </div>
@@ -350,61 +349,74 @@ button:hover {
 
   <!-- Text input -->
   <div class="form-outline mb-4">
-  <input type="date" id="birthday"  class="form-control" name="birthday">
+  <input type="date" id="birthday"  class="form-control" name="birthday" required>
     <label class="form-label" for="form6Example3">Date de naissance</label>
   </div>
 
   <!-- Text input -->
   <div class="form-outline mb-4">
-    <input type="text" id="Adresse" class="form-control" name="Adresse" />
-    <label class="form-label" for="form6Example4">Address</label>
+    <input type="text" id="Adresse" class="form-control" name="Adresse" required/>
+    <label class="form-label" for="form6Example4">Addresse</label>
   </div>
 
   <!-- Email input -->
   <div class="form-outline mb-4">
-    <input type="email" id="Email" class="form-control" name="Email" />
+    <input type="email" id="Email" class="form-control" name="Email" required/>
     <label class="form-label" for="form6Example5">Email</label>
   </div>
 
   <!-- PHONE input -->
   <div class="form-outline mb-4">
-    <input type="text" id="Tel" class="form-control" name="Tel" />
-    <label class="form-label" for="form6Example6">Phone</label>
+    <input type="text" id="Tel" class="form-control" name="Tel" required/>
+    <label class="form-label" for="form6Example6">Numéro de téléphone</label>
+  </div>
+
+  <div class="row mb-4">
+    <!-- genre input -->
+    <div class="col">
+      <label class="form-label" for="gender">Genre</label>
+      <select name="gender" id="gender" class="form-control">
+        <option value="homme">Homme</option>
+        <option value="femme">Femme</option>
+      </select>
+    </div>
+
+    <div class="col">
+      <label class="form-label" for="vehicule">Véhiculé</label>
+      <select name="vehicule" id="vehicule" class="form-control">
+        <option value="oui">Oui</option>
+        <option value="non">Non</option>
+      </select>
+    </div>
   </div>
  <!--  competence -->
- <div class="form-outline mb-4">
- <label class="form-label" for="form6Example11">competences</label>
- <select  name="ary[]" id="competences" multiple>
-<?php foreach ($Skills as $row) {
-$r=$row['id'];
- 
- echo"<option value='$r'>".$row['nom_skills']."</option>";
-
-  ?>
-<?php }?>
-
-
-</select>
-
-  </div>
+<div class="form-outline mb-4">
+  <label class="form-label" for="form6Example11">Compétences</label>
+  <select aria-placeholder="liste de compétences"  name="ary[]" id="competences" multiple required>
+  <?php foreach ($Skills as $row) {
+    $r=$row['id'];
+    echo"<option value='$r'>".$row['nom_skills']."</option>";
+  } ?>
+  </select>
+</div>
   <!-- Message input -->
   <div class="form-outline mb-4">
-    <textarea class="form-control" id="form6Example7" rows="4"></textarea>
-    <label class="form-label" for="form6Example6">Additional information</label>
+    <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+    <label class="form-label" for="description">Description...</label>
   </div>
 
   <!-- Designation -->
   <div class="form-outline mb-4">
-    <input class="form-control" type="text" value="" id="designation" name="designation" />
-    <label class="form-label" for="form6Example9"> Designation</label>
+    <input class="form-control" type="text" value="" id="designation" name="designation" required/>
+    <label class="form-label" for="form6Example9">Designation de profil</label>
   </div>
     <!-- Disponibility -->
     <div class="form-outline mb-4">
-    <input type="date" id="disponibility"  class="form-control" name="disponibility"/>
-    <label class="form-label" for="form6Example10"> Disponibility</label>
+    <input type="date" id="disponibility"  class="form-control" name="disponibility" required/>
+    <label class="form-label" for="form6Example10"> Disponible à partir de...</label>
   </div>
   <!-- Submit button -->
-  <button type="submit" class="btn btn-primary btn-block mb-4">Place order</button>
+  <button type="submit" class="btn btn-primary btn-block mb-4">Ajouter</button>
 </form>
           </div>
         </div>
