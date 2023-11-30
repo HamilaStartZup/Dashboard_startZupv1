@@ -17,16 +17,16 @@ $result = $query->fetch();
 <html lang="en">
 
 <head>
-     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <!--     Fonts and icons     -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 
-    <!-- Material Dashboard CSS -->
-    <link rel="stylesheet" href="assets/css/material-dashboard?v=2.1.2.css">
+  <!-- Material Dashboard CSS -->
+  <link rel="stylesheet" href="assets/css/material-dashboard?v=2.1.2.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
@@ -37,15 +37,19 @@ $result = $query->fetch();
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
   <!-- MDB -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
+
+
+
+  <!-- MDB -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
   <!-- MDB -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
-  <!-- MDB -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.0.0/mdb.min.css" rel="stylesheet" />
+  <link href="css/bootstrap-datetimepicker.css" rel="stylesheet">
+  <script src="js/bootstrap-datetimepicker.min.js"></script>
   <style>
     body {
       background-color: #fbfbfb;
@@ -56,7 +60,7 @@ $result = $query->fetch();
         padding-left: 240px;
       }
     }
-   
+
     /* Sidebar */
     .sidebar {
       position: fixed;
@@ -111,35 +115,38 @@ $result = $query->fetch();
     }
 
     ul.timeline-3 {
-  list-style-type: none;
-  position: relative;
-}
-ul.timeline-3:before {
-  content: " ";
-  background: #d4d9df;
-  display: inline-block;
-  position: absolute;
-  left: 29px;
-  width: 2px;
-  height: 100%;
-  z-index: 400;
-}
-ul.timeline-3 > li {
-  margin: 20px 0;
-  padding-left: 20px;
-}
-ul.timeline-3 > li:before {
-  content: " ";
-  background: white;
-  display: inline-block;
-  position: absolute;
-  border-radius: 50%;
-  border: 3px solid #22c0e8;
-  left: 20px;
-  width: 20px;
-  height: 20px;
-  z-index: 400;
-}
+      list-style-type: none;
+      position: relative;
+    }
+
+    ul.timeline-3:before {
+      content: " ";
+      background: #d4d9df;
+      display: inline-block;
+      position: absolute;
+      left: 29px;
+      width: 2px;
+      height: 100%;
+      z-index: 400;
+    }
+
+    ul.timeline-3>li {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    ul.timeline-3>li:before {
+      content: " ";
+      background: white;
+      display: inline-block;
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid #22c0e8;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      z-index: 400;
+    }
   </style>
 
 </head>
@@ -240,52 +247,66 @@ ul.timeline-3 > li:before {
           <div class="col-lg-4">
             <div class="card mb-4">
               <div class="card-body text-center">
-                <img src="../images/competence (1).png" alt="avatar" style="width: 250px;">
+              <?php 
+              if( $result['gender']=='femme'){
+                echo "<img src='../images/femme.jpg' alt='avatar' style='width: 250px;  border: 2px solid blue;
+                padding: 10px;
+                border-radius: 50px 20px;'>";
+              }else{
+                echo "<img src='../images/homme.jpg' alt='avatar' style='width: 250px;border-radius: 25px;'>";
+              }
+              
+              ?>
+
                 <h5 class="my-3">Etudiant : <?php echo $result['code_profile'] ?></h5>
                 <p class="text-muted mb-1"><?php echo $result['designation'] ?></p>
-                <p class="text-muted mb-4"><b>LOCATION A RAJOUTER EN BDD</b></p>
+                <p class="text-muted mb-4"><b><?php echo $result['ville'] ?></b></p>
                 <div class="d-flex justify-content-center mb-2">
                   <button type="button" class="btn btn-primary" onclick="downloadPDF()">Télécharger le profil</button>
 
-                  <button type="button" onclick="sendEmail();" class="btn btn-outline-primary ms-1">Envoyer un email</button>
+                  <button type="button" class="btn btn-outline-primary ms-1" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#exampleModal">obtenir un entretien avec le candidat </button>
                 </div>
+
               </div>
             </div>
             <div class="card mb-4 ">
-            <div class="shadow-lg p-3 mb-5 bg-body  rounded"><p class="text-muted"><b>PROFIL</b></p></div>
+              <div class="shadow-lg p-3 mb-5 bg-body  rounded">
+                <p class="text-muted"><b>PROFIL</b></p>
+              </div>
               <div class="card-body ">
-               
-              <P>  <?php echo $result['description'] ?></P>
+
+                <P> <?php echo $result['description'] ?></P>
               </div>
             </div>
             <!--langues-->
             <div class="card mb-4 ">
-            <div class="shadow-lg p-3 mb-5 bg-body  rounded"><p class="text-muted"><b>LANGUES</b></p></div>
+              <div class="shadow-lg p-3 mb-5 bg-body  rounded">
+                <p class="text-muted"><b>LANGUES</b></p>
+              </div>
               <div class="card-body ">
-              <ul>
-                
-             <?php 
-             //get list of  Languages
-             $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `language` WHERE `id_student`=$result[id]) as L ON languages.id=L.id_language;";
-                    $stmtLanguages = $conn->prepare($queryLanguages);
-                    $stmtLanguages->execute();
-                    $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
-                    foreach ($Languages as $Language) {
-                     echo" <li class='list-group-item d-flex justify-content-between align-items-center'>
+                <ul>
+
+                  <?php
+                  //get list of  Languages
+                  $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `language` WHERE `id_student`=$result[id]) as L ON languages.id=L.id_language;";
+                  $stmtLanguages = $conn->prepare($queryLanguages);
+                  $stmtLanguages->execute();
+                  $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
+                  foreach ($Languages as $Language) {
+                    echo " <li class='list-group-item d-flex justify-content-between align-items-center'>
                       <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
                       <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
                     
                     
                       </li> <br>";
+                  }
+                  ?>
 
-                    }
-                    ?>
-             
 
-</ul>
+                </ul>
 
-               
-              <P>  </P>
+
+                <P> </P>
               </div>
             </div>
             <!--langues end-->
@@ -327,21 +348,21 @@ ul.timeline-3 > li:before {
                     <p class="mb-0">Mobilité</p>
                   </div>
                   <div class="col-sm-9">
-                  <?php
-      // recuperation mobilite 
-          $queryMobility = "SELECT * FROM `villes_france_free` RIGHT JOIN (SELECT * FROM `student_mobility` WHERE `student_id`=113) as mo ON mo.id=villes_france_free.ville_id";
-          $stmtMobility = $conn->prepare($queryMobility);
-          $stmtMobility->execute();
-          $Mobility =  $stmtMobility->fetchAll(PDO::FETCH_ASSOC);
+                    <?php
+                    // recuperation mobilite 
+                    $queryMobility = "SELECT * FROM `villes_france_free` RIGHT JOIN (SELECT * FROM `student_mobility` WHERE `student_id`=113) as mo ON mo.id=villes_france_free.ville_id";
+                    $stmtMobility = $conn->prepare($queryMobility);
+                    $stmtMobility->execute();
+                    $Mobility =  $stmtMobility->fetchAll(PDO::FETCH_ASSOC);
 
-          foreach ($Mobility as $ville) {
-            echo "                  <label class='form-label' for='textAreaExample'><b>$ville[ville_code_postal]</b>_$ville[ville_nom]</label>  <span>&ensp;</span>; <span>&ensp;</span>";
-          }
-       ?>
-                  
+                    foreach ($Mobility as $ville) {
+                      echo "                  <label class='form-label' for='textAreaExample'><b>$ville[ville_code_postal]</b>_$ville[ville_nom]</label>  <span>&ensp;</span>; <span>&ensp;</span>";
+                    }
+                    ?>
 
 
-                    
+
+
                   </div>
                 </div>
               </div>
@@ -352,7 +373,7 @@ ul.timeline-3 > li:before {
                   <div class="card-body">
                     <p class="mb-4"><b> COMPÉTENCES & LOGICIELS </b> </p>
                     </p>
-                    <?php 
+                    <?php
                     //récupération des compétences du candidat 
                     $querySkills = "SELECT * FROM `skills` RIGHT JOIN (SELECT `value_skills`,`id_skills` FROM `student_skills` WHERE `id_student`= $result[id]) as t ON skills.id=t.id_skills;   ";
                     $stmtSkills = $conn->prepare($querySkills);
@@ -362,13 +383,14 @@ ul.timeline-3 > li:before {
                     foreach ($Skills as $x) {
                       $skill = $x["nom_skills"];
                       $valueSkill = $x["value_skills"];
-                      if( $valueSkill!=0){
-                      echo "<p class='mb-1' style='font-size: .77rem;'>$skill</p>
+                      if ($valueSkill != 0) {
+                        echo "<p class='mb-1' style='font-size: .77rem;'>$skill</p>
    
     <div class='progress   rounded'  style='height: 25px;'>
     <div class='progress-bar' role='progressbar' style='width:$valueSkill%;' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>$valueSkill%</div>
  
-    </div>";}
+    </div>";
+                      }
                     }
                     ?>
 
@@ -381,130 +403,164 @@ ul.timeline-3 > li:before {
                 <div class="card mb-4 mb-md-0">
                   <h5 class="card-header shadow-inner">Compétences générales</h5>
                   <div class="card-body">
-                  <ul>
-      <?php
-      // recuperation CENTRES D'INTERET
-          $querySkills = "SELECT * FROM `soft_skills` RIGHT JOIN (SELECT * FROM `student_soft_skills` WHERE `student_id`=113) as SF ON soft_skills.id=SF.soft_skills_id;";
-          $stmtSkills = $conn->prepare($querySkills);
-          $stmtSkills->execute();
-          $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
+                    <ul>
+                      <?php
+                      // recuperation CENTRES D'INTERET
+                      $querySkills = "SELECT * FROM `soft_skills` RIGHT JOIN (SELECT * FROM `student_soft_skills` WHERE `student_id`=113) as SF ON soft_skills.id=SF.soft_skills_id;";
+                      $stmtSkills = $conn->prepare($querySkills);
+                      $stmtSkills->execute();
+                      $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
 
-          foreach ($Skills as $Skill) {
-            echo " <li>
+                      foreach ($Skills as $Skill) {
+                        echo " <li>
             <p class='card-text'>$Skill[soft_skills_name]</p>
             </li>";
-          }
-       ?>
-   
+                      }
+                      ?>
 
-    </ul>
-                
+
+                    </ul>
+
                   </div>
                 </div>
 
               </div>
-           
-            </div>
-              <!-- end time line -->
-            <div class="row" style='margin-top: 5%;'>
-                <!-- parcours de formation -->
-             
-              <div class="card">
-  <div class="card-body">
-  <div class="container my-5">
-  <div class="row">
-    <div class="col-md-6 offset-md-3">
-      <h4 style="margin-left: 1.2rem;">FORMATION</h4>
-      <ul class="timeline-3">
-     <?php $queryFormations = "SELECT * FROM `formation` RIGHT JOIN (SELECT * FROM `student_formation` WHERE `student_id`=113) as F ON formation.id=F.formation_id ORDER BY `F`.`start_date` DESC";
-          $stmtFormations = $conn->prepare($queryFormations);
-          $stmtFormations->execute();
-          $Formations =  $stmtFormations->fetchAll(PDO::FETCH_ASSOC);
 
-          foreach ($Formations as $Formation) {
-           echo" <li>
+            </div>
+            <!-- end time line -->
+            <div class="row" style='margin-top: 5%;'>
+              <!-- parcours de formation -->
+
+              <div class="card">
+                <div class="card-body">
+                  <div class="container my-5">
+                    <div class="row">
+                      <div class="col-md-6 offset-md-3">
+                        <h4 style="margin-left: 1.2rem;">FORMATION</h4>
+                        <ul class="timeline-3">
+                          <?php $queryFormations = "SELECT * FROM `formation` RIGHT JOIN (SELECT * FROM `student_formation` WHERE `student_id`=113) as F ON formation.id=F.formation_id ORDER BY `F`.`start_date` DESC";
+                          $stmtFormations = $conn->prepare($queryFormations);
+                          $stmtFormations->execute();
+                          $Formations =  $stmtFormations->fetchAll(PDO::FETCH_ASSOC);
+
+                          foreach ($Formations as $Formation) {
+                            echo " <li>
             <a href='#!'>$Formation[nom_formation]</a><br>
             <a href='#!' class='float-end'>$Formation[start_date], $Formation[end_date]</a><br>
             <p class='mt-2'>$Formation[description]</p>
           </li>";
+                          } ?>
 
-          } ?>
 
-      
-     
-      
-  
-      </ul>
-    </div>
-  </div>
-</div>
-  </div>
-</div>
-           
+
+
+
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
             <!-- end time line -->
 
-             <!--CENTRES D'INTERET-->
-             <div class="row" style='margin-top: 5%;'>
-             <div class="card">
-  <h5 class="card-header">CENTRES D'INTERET</h5>
-  <div class="card-body">
-    <ul>
-      <?php
-      // recuperation CENTRES D'INTERET
-          $queryHobbies = "SELECT * FROM `hobbies` WHERE `id_student`=$result[id]";
-          $stmtHobbies = $conn->prepare($queryHobbies);
-          $stmtHobbies->execute();
-          $Hobbies =  $stmtHobbies->fetchAll(PDO::FETCH_ASSOC);
+            <!--CENTRES D'INTERET-->
+            <div class="row" style='margin-top: 5%;'>
+              <div class="card">
+                <h5 class="card-header">CENTRES D'INTERET</h5>
+                <div class="card-body">
+                  <ul>
+                    <?php
+                    // recuperation CENTRES D'INTERET
+                    $queryHobbies = "SELECT * FROM `hobbies` WHERE `id_student`=$result[id]";
+                    $stmtHobbies = $conn->prepare($queryHobbies);
+                    $stmtHobbies->execute();
+                    $Hobbies =  $stmtHobbies->fetchAll(PDO::FETCH_ASSOC);
 
-          foreach ($Hobbies as $Hobbie) {
-            echo " <li>
+                    foreach ($Hobbies as $Hobbie) {
+                      echo " <li>
             <p class='card-text'>$Hobbie[hobbies_name]</p>
             </li>";
-          }
-       ?>
-   
+                    }
+                    ?>
 
-    </ul>
 
-  </div>
-</div>
-             </div>
-             <!-- end CENTRES D'INTERET-->
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+            <!-- end CENTRES D'INTERET-->
           </div>
         </div>
         </section>
+      </div>
+      <!-- model obtenir un entretien avec le candidat -->
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="connect_condidat.php?code_profile=<?php echo $result['code_profile'] ?>" method='post'>
+                <label>Select Date: </label>
+                <label for="c1">Choose a time for your appointment:</label>
+                <ul class="list-group list-group-light">
+                  <li class="list-group-item">
+                    <label class="form-label" for="form12">Example label c1</label> <span></span> <input type="datetime-local"  name="C1" value=""  required/>
+                  </li>
+
+                  <li class="list-group-item">
+                    <label class="form-label" for="form12">Example label C1</label> <span></span> <input type="datetime-local" name="C2" value="" required/>
+                  </li>
+                  <li class="list-group-item">
+                    <label class="form-label" for="form12">Example label C1</label> <span></span>
+                    <input type="datetime-local" name="C3" value="" required />
+                  </li>
+
+                </ul>
+
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" data-mdb-ripple-init value='<?php echo $result['id'] ?>' name='condidatId'>Save changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
   </main>
   <!--Main layout-->
 
   <!-- MDB -->
 
+
   <script>
-    function sendEmail() {
-      var email = 'start-zup@gmail.com';
-      var subject = 'Intérêt pour le profil <?php echo $result['code_profile'] ?>';
-      var mailtoLink = 'mailto:' + email + '?subject=' + encodeURIComponent(subject);
-      window.location.href = mailtoLink;
-    }
     var docPDF = new jsPDF();
 
     function downloadPDF() {
       var elementHTML = document.getElementById("Profile");
 
-     html2canvas(elementHTML).then(function (canvas) {
-     var imgData = canvas.toDataURL('image/png');
-     docPDF.addImage(imgData, 'PNG', 15, 15, 180, 180);
+      html2canvas(elementHTML).then(function(canvas) {
+        var imgData = canvas.toDataURL('image/png');
+        docPDF.addImage(imgData, 'PNG', 15, 15, 180, 180);
 
-    //  Sauvegarder le fichier PDF
-     docPDF.save('profil_<?php echo $result['code_profile'] ?>.pdf');
-     });
-  }
+        //  Sauvegarder le fichier PDF
+        docPDF.save('profil_<?php echo $result['code_profile'] ?>.pdf');
+      });
+    }
 
 
     //bar
-   
-     
   </script>
   <script>
     window.jsPDF = window.jspdf.jsPDF;
@@ -525,7 +581,10 @@ ul.timeline-3 > li:before {
       });
     }
   </script>
+  <!-- MDB -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.0.0/mdb.umd.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
 </body>
+
 
 </html>
