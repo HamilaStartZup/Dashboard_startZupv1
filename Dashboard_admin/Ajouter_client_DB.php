@@ -10,6 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      $Comment = $_POST['comentaireClient'];
      $Password = $_POST['passwordClient']; 
      $HashPass = password_hash($Password, PASSWORD_DEFAULT);
+     $dossier = $Nom;
+     $upload_dir = '../uploads/clients/logo/' . $dossier . '/';
+
+     if (!file_exists($upload_dir)) { // si le dossier n'existe pas
+          mkdir($upload_dir, 0777, true); // on le crée
+     }
+
+     $logo = basename($_FILES['logoClient']['name']); // nom du fichier
+     $logoPath = $upload_dir . $logo; // chemin complet avec nom du fichier
+
 
 
      // Verification de la présence dans la DB avec l'email
@@ -19,12 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
      // Insertion dans DB
      if ($verif->fetchColumn() == 0) {
+          if ($logo == "") {
+               $logoPath = null;
+          } else {
+               move_uploaded_file($_FILES['logoClient']['tmp_name'], $logoPath); // 
+          }
 
-          $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`) VALUES ('$Email','$Nom','$Designation','$Comment','Client', '$HashPass')";
+          $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`, `logo`) VALUES ('$Email','$Nom','$Designation','$Comment','Client', '$HashPass', '$logoPath')";
           $conn->exec($sql);
           echo '<script> alert("Le client a été enregistré avec succès.");
                    location.replace("add_client_admin.php");
-</script>';
+               </script>';
 
 
 

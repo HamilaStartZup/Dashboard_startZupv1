@@ -246,7 +246,11 @@
                                   echo "<tr>";
                                   echo "<td>";
                                   echo "<div class='d-flex align-items-center'>";
-                                  echo "<img src='https://mdbootstrap.com/img/new/avatars/8.jpg' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
+                                  if ($user['logo'] != null) {
+                                      echo "<img src='$user[logo]' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
+                                    } else {
+                                      echo "<img src='https://mdbootstrap.com/img/new/avatars/8.jpg' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
+                                  }
                                   echo "<div class='ms-3'>";
                                   echo "<p class='fw-bold mb-1'>$user[lastname] <span></span> $user[firstname]</p>";
                                   echo "<p class='text-muted mb-0'>$user[Email]</p>";
@@ -379,9 +383,26 @@ group_add
         <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-         <form  action="./Ajouter_client_DB.php" method="post"    class="mx-1 mx-md-4">
+         <form  action="./Ajouter_client_DB.php" method="post"    class="mx-1 mx-md-4" enctype="multipart/form-data">
+                  <div class="d-flex flex-row align-items-center mb-4"> 
+                    <i class="far fa-image fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="file" class="form-control" id="logoClient" name="logoClient">
+                      <label class="form-label" for="form3Example1c"><i class="fas fa-download"></i> Importer un logo</label>
+                    </div>
+                  </div>
 
-                  <div class="d-flex flex-row align-items-center mb-4">
+                  <style>
+                    #logoClient{
+                      opacity: 0;
+                      z-index: -1;
+                    }
+                    label{
+                      cursor: pointer;
+                    }
+                  </style>
+
+                  <div class="d-flex flex-row align-items-center mb-4"> 
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="text" id="form3Example1c" name="nomClient" class="form-control" />

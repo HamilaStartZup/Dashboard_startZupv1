@@ -1,14 +1,13 @@
-<!-- rajouter la date du jour en variable dynamique dans le titre de la page -->
-<!-- enregistrer la date du jour en variable dynamique dans le back -->
-<!-- ajouter les retards -->
 <?php
+  ob_start(); // sert à mettre en tampon la sortie
+
   include("../config.php");
 
   session_start();
-    // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
-    if ($_SESSION['status'] != "Admin") {
-      header("Location: ../failedAccess.php");
-    }
+  // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
+  if ($_SESSION['status'] != "Admin") {
+    header("Location: ../failedAccess.php");
+  }
   
 // requête pour récupérer profile Etudiant
   $queryProfilEtudiant = "SELECT * FROM student WHERE id=$_GET[id]";
@@ -16,9 +15,20 @@
   $stmtEtudiant ->execute();
   $etudiant = $stmtEtudiant ->fetchAll(PDO::FETCH_ASSOC);
 
-  //profile 
-   $Profile =$etudiant[0];
+//profile 
+  $Profile =$etudiant[0];
 
+// requête pour récupérer les mobilité
+  $queryMobility = "SELECT * FROM villes_france_free 
+  INNER JOIN student_mobility ON villes_france_free.ville_id = student_mobility.ville_id
+  INNER JOIN student ON student_mobility.student_id = student.id
+  WHERE student_id=$_GET[id]";
+  $stmtMobility = $conn->prepare($queryMobility);
+  $stmtMobility ->execute();
+  $mobility = $stmtMobility ->fetchAll(PDO::FETCH_ASSOC);
+
+  // sert à vider le tampon de sortie pour que le refresh lors de la modif de pretEmploi fonctionne
+  ob_flush() 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,6 +115,22 @@
       color: inherit;
       text-decoration: none;
     }
+    .themeStatutEmployable{
+      color: green;
+    }
+    .themeStatutNonEmployable{
+      color: red;
+    }
+    .colBtnEmploie{
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      margin: 5px;
+    }
+    .colStatutActuel{
+      display: flex;
+      align-items: center;
+      justify-content: end;}
   </style>
 
 </head>
@@ -199,6 +225,57 @@
 
   <!--Main layout-->
   <main   id='Profile' style="margin-top: 58px">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <a class="btn btn-info" href="./edit-profil.php">Modifier</a>
+        </div>
+        <div class="col">
+          
+        </div>
+        <div class="col employabilité">
+          <div class="colBtnEmploie">
+            <b>Prêt à l'emploi : </b>
+            <?php
+
+            if (isset($_GET['id']) && is_numeric($_GET['id'])){
+              $student_id = $_GET['id'];
+              if (isset($_POST['id']) && is_numeric($_POST['id'])){
+                if ($Profile['pretEmploi'] == "non"){
+                  $edit = "UPDATE student SET pretEmploi='oui' WHERE id='$student_id'";
+                  $resEdit = $conn->prepare($edit);
+                  $resEdit->execute();
+                  header("Location: profile.php?id=$student_id");
+                } else {
+                  $edit = "UPDATE student SET pretEmploi='non' WHERE id='$student_id'";
+                  $resEdit = $conn->prepare($edit);
+                  $resEdit->execute();
+                  header("Location: profile.php?id=$student_id");
+                }
+              }
+              echo "<form action='' method='POST'>";
+              if ($Profile['pretEmploi'] == "non"){
+                echo "<button type='submit' class='btn btn-success'>Oui</button>";
+                echo "<input type='hidden' name='id' value='$student_id'>";
+              } else {
+                echo "<button type='submit' class='btn btn-danger'>Non</button>";
+                echo "<input type='hidden' name='id' value='$student_id'>";
+              }
+              echo "</form>";
+            }
+          echo "</div>";
+
+          echo "<div class='colStatutActuel'>";
+            if ($Profile['pretEmploi'] == "non"){ 
+              echo "<p class='themeStatutNonEmployable'>Statut actuel: non employable </p>";
+            } else {
+              echo "<p class='themeStatutEmployable'>Statut actuel: employable</p>";
+            }
+          echo "</div>";
+          ?>
+        </div>
+      </div>
+    </div>
     <div class="container pt-4">
    
         <div class="container py-5">
@@ -206,7 +283,7 @@
             <div class="col-lg-4">
               <div class="card mb-4">
                 <div class="card-body text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                  <img src="<?php echo "$Profile[avatar]"; ?>" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
                   <h5 class="my-3"> <?php echo "$Profile[nom]";?> </h5>
                   <p class="text-muted mb-1"> <?php echo "$Profile[designation]";?> </p>
@@ -292,39 +369,57 @@
                       <p class="text-muted mb-0"> <?php echo "$Profile[adresse]";?> </p>
                     </div>
                   </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Mobilité</p>
+                    </div>
+                    <div class="col-sm-9">
+                    <?php
+                    if ($mobility){
+                      foreach ($mobility as $key => $value) {
+                        echo "<div class='col-sm-9' style='display: flex;'>";
+                        echo "<p class='text-muted mb-0'> $value[ville_code_postal] </p>";
+                        echo "<span> - </span>";
+                        echo "<p class='text-muted mb-0'> $value[ville_nom_reel] </p>";
+                        echo "</div>";
+                      }
+                    } else {
+                      echo "<p> Aucune mobilité n'a été enregistré pour ce profil </p>";
+                    }
+                      ?>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <div class="card mb-4 mb-md-0">
                     <div class="card-body">
-                      <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                      </p>
-                      <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                      <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                      <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                      <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                      <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                      <div class="progress rounded mb-2" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
+                      <p class="mb-4"><b> COMPÉTENCES & LOGICIELS </b> </p>
+                        <?php 
+                        if (isset($_GET['id']) && is_numeric($_GET['id'])){
+                          $student_id = $_GET['id'];
+                          //récupération des compétences du candidat 
+                          $querySkills = "SELECT * FROM `skills` RIGHT JOIN (SELECT `value_skills`,`id_skills` FROM `student_skills` WHERE `id_student`= $student_id) as t ON skills.id=t.id_skills;";
+                          $stmtSkills = $conn->prepare($querySkills);
+                          $stmtSkills->execute();
+                          $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
+
+                          foreach ($Skills as $x) {
+                            $skill = $x["nom_skills"];
+                            $valueSkill = $x["value_skills"];
+                            if( $valueSkill!=0){
+                            echo "<p class='mb-1' style='font-size: .77rem;'>$skill</p>
+                            <div class='progress   rounded'  style='height: 25px;'>
+                            <div class='progress-bar' role='progressbar' style='width:$valueSkill%;' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>$valueSkill%</div>
+                            </div>";} 
+                            elseif ($valueSkill == "aucun" || $valueSkill == null) {
+                              echo "<p> Aucune compétence n'a été enregistré pour ce profil </p>";                            
+                            }
+                          }
+                        }
+                        ?>
                     </div>
                   </div>
                 </div>
@@ -349,39 +444,68 @@
   <!--Main layout-->
 
   <!-- MDB -->
+<?php
+  try {
+    // Validation des données d'entrée
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+        $student_id = $_GET['id'];
 
+        // Préparez la requête SQL
+        $query = "SELECT *
+                  FROM soft_skills
+                  JOIN student_soft_skills ON soft_skills.id = student_soft_skills.soft_skills_id
+                  JOIN student ON student.id = student_soft_skills.student_id
+                  WHERE student.id = $student_id";
+
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+
+        // Récupérez les données
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        
+?>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    //bar
-    var ctxB = document.getElementById("barChart").getContext('2d');
-    var myBarChart = new Chart(ctxB, {
+  // Convertissez les données PHP en format compatible avec Chart.js
+  var labels = <?php echo json_encode(array_column($data, 'soft_skills_name')); ?>;
+  var values = <?php echo json_encode(array_column($data, 'value_skills')); ?>;
+
+  // Créez un contexte pour le canvas
+  var ctx = document.getElementById('barChart').getContext('2d');
+
+  // Créez le graphique à barres avec Chart.js
+  var myChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ["communication", "apprentissage"],
-        datasets: [{
-          label: '# compétences générales',
-          data: [10, 90,100],
-          backgroundColor: [
-            'rgba(25, 255, 255)',
-            'rgba(54, 162, 235)',
-            'rgba(255, 206, 86)',
-            'rgba(75, 192, 192)',
-         
-          ],
-    
-          borderWidth: 1
-        }]
+          labels: labels,
+          datasets: [{
+              label: 'Soft Skills',
+              data: values,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)', // Couleur de fond des barres
+              borderColor: 'rgba(75, 192, 192, 1)', // Couleur de la bordure des barres
+              borderWidth: 1
+          }]
       },
       options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
-        }
+          scales: {
+              y: {
+                  beginAtZero: true, // Commencez à 0
+                  max: 100 // Valeur maximale de l'axe Y
+              }
+          }
       }
-    });
+  });
   </script>
+
+  <?php
+  } else {
+    throw new Exception('ID invalide');
+}
+} catch (Exception $e) {
+echo $e->getMessage();
+}
+?>
   <script>
     
     window.jsPDF = window.jspdf.jsPDF;
