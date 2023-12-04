@@ -146,7 +146,7 @@
       <a
           href="#"
           class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a
+          ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a
         >
       <a
           href="#"
