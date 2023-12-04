@@ -144,7 +144,7 @@
           ><span>Ajouter des candidats</span>
       </a>
       <a
-          href="#"
+          href="./List_rdv.php"
           class="list-group-item list-group-item-action py-2 ripple"
           ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a
         >
