@@ -24,7 +24,12 @@ if(!file_exists($upload_dir)){ // si le dossier n'existe pas
 
 $photo = $Nom . "_" . $Prenom . "_" . basename($_FILES['avatar']['name']); // nom du fichier
 $photoPath = $upload_dir . $photo; // chemin complet avec nom du fichier
-move_uploaded_file($_FILES['avatar']['tmp_name'], $photoPath); // upload file
+if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] == UPLOAD_ERR_NO_FILE) { // si aucun avatar n'est fourni ou si erreur lors de l'upload
+  $initialsImage = generateInitialsImage($Nom, $Prenom, $upload_dir); // générer une image avec les initiales
+  $photoPath = $initialsImage; // chemin complet avec nom du fichier
+} else {
+  move_uploaded_file($_FILES['avatar']['tmp_name'], $photoPath); 
+}
 
 $competences =$_POST['ary'];
 
@@ -61,6 +66,21 @@ if ($verif->fetchColumn() == 0) {
       </script>';
   }
 }
+
+function generateInitialsImage($nom, $prenom, $upload_dir){
+  $initials = strtoupper(substr($nom, 0, 1) . substr($prenom, 0, 1)); // initiales en majuscules
+  $image = imagecreate(100, 100); // image en 100x100
+  $background_color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)); // background générer aléatoirement
+  $text_color = imagecolorallocate($image, 255, 255, 255); // texte blanc
+  $font = realpath('./fonts/arial.ttf');
+  imagettftext($image, 40, 0, 20, 70, $text_color, $font, $initials);
+
+  $initialsImage = $upload_dir . $nom . "_" . $prenom . ".png"; // nom du fichier 
+  imagepng($image, $initialsImage); // sauvegarde de l'image
+  imagedestroy($image); // libère la mémoire
+
+  return $initialsImage;
+    }
 
 ?>
 
