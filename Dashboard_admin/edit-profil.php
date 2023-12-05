@@ -17,11 +17,23 @@ $stmtEtudiants = $conn->prepare($queryEtudiants);
 $stmtEtudiants ->execute();
 $Skills = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
 
+// requête pour récupérer les soft skills
+$querySoftKills = "SELECT * FROM soft_skills";
+$stmtSoftKills = $conn->prepare($querySoftKills);
+$stmtSoftKills->execute();
+$softSkills = $stmtSoftKills->fetchAll(PDO::FETCH_ASSOC);
+
 // requête pour requpere les competences de l'étudiant
 $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student'";
 $stmtEtudiants = $conn->prepare($queryEtudiants);
 $stmtEtudiants ->execute();
 $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+
+// requête pour recupere les soft skills de l'étudiant
+$querySoftSkillsEtudiant = "SELECT * FROM student_soft_skills WHERE student_id = '$id_student'";
+$stmtSoftSkillsEtudiant = $conn->prepare($querySoftSkillsEtudiant);
+$stmtSoftSkillsEtudiant->execute();
+$softSkillsEtudiant = $stmtSoftSkillsEtudiant->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
@@ -32,7 +44,7 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $telephone = $_POST['telephone'];
     $adresse = $_POST['adresse'];
-    $statut = $_POST['statut'];
+    $statut = $_POST['status'];
     $designation = $_POST['designation'];
     $code_profile = $_POST['code_profile'];
     $disponibility = $_POST['disponibility'];
@@ -41,6 +53,7 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'];
 
     $competences =$_POST['ary']; // tableau des compétences
+    $valueCompetences = $_POST['competences']; // tableau des valeurs des compétences
 
     // SI UNE COMPETENCE EST COCHEE ON L'AJOUTE DANS LA TABLE student_skills SINON ON LA SUPPRIME
     foreach($Skills as $skill){
@@ -57,16 +70,97 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmtInsert = $conn->prepare($queryInsert);
                     $stmtInsert->execute();
                 }
-            }else{
-                if(count($SkillsEtudiant) > 0){
-                    $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
-                    $stmtDelete = $conn->prepare($queryDelete);
-                    $stmtDelete->execute();
-                }
+            }else if(count($SkillsEtudiant) > 0){
+                $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
+                $stmtDelete = $conn->prepare($queryDelete);
+                $stmtDelete->execute();
             }
         }
     }
-    // SI UNE VALEUR DE COMPETENCE EST MODIFIER
+    // Vérifier si aucune compétence n'est cochée ou que "aucun" est coché
+    if (count($competences) == 0 || in_array(0, $competences)) { // 0 = id de la compétence "Aucune"
+        // Attribuer la compétence "Aucune" à l'étudiant
+        $queryAucune = "INSERT INTO student_skills (id_student, id_skills) VALUES ('$id_student', '0')";
+        $dejaAucune = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '0'";
+        if ($conn->query($dejaAucune)->rowCount() == 0) {
+            $stmtAucune = $conn->prepare($queryAucune);
+            $stmtAucune->execute();
+        } else {
+            // ne rien faire
+        }
+        // Supprimer les autres compétences de l'étudiant (s'il y en a)
+        $queryDeleteOthers = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills != '0'";
+        $stmtDeleteOthers = $conn->prepare($queryDeleteOthers);
+        $stmtDeleteOthers->execute();
+    } else {
+        // Supprimer la compétence "Aucune" de l'étudiant 
+        $queryDeleteAucune = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '0'";
+        $stmtDeleteAucune = $conn->prepare($queryDeleteAucune);
+        $stmtDeleteAucune->execute();
+    }
+    // SI UNE VALEUR DE COMPETENCE EST MODIFIER ON LA MODIFIE DANS LA TABLE student_skills
+    foreach($competences as $key => $value){
+        $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$value'";
+        $stmtEtudiants = $conn->prepare($queryEtudiants);
+        $stmtEtudiants ->execute();
+        $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+        if ($SkillsEtudiant && count($SkillsEtudiant) > 0){
+            $queryUpdate = "UPDATE student_skills SET value_skills = :value_skills WHERE id_student = :id_student AND id_skills = :id_skills";
+            $stmtUpdate = $conn->prepare($queryUpdate);
+            $stmtUpdate->bindParam(':value_skills', $valueCompetences[$value]);
+            $stmtUpdate->bindParam(':id_student', $id_student);
+            $stmtUpdate->bindParam(':id_skills', $value);
+        
+            if ($stmtUpdate->execute()) {
+                
+            } else {
+                echo "Erreur lors de la mise à jour : " . implode(" ", $stmtUpdate->errorInfo());
+            }
+        }
+        
+    }
+
+    // Si un soft skill est coché on l'ajoute dans la table student_soft_skills sinon on le supprime
+    foreach($softSkills as $softSkill){ 
+        $idSoftSkill = $softSkill['id'];
+        $querySoftSkillsEtudiant = "SELECT * FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '$idSoftSkill'";
+        $stmtSoftSkillsEtudiant = $conn->prepare($querySoftSkillsEtudiant);
+        $stmtSoftSkillsEtudiant->execute();
+        $softSkillsEtudiant = $stmtSoftSkillsEtudiant->fetchAll(PDO::FETCH_ASSOC);
+        if ($_POST['softSkills']){
+            if(in_array($idSoftSkill, $_POST['softSkills'])){ // Si le soft skill est coché
+                if(count($softSkillsEtudiant) == 0){ // Si le soft skill n'est pas déjà dans la table student_soft_skills
+                    $queryInsert = "INSERT INTO student_soft_skills (student_id, soft_skills_id) VALUES ('$id_student', '$idSoftSkill')";
+                    $stmtInsert = $conn->prepare($queryInsert);
+                    $stmtInsert->execute();
+                }
+            }else if(count($softSkillsEtudiant) > 0){
+                $queryDelete = "DELETE FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '$idSoftSkill'";
+                $stmtDelete = $conn->prepare($queryDelete);
+                $stmtDelete->execute();
+            }
+        }
+    }
+    // Si une valeur de soft skill est modifiée on la modifie dans la table student_soft_skills
+    foreach($softSkills as $key => $value){
+        $querySoftSkillsEtudiant = "SELECT * FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '{$value['id']}'";
+        $stmtSoftSkillsEtudiant = $conn->prepare($querySoftSkillsEtudiant);
+        $stmtSoftSkillsEtudiant->execute();
+        $softSkillsEtudiant = $stmtSoftSkillsEtudiant->fetchAll(PDO::FETCH_ASSOC);
+        if ($softSkillsEtudiant && count($softSkillsEtudiant) > 0){
+            $queryUpdate = "UPDATE student_soft_skills SET value_skills = :value_skills WHERE student_id = :student_id AND soft_skills_id = :soft_skills_id";
+            $stmtUpdate = $conn->prepare($queryUpdate);
+            $stmtUpdate->bindParam(':value_skills', $_POST['softSkills'][$value['id']]); 
+            $stmtUpdate->bindParam(':student_id', $id_student);
+            $stmtUpdate->bindParam(':soft_skills_id', $value['id']);
+            if ($stmtUpdate->execute()) {
+            } else {
+                echo "Erreur lors de la mise à jour : " . implode(" ", $stmtUpdate->errorInfo());
+            }
+        }
+        
+    }
+    
     
 
 
@@ -132,9 +226,9 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmtUpdate->bindParam(':id', $id);
 
     if ($stmtUpdate->execute()) {
-        echo "<script> Modifications enregistrées avec succès. </script>";
+
     } else {
-        echo "<script> Erreur lors de l'enregistrement des modifications. </script>";
+        echo "Erreur lors de l'enregistrement des modifications.";
     }
 }
 ?>
@@ -378,63 +472,96 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="competences" class="form-label">Compétences</label>
                             <div class="row">
                                 <div class="col">
-                                    <?php
-                                    foreach($Skills as $skill){
-                                        $idSkill = $skill['id'];
-                                        $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
-                                        $stmtEtudiants = $conn->prepare($queryEtudiants);
-                                        $stmtEtudiants ->execute();
-                                        $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
-                                        if(count($SkillsEtudiant) > 0){
-                                            echo '<div class="form-check">';
-                                            echo '<input class="form-check-input" type="checkbox" value="'.$skill['id'].'" id="'.$skill['id'].'" name="ary[]" checked>';
-                                            echo '<label class="form-check-label" for="'.$skill['id'].'">';
-                                            echo $skill['nom_skills'];
-                                            echo '</label>';
-                                            echo '</div>';
-                                        }else{
-                                            echo '<div class="form-check">';
-                                            echo '<input class="form-check-input" type="checkbox" value="'.$skill['id'].'" id="'.$skill['id'].'" name="ary[]">';
-                                            echo '<label class="form-check-label" for="'.$skill['id'].'">';
-                                            echo $skill['nom_skills'];
-                                            echo '</label>';
-                                            echo '</div>';
-                                        }
-                                    }
-                                    ?>
-                                </div>
-                                <div class="col">
-                                <?php
-                                    foreach($Skills as $skill){
-                                        $idSkill = $skill['id'];
-                                        $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
-                                        $stmtEtudiants = $conn->prepare($queryEtudiants);
-                                        $stmtEtudiants ->execute();
-                                        $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
-                                        // recupére les valeurs de la table student_skills pour chaque compétence cochée dans un input text
-                                        if ($SkillsEtudiant && count($SkillsEtudiant) > 0){
-                                        foreach($SkillsEtudiant as $skillEtudiant){
-                                            echo ''.$skill["nom_skills"].': <input type="text" class="form-control" id="competences" name="competences[]" value="'.$skillEtudiant['value_skills'].'">';
-                                        }
-                                        }else{
-                                            echo ''.$skill["nom_skills"].':<input type="text" class="form-control" id="competences" name="competences[]">';
-                                        }
-                                    }
-                                    ?>
+                                    <table class="table">
+                                        <tbody>
+                                            <?php
+                                            foreach ($Skills as $skill) {
+                                                $idSkill = $skill['id'];
+                                                $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
+                                                $stmtEtudiants = $conn->prepare($queryEtudiants);
+                                                $stmtEtudiants->execute();
+                                                $SkillsEtudiant = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
+
+                                                echo '<tr>';
+                                                echo '<td>';
+                                                echo '<div class="form-check">';
+                                                echo '<input class="form-check-input" type="checkbox" value="' . $skill['id'] . '" id="' . $skill['id'] . '" name="ary[]" ' . (count($SkillsEtudiant) > 0 ? 'checked' : '') . '>';
+                                                echo '<label class="form-check-label" for="' . $skill['id'] . '">';
+                                                echo $skill['nom_skills'];
+                                                echo '</label>';
+                                                echo '</div>';
+                                                echo '</td>';
+
+                                                echo '<td>';
+                                                if ($SkillsEtudiant && count($SkillsEtudiant) > 0) {
+                                                    foreach ($SkillsEtudiant as $skillEtudiant) {
+                                                        echo '<input type="text" class="form-control" id="competences" name="competences[]" value="' . $skillEtudiant['value_skills'] . '">';
+                                                    }
+                                                } else {
+                                                    echo '<input type="text" class="form-control" id="competences" name="competences[]">';
+                                                }
+                                                echo '</td>';
+                                                echo '</tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
+
                             <!-- checkbox des compétences -->
                         </div>
+                        <h3>Compétences générals</h3>
+                        <div class="mb-4">
+                            <label for="softSkills" class="form-label">Compétences générals</label>
+                            <div class="row">
+                                <div class="col">
+                                    <table class="table">
+                                        <tbody>
+                                            <?php
+                                            foreach ($softSkills as $softSkill) {
+                                                $idSoftSkill = $softSkill['id'];
+                                                $querySoftSkillsEtudiant = "SELECT * FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '$idSoftSkill'";
+                                                $stmtSoftSkillsEtudiant = $conn->prepare($querySoftSkillsEtudiant);
+                                                $stmtSoftSkillsEtudiant->execute();
+                                                $softSkillsEtudiant = $stmtSoftSkillsEtudiant->fetchAll(PDO::FETCH_ASSOC);
+
+                                                echo '<tr>';
+                                                echo '<td>';
+                                                echo '<div class="form-check">';
+                                                echo '<input class="form-check-input" type="checkbox" value="' . $softSkill['id'] . '" id="' . $softSkill['id'] . '" name="softSkills[]" ' . (count($softSkillsEtudiant) > 0 ? 'checked' : '') . '>';
+                                                echo '<label class="form-check-label" for="' . $softSkill['id'] . '">';
+                                                echo $softSkill['soft_skills_name'];
+                                                echo '</label>';
+                                                echo '</div>';
+                                                echo '</td>';
+
+                                                echo '<td>';
+                                                if ($softSkillsEtudiant && count($softSkillsEtudiant) > 0) {
+                                                    foreach ($softSkillsEtudiant as $softSkillEtudiant) {
+                                                        echo '<input type="text" class="form-control" id="softSkills" name="softSkills[]" value="' . $softSkillEtudiant['value_skills'] . '">';
+                                                    }
+                                                } else {
+                                                    echo '<input type="text" class="form-control" id="softSkills" name="softSkills[]">';
+                                                }
+                                                echo '</td>';
+                                                echo '</tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- checkbox des compétences -->
                         <h3>
                             Informations professionnelles
                         </h3>
                         <div class="mb-3">
-                            <label for="statut" class="form-label">Statut</label>
-                            <select class="form-select" aria-label="Default select example" name="statut">
-                                <option value="Employable" <?php if ($student['status'] == "Employable") {echo "selected";} ?>>Employable</option>
-                                <option value="Non employable" <?php if ($student['status'] == "Non employable") {echo "selected";} ?>>
-                                    Non employable
-                                </option>
+                            <label for="statut" class="form-label">Statut scolaire</label>
+                            <select class="form-select" aria-label="Default select example" name="status">
+                                <option value="active" <?php if ($student['status'] == "active") {echo "selected";} ?>>Actif</option>
+                                <option value="not active" <?php if ($student['status'] == "not active") {echo "selected";} ?>>Non actif</option>
                             </select>
                         </div>
                         <div class="mb-3">
