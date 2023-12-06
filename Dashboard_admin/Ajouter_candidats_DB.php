@@ -32,6 +32,7 @@ if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] == UPLOAD_ERR_NO_FIL
 }
 
 $competences =$_POST['ary'];
+$softskills =$_POST['softSkills'];
 
 // Verification de la présence dans la DB avec l'email
 $sql_verif = "SELECT COUNT(*) from student WHERE email = '$Email'";
@@ -47,12 +48,23 @@ if ($verif->fetchColumn() == 0) {
   $lastIdCon= $conn->prepare($lastIdSql);
   $lastIdCon->execute();
   $resultlastId=$lastIdCon->fetch(PDO::FETCH_ASSOC);
-  for ($x = 0; $x <= count($competences)-1; $x++) {
-    //INSERT KILLS WITH  USERS  ID 
-    $skills ="INSERT INTO `student_skills`( `id_student`, `id_skills`) VALUES ('$resultlastId[id]','$competences[$x]')";
-    $conn->exec($skills);
+  if ($competences != null) { // si il y a une compétence alors on fait la requête
+    for ($x = 0; $x <= count($competences)-1; $x++) {
+      //INSERT KILLS WITH  USERS  ID 
+      $skills ="INSERT INTO `student_skills`( `id_student`, `id_skills`) VALUES ('$resultlastId[id]','$competences[$x]')";
+      $conn->exec($skills);
+    }
+  } else {
+    echo '';
   }
-
+  if ($softskills != null) {
+    for ($x = 0; $x <= count($softskills)-1; $x++) {
+      $softskills ="INSERT INTO `student_soft_skills`( `student_id`, `soft_skills_id`) VALUES ('$resultlastId[id]','$softskills[$x]')";
+      $conn->exec($softskills);
+    }
+  } else {
+    echo '';
+  }
   echo'jddjeje'.$resultlastId['id'];
   echo '<script> alert("Le candidat a été ajouté avec succès.");
   location.replace("addCandidats.php");

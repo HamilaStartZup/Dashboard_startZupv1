@@ -15,6 +15,12 @@ require('../config.php');
   $stmtEtudiants ->execute();
   $Skills = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
 
+  // requête pour requpere les competences générales
+  $querySoftSkills = "SELECT * FROM soft_skills";
+  $stmtSoftSkills = $conn->prepare($querySoftSkills);
+  $stmtSoftSkills ->execute();
+  $SoftSkills = $stmtSoftSkills ->fetchAll(PDO::FETCH_ASSOC);
+
  
 ?>
 <!DOCTYPE html>
@@ -399,6 +405,15 @@ require('../config.php');
   } ?>
   </select>
 </div>
+<div class="form-outline mb-4">
+  <label class="form-label" for="form6Example11">Compétences générales</label>
+  <select aria-placeholder="liste de compétences général"  name="softSkills[]" id="softSkills" multiple required>
+  <?php foreach ($SoftSkills as $row) {
+    $r=$row['id'];
+    echo"<option value='$r'>".$row['soft_skills_name']."</option>";
+  } ?>
+  </select>
+</div>
   <!-- Message input -->
   <div class="form-outline mb-4">
     <textarea class="form-control" id="description" name="description" rows="4"></textarea>
@@ -433,6 +448,16 @@ src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"
 ></script>
 <script>
     new MultiSelectTag('competences', {
+    rounded: true,    // default true
+    shadow: true,      // default false
+    placeholder: 'Search',  // default Search...
+    onChange: function(values) {
+     
+        console.log(values)
+    }
+})
+
+new MultiSelectTag('softSkills', {
     rounded: true,    // default true
     shadow: true,      // default false
     placeholder: 'Search',  // default Search...
