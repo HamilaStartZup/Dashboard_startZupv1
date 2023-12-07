@@ -32,7 +32,7 @@ if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] == UPLOAD_ERR_NO_FIL
 }
 
 $competences =$_POST['ary'];
-$softskills =$_POST['softSkills'];
+$selectedSoftSkills = $_POST['softSkills'];
 
 // Verification de la présence dans la DB avec l'email
 $sql_verif = "SELECT COUNT(*) from student WHERE email = '$Email'";
@@ -57,14 +57,15 @@ if ($verif->fetchColumn() == 0) {
   } else {
     echo '';
   }
-  if ($softskills != null) {
-    for ($x = 0; $x <= count($softskills)-1; $x++) {
-      $softskills ="INSERT INTO `student_soft_skills`( `student_id`, `soft_skills_id`) VALUES ('$resultlastId[id]','$softskills[$x]')";
-      $conn->exec($softskills);
+  if (!empty($selectedSoftSkills)) {
+    $insertQuery = "INSERT INTO `student_soft_skills` (`student_id`, `soft_skills_id`) VALUES (?, ?)";
+    $stmt = $conn->prepare($insertQuery);
+
+    foreach ($selectedSoftSkills as $softSkillId) {
+        $stmt->execute([$resultlastId['id'], $softSkillId]);
     }
-  } else {
-    echo '';
-  }
+}
+
   echo'jddjeje'.$resultlastId['id'];
   echo '<script> alert("Le candidat a été ajouté avec succès.");
   location.replace("addCandidats.php");
