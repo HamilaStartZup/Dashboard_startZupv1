@@ -44,7 +44,7 @@
 //$(this).css('background-color', 'red');
 
 },
-   events: './calendarAdmin/load.php',
+   events: './calendarClient/load.php',
 
    selectable:true,
    selectHelper:true,
@@ -68,12 +68,6 @@
      success:function(){
       calendar.fullCalendar('refetchEvents');
       alert('Event Update');
-      mail();
-   
-    
-    
-   
-
      }
     })
    },
@@ -92,7 +86,6 @@
      {
       calendar.fullCalendar('refetchEvents');
       alert("Event Updated");
-      mail();
      }
     });
    },
@@ -125,9 +118,9 @@
     }
 
     @media (min-width: 991.98px) {
-        main {
-            padding-left: 240px;
-        }
+      main {
+        width: 100%;
+      }
     }
 
     /* Sidebar */
@@ -176,115 +169,124 @@
  <body>
 <!-- Main Navigation -->
 <header>
-    <!-- Sidebar -->
-<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-  <div class="position-sticky">
-    <div class="list-group list-group-flush mx-3 mt-4">
-      <a
-          href="./dashboard.php"
-          class="list-group-item list-group-item-action py-2 ripple  "
-         
-          >
-        <i class="fas fa-tachometer-alt fa-fw me-3"></i
-          ><span>Main dashboard</span>
-      </a>
-      <a
-          href="./addCandidats.php"
-          class="list-group-item list-group-item-action py-2 ripple "
-        
-          >
-        <i class="fas fa-user-graduate me-3"></i
-          ><span>Ajouter des candidats</span>
-      </a>
-      <a
-          href="./List_rdv.php"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a
-        >
-      <a
-          href="#"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-line fa-fw me-3"></i
-        ><span>Analytics</span></a
-        >
-      <a
-          href="#"
-          class="list-group-item list-group-item-action py-2 ripple active"
-          aria-current="true"
-          >
-          <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
-      </a>
-      <a
-          href="#"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
-        >
-      <a
-          href="#"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-globe fa-fw me-3"></i
-        ><span>International</span></a
-        >
-        <a
-          href="listeAppels.php"
-          class="list-group-item list-group-item-action py-2 ripple ripple s"
-          ><i class="fa-sharp fa-solid fa-list me-3"></i>
-          <span>Liste d'appels</span></a
-        >
-      <a
-          href="./presence.php"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-calendar fa-fw me-3"></i
-        ><span>Présence</span></a
-        >
-      <a
-          href="./add_client_admin.php"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a
-        >
-      <a
-      href="../logout.php"
-          class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
-        >
-    </div>
-  </div>
-</nav>
-    <!-- Sidebar -->
-
     <!-- Navbar -->
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-        <!-- Container wrapper -->
-        <div class="container-fluid">
-            <!-- Toggle button -->
-            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
-                    aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Brand -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+        <!-- Toggle button -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+    
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <!-- Navbar brand -->
+          <a class="navbar-brand mt-2 mt-lg-0" href="#">
             <a class="navbar-brand" href="#">
-                <img src="../images/icon.png" height="25" alt="KJJJ"/>
-            </a>
-            <!-- Search form -->
-            <form class="d-none d-md-flex input-group w-auto my-auto">
-                <input autocomplete="off" type="search" class="form-control rounded"
-                       placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px"/>
-                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-            </form>
+              <img
+                   src="../images/icon.png"
+                   height="25"
+                   alt="KJJJ"
+             
+                   />
+            
+          </a>
+          <!-- Left links -->
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="./dashboard_client.html">Accueil</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./interns.php"> Les stagiaires</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./contact_us.html">Contact</a>
+            </li>
+          </ul>
+          <!-- Left links -->
         </div>
-        <!-- Container wrapper -->
+        <!-- Collapsible wrapper -->
+    
+        <!-- Right elements -->
+        <div class="d-flex align-items-center">
+          <!-- Icon -->
+       
+    
+          <!-- Notifications -->
+          <div class="dropdown">
+        
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navbarDropdownMenuLink"
+            >
+              <li>
+                <a class="dropdown-item" href="#">Some news</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">Another news</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </li>
+            </ul>
+          </div>
+          <!-- Avatar -->
+          <div class="dropdown">
+            <a
+              class="dropdown-toggle d-flex align-items-center hidden-arrow"
+              href="#"
+              id="navbarDropdownMenuAvatar"
+              role="button"
+              data-mdb-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                class="rounded-circle"
+                height="25"
+                alt="Black and White Portrait of a Man"
+                loading="lazy"
+              />
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navbarDropdownMenuAvatar"
+            >
+              <li>
+                <a class="dropdown-item" href="#">My profile</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">Settings</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="../logout.php">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Right elements -->
+      </div>
+      <!-- Container wrapper -->
+    
     </nav>
-    <!-- Navbar -->
-</header>
+<!-- Navbar -->
+  </header>
 <!-- Main Navigation -->
   <!--Main layout-->
   <main style="margin-top: 58px">
-    <div class="container pt-4">
+    <div class="container">
   
 
       <!--Section: Sales Performance KPIs-->
-      <section class="mb-4">
+    
         <div class="card">
           <div class="card-header text-center py-3">
             <h5 class="mb-0 text-center">
@@ -296,7 +298,7 @@
       
           </div>
         </div>
-      </section>
+   
       <!--Section: Statistics with subtitles-->
 
     
@@ -305,17 +307,7 @@
  </body>
    <!--Main layout-->
   <!-- MDB -->
-<script>
-  function mail(){
-    var email = ['start-zup@gmail.com'];
 
-var subject = 'Entretien de planification pour le candidat: ';
- var body = 'Salut star_ZUP \n, je vais choisir le candidat avec le code : pour un entretien. Je suis disponible pour les trois plages horaires suivantes  :';
-var mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-window.location.href = mailtoLink;
-  }
-
-</script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
   <script

@@ -57,7 +57,7 @@ $result = $query->fetch();
 
     @media (min-width: 991.98px) {
       main {
-        padding-left: 240px;
+        width: 100%;
       }
     }
 
