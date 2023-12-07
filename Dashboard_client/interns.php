@@ -3,7 +3,7 @@
    // Database Connection
    include '../config.php';
    session_start();
-   $queryEtudiants = "SELECT * FROM student where status='active'";
+   $queryEtudiants = "SELECT * FROM student where status='active' AND pretEmploi='oui'";
    $stmtEtudiants = $conn->prepare($queryEtudiants);
    $stmtEtudiants ->execute();
    $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);

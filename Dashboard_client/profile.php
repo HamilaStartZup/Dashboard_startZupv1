@@ -9,7 +9,7 @@ if (!isset($_SESSION['email'])) {
 
 // Fonction pour récupérer les données des étudiants selon student.code_profile dans l'url
 $code_profile = $_GET['code_profile'];
-$query = $conn->prepare("SELECT * FROM student WHERE code_profile = '$code_profile'"); // $code_profile est récupéré dans l'url
+$query = $conn->prepare("SELECT * FROM student WHERE code_profile = '$code_profile' AND status='active' AND pretEmploi='oui' "); // $code_profile est récupéré dans l'url
 $query->execute();
 $result = $query->fetch();
 ?>
