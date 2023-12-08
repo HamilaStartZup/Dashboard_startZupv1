@@ -61,6 +61,10 @@
     var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
     var title = event.title;
     var id = event.id;
+    var email=event.email;
+    var code_profile=event.code_profile;
+    var designation=event.designation;
+
     $.ajax({
      url:"./calendarAdmin/update.php",
      type:"POST",
@@ -68,7 +72,7 @@
      success:function(){
       calendar.fullCalendar('refetchEvents');
       alert('Event Update');
-      mail();
+      mail(email,start,code_profile,designation);
    
     
     
@@ -84,15 +88,18 @@
     var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
     var title = event.title;
     var id = event.id;
+    var email=event.email;
+    var designation=event.designation;
+    var code_profile=event.code_profile;
     $.ajax({
      url:"./calendarAdmin/update.php",
      type:"POST",
-     data:{title:title, start:start, end:end, id:id},
+     data:{title:title, start:start, end:end, id:id },
      success:function()
      {
       calendar.fullCalendar('refetchEvents');
       alert("Event Updated");
-      mail();
+      mail(email,start,code_profile,designation);
      }
     });
    },
@@ -306,11 +313,12 @@
    <!--Main layout-->
   <!-- MDB -->
 <script>
-  function mail(){
-    var email = ['start-zup@gmail.com'];
+  //fonction email s'excute  apre la mise a jour d'entretien
+  function mail(emailClient,start,code_profile,designation){
+    var email = ['start-zup@gmail.com',emailClient];
 
-var subject = 'Entretien de planification pour le candidat: ';
- var body = 'Salut star_ZUP \n, je vais choisir le candidat avec le code : pour un entretien. Je suis disponible pour les trois plages horaires suivantes  :';
+var subject = 'Mettre à jour l\'entretien du candidat: '+code_profile+' _'+designation;
+ var body = 'Bonjour à vous, madame \/ monsieur \n Start-Up a choisi de changer la date de l\'entretien pour le:'+ start;
 var mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 window.location.href = mailtoLink;
   }

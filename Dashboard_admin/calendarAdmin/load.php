@@ -6,7 +6,7 @@ $connect = new PDO('mysql:host=localhost;dbname=start_zup', 'root', '');
 
 $data = array();
 
-$query = "SELECT username as titles, status ,creneaux.id as id , start_event,end_event FROM `creneaux` INNER JOIN (SELECT username, description , rdv.id FROM `rdv` INNER JOIN users ON rdv.users_id=users.id) as R ON R.id=creneaux.id_rdv where status='oui'   ORDER BY id";
+$query = "SELECT `Email`,`username` ,`code_profile` ,`designation` , RDVInfo.id,`start_event`,`end_event`,nom,prenom FROM `users` INNER JOIN (SELECT `code_profile` ,`designation` , C.creneauxID as id,`start_event`,`end_event`,clientID,nom,prenom FROM student INNER JOIN (SELECT creneaux.id as creneauxID,`start_event`,`end_event`,rdv.student_id as student ,rdv.users_id as clientID FROM `creneaux` INNER JOIN rdv ON creneaux.`id_rdv`=rdv.id) as C ON student.id=C.student)as RDVInfo ON users.id= RDVInfo.clientID  ORDER BY id";
 
 $statement = $connect->prepare($query);
 
@@ -18,9 +18,13 @@ foreach($result as $row)
 {
  $data[] = array(
   'id'   => $row["id"],
-  'title'   =>'entretien de dhdhd  chez : '.$row["titles"],
+  'title'   =>'Entretien de  '.$row["nom"] .' '.$row["prenom"] .'_ '.$row["designation"] .'  chez : '.$row["username"].' avec  code profile : '.$row["code_profile"],
   'start'   => $row["start_event"],
-  'end'   => $row["end_event"]
+  'end'   => $row["end_event"],
+  'email'   => $row["Email"],
+  'code_profile' => $row["code_profile"],
+  'designation' => $row["designation"]
+
  );
 }
 

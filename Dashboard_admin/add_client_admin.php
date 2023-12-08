@@ -104,11 +104,7 @@
        <i class="fas fa-user-graduate me-3"></i
          ><span>Ajouter des candidats</span>
      </a>
-     <a
-        href="#"
-        class="list-group-item list-group-item-action py-2 ripple"
-        ><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a
-       >
+                                        <a href="List_rdv.php" class="list-group-item list-group-item-action py-2 ripple  " ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a>
      <a
         href="#"
         class="list-group-item list-group-item-action py-2 ripple"
@@ -116,10 +112,10 @@
        ><span>Analytics</span></a
        >
      <a
-        href="#"
+        href="./Calendar.php"
         class="list-group-item list-group-item-action py-2 ripple"
         >
-       <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
+ <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
      </a>
      <a
         href="#"
