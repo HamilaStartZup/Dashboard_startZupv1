@@ -3,14 +3,23 @@
 include '../config.php';
 session_start();
 
-if(!isset($_SESSION['email'])){
-  header("Location: ../failedAccess.php");
-}
-if (isset($_POST['newSkill'])) {
-    $newSkill = $_POST['newSkill'];
-    $sqlInsertSkill = "INSERT INTO skills (nom_skills) VALUES ('$newSkill')";
-    $sqlInsertSkillResult = $conn->prepare($sqlInsertSkill);
-    $sqlInsertSkillResult->execute();
+// if(!isset($_SESSION['email'])){
+//   header("Location: ../failedAccess.php");
+// }
+if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+    if (isset($_POST['newSkill']) && !empty($_POST['newSkill'])) {
+        $newSkill = trim($_POST['newSkill']); // trim supprime les espaces avant et après la chaine de caractère
+        if ($newSkill != ""){
+            $sqlInsertSkill = "INSERT INTO skills (nom_skills) VALUES ('$newSkill')";
+            $sqlInsertSkillResult = $conn->prepare($sqlInsertSkill);
+            $sqlInsertSkillResult->execute();
+            echo "<script>alert('Compétence ajoutée avec succès !')</script>";
+        } else {
+            echo "<script>alert('Veuillez bien remplir le champ !')</script>";
+        }
+    } else {
+        echo "<script>alert('Veuillez bien remplir le champ !')</script>";
+    }
 }
 ?>
 <!DOCTYPE html>
