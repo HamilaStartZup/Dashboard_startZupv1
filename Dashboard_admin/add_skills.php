@@ -3,9 +3,9 @@
 include '../config.php';
 session_start();
 
-// if(!isset($_SESSION['email'])){
-//   header("Location: ../failedAccess.php");
-// }
+if ($_SESSION['status'] != "Admin") {
+  header("Location: ../failedAccess.php");
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     if (isset($_POST['newSkill']) && !empty($_POST['newSkill'])) {
         $newSkill = trim($_POST['newSkill']); // trim supprime les espaces avant et après la chaine de caractère
