@@ -2,7 +2,8 @@
 
 //update.php
 
-$connect = new PDO('mysql:host=localhost;dbname=start_zup', 'root', '');
+session_start();
+include '../../config.php'; 
 
 if(isset($_POST["id"]))
 {
