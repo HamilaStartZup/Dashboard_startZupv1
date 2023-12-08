@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-                        <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
+                  <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
                     </a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
