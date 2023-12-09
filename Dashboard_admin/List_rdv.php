@@ -8,7 +8,7 @@ if ($_SESSION['status'] != "Admin") {
 }
 
  // requête pour récupérer la liste des  client qui ont  des  rdv et le nombre de  rdv  par  client
- $queryRDV = "SELECT  users_id,username,logo,rdv_number,Email  from users INNER JOIN (SELECT COUNT(*) as rdv_number,`users_id` FROM `rdv` GROUP BY`users_id`) as R ON users.id=R.users_id;";
+ $queryRDV = "SELECT  users_id,username,logo,rdv_number,Email from users INNER JOIN (SELECT COUNT(*) as rdv_number,`users_id` FROM `rdv` GROUP BY`users_id`) as R ON users.id=R.users_id;";
  $stmtRDV = $conn->prepare($queryRDV);
  $stmtRDV ->execute();
  $RDVS = $stmtRDV ->fetchAll(PDO::FETCH_ASSOC);

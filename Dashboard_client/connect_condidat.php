@@ -12,7 +12,7 @@ $lastIdRDV= "SELECT `id`FROM `rdv` ORDER BY `reg_date` DESC LIMIT 1";
                    $lastIdCon= $conn->prepare($lastIdRDV);
                    $lastIdCon->execute();
                    $resultlastId=$lastIdCon->fetch(PDO::FETCH_ASSOC);
- $addCR = "INSERT INTO `creneaux`( `creneaux_date`, `id_rdv`) VALUES ('$_POST[C1]',$resultlastId[id]),('$_POST[C2]','$resultlastId[id]'),('$_POST[C3]','$resultlastId[id]')";
+ $addCR = "INSERT INTO `creneaux`( `start_event`, `id_rdv` , `end_event`) VALUES ('$_POST[C1]',$resultlastId[id],ADDTIME('$_POST[C1]', '01:00:00') ),('$_POST[C2]','$resultlastId[id]',ADDTIME('$_POST[C2]', '01:00:00') ),('$_POST[C3]','$resultlastId[id]',ADDTIME('$_POST[C3]', '01:00:00') )";
                    $conn->exec($addCR);         
 
 

@@ -82,11 +82,7 @@ if ($_SESSION['status'] == "Admin") {
   body {
     background-color: #fbfbfb;
   }
-  @media (min-width: 991.98px) {
-    main {
-      padding-left: 240px;
-    }
-  }
+
 
   /* Sidebar */
   .sidebar {

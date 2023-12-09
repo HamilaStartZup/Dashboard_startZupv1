@@ -190,11 +190,11 @@ if ($_SESSION['status'] != "Admin") {
            $Creneaux = $stmtCreneaux->fetchAll(PDO::FETCH_ASSOC);
           foreach($Creneaux as $C){
 
-   echo" <form action='validate_rdv.php?code=$Interview[code_profile]&userMail=$_GET[email]' method='post'>
+   echo" <form action='validate_rdv.php?code=$Interview[code_profile]&userMail=$_GET[email]&id=$_GET[users_id]' method='post'>
 
    <div class='form-check'>
       <input class='form-check-input' type='radio' value='$C[id]'  name='creneaux' id='flexCheckDefault' required='required'/>
-      <label class='form-check-label' for='flexCheckDefault'>$C[creneaux_date]</label>
+      <label class='form-check-label' for='flexCheckDefault'>$C[start_event]</label>
     </div>";
     
 

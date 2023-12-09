@@ -14,6 +14,7 @@ $conn->exec($validateRDV);
      var body = 'Salut star_ZUP \n, je vais choisir le candidat avec le code : pour un entretien. Je suis disponible pour les trois plages horaires suivantes  :';
     var mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
+    document.location.href="./mange_rdv.php?users_id=<?php echo$_GET['id']?>&email=<?php echo$_GET['userMail']?>"; 
    
   
 </script>
