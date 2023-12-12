@@ -418,7 +418,7 @@ $Next = $page + 1;
         background-color: #e7d696;
         color: #1a160c;
         border: none;
-        margin: 0 0.5rem;
+        margin: 0 0.5rem 2rem 0.5rem; /* sens: haut et bas, gauche et droite */
     }
     .pagination a:hover{
         background-color: #1a160c;
