@@ -3,11 +3,27 @@
 // Database Connection
 include '../config.php';
 session_start();
-$queryEtudiants = "SELECT * FROM student where status='active' AND pretEmploi='oui'";
+
+// Script qui permet d'afficher les étudiants 20 par 20
+$limit = 20;
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+$queryEtudiants = "SELECT * FROM student where status='active' AND pretEmploi='oui' LIMIT $start, $limit";
 $stmtEtudiants = $conn->prepare($queryEtudiants);
 $stmtEtudiants->execute();
 $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
 
+$queryTotal = "SELECT COUNT(*) AS total FROM student where status='active' AND pretEmploi='oui'";
+$stmtTotal = $conn->prepare($queryTotal);
+$stmtTotal->execute();
+
+$resultTotal = $stmtTotal->fetch(PDO::FETCH_ASSOC);
+$total = $resultTotal['total'];
+$pages = ceil($total / $limit);
+
+$Previous = $page - 1;
+$Next = $page + 1;
 
 ?>
 <!DOCTYPE html>
@@ -45,6 +61,9 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Saira+Semi+Condensed:300,400,700"/>
 
   <style>
+    body{
+      overflow-x: hidden;
+    }
     /* The actual timeline (the vertical ruler) */
     .main-timeline-2 {
       position: relative;
@@ -176,214 +195,245 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
 
     /* css card fifa */
     .btn-fav-student{
-	border: none;
-	background-color: transparent;
-	font-size: 1.5rem;
-}
-.btn-fav-student:focus{
-	outline: none;
-	box-shadow: none;
-}
-.fut-player-card {
-	cursor: pointer;
-  margin: 20px;
-	position: relative;
-	width: 300px;
-	height: 485px;
-	background-image: url(https://selimdoyranli.com/cdn/fut-player-card/img/card_bg.png);
-	background-position: center center;
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	padding: 3.8rem 0;
-	z-index: 2;
-	-webkit-transition: 200ms ease-in;
-	-o-transition: 200ms ease-in;
-	transition: 200ms ease-in;
-}
+      border: none;
+      background-color: transparent;
+      font-size: 1.5rem;
+    }
+    .btn-fav-student:focus{
+      outline: none;
+      box-shadow: none;
+    }
+    .fut-player-card {
+      cursor: pointer;
+      margin: 20px;
+      position: relative;
+      width: 300px;
+      height: 485px;
+      background-image: url(https://selimdoyranli.com/cdn/fut-player-card/img/card_bg.png);
+      background-position: center center;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      padding: 3.8rem 0;
+      z-index: 2;
+      -webkit-transition: 200ms ease-in;
+      -o-transition: 200ms ease-in;
+      transition: 200ms ease-in;
+    }
 
-.fut-player-card:hover {
-  -webkit-transform: scale(1.05);
-  -ms-transform: scale(1.05);
-  transform: scale(1.05);
-  z-index: 3;
-}
+    .fut-player-card:hover {
+      -webkit-transform: scale(1.05);
+      -ms-transform: scale(1.05);
+      transform: scale(1.05);
+      z-index: 3;
+    }
 
-.fut-player-card .player-card-top {
-	position: relative;
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	color: #e9cc74;
-	padding: 0 1.5rem;
-}
+    .fut-player-card .player-card-top {
+      position: relative;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      color: #e9cc74;
+      padding: 0 1.5rem;
+    }
 
-.fut-player-card .player-card-top .player-master-info {
-	/* position: absolute; */
-	line-height: 2.2rem;
-	font-weight: 300;
-	padding: 1.5rem 0;
-	text-transform: uppercase;
-}
+    .fut-player-card .player-card-top .player-master-info {
+      /* position: absolute; */
+      line-height: 2.2rem;
+      font-weight: 300;
+      padding: 1.5rem 0;
+      text-transform: uppercase;
+    }
 
-.fut-player-card .player-card-top .player-master-info .player-rating {
-	font-size: 2rem;
-}
+    .fut-player-card .player-card-top .player-master-info .player-rating {
+      font-size: 2rem;
+    }
 
-.fut-player-card .player-card-top .player-master-info .player-position {
-	font-size: 1.4rem;
-}
+    .fut-player-card .player-card-top .player-master-info .player-position {
+      font-size: 1.4rem;
+    }
 
-.fut-player-card .player-card-top .player-master-info .player-nation {
-	display: block;
-	width: 2rem;
-	height: 25px;
-	margin: 0.3rem 0;
-}
+    .fut-player-card .player-card-top .player-master-info .player-nation {
+      display: block;
+      width: 2rem;
+      height: 25px;
+      margin: 0.3rem 0;
+    }
 
-.fut-player-card .player-card-top .player-master-info .player-nation img {
-	width: 100%;
-	height: 100%;
-	-o-object-fit: contain;
-	object-fit: contain;
-}
+    .fut-player-card .player-card-top .player-master-info .player-nation img {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: contain;
+      object-fit: contain;
+    }
 
-.fut-player-card .player-card-top .player-master-info .player-club {
-	display: block;
-	width: 2.1rem;
-	height: 40px;
-}
+    .fut-player-card .player-card-top .player-master-info .player-club {
+      display: block;
+      width: 2.1rem;
+      height: 40px;
+    }
 
-.fut-player-card .player-card-top .player-master-info .player-club img {
-	width: 100%;
-	height: 100%;
-	-o-object-fit: contain;
-	object-fit: contain;
-}
+    .fut-player-card .player-card-top .player-master-info .player-club img {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: contain;
+      object-fit: contain;
+    }
 
-.fut-player-card .player-card-top .player-picture {
-	width: 200px;
-	margin: 0 auto;
-	overflow: hidden;
-}
+    .fut-player-card .player-card-top .player-picture {
+      width: 200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
 
-.fut-player-card .player-card-top .player-picture img {
-	width: 100%;
-	height: 100%;
-	-o-object-fit: contain;
-	object-fit: contain;
-	position: relative;
-	right: -1rem;
-	bottom: 0;
-}
+    .fut-player-card .player-card-top .player-picture img {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: contain;
+      object-fit: contain;
+      position: relative;
+      right: -1rem;
+      bottom: 0;
+    }
 
-.fut-player-card .player-card-top .player-picture .player-extra {
-	position: absolute;
-	right: 0;
-	bottom: -0.5rem;
-	overflow: hidden;
-	font-size: 1rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	width: 100%;
-	height: 2rem;
-	padding: 0 1.5rem;
-	text-align: right;
-	background: none;
-}
+    .fut-player-card .player-card-top .player-picture .player-extra {
+      position: absolute;
+      right: 0;
+      bottom: -0.5rem;
+      overflow: hidden;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      width: 100%;
+      height: 2rem;
+      padding: 0 1.5rem;
+      text-align: right;
+      background: none;
+    }
 
-.fut-player-card .player-card-top .player-picture .player-extra span {
-	margin-left: 0.6rem;
-	text-shadow: 2px 2px #333;
-}
+    .fut-player-card .player-card-top .player-picture .player-extra span {
+      margin-left: 0.6rem;
+      text-shadow: 2px 2px #333;
+    }
 
-.fut-player-card .player-card-bottom {
-	position: relative;
-}
+    .fut-player-card .player-card-bottom {
+      position: relative;
+    }
 
-.fut-player-card .player-card-bottom .player-info {
-	display: block;
-	padding: 0.3rem 0;
-	color: #e9cc74;
-	width: 90%;
-	margin: 0 auto;
-	height: auto;
-	position: relative;
-	z-index: 2;
-}
+    .fut-player-card .player-card-bottom .player-info {
+      display: block;
+      padding: 0.3rem 0;
+      color: #e9cc74;
+      width: 90%;
+      margin: 0 auto;
+      height: auto;
+      position: relative;
+      z-index: 2;
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-name {
-	width: 100%;
-	display: block;
-	text-align: center;
-	font-size: 1.6rem;
-	text-transform: uppercase;
-	border-bottom: 2px solid rgba(233, 204, 116, 0.1);
-	padding-bottom: 0.3rem;
-	overflow: hidden;
-}
+    .fut-player-card .player-card-bottom .player-info .player-name {
+      width: 100%;
+      display: block;
+      text-align: center;
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      border-bottom: 2px solid rgba(233, 204, 116, 0.1);
+      padding-bottom: 0.3rem;
+      overflow: hidden;
+    }
 
-#code-etu{
-	font-size: 0.7rem;
+    #code-etu{
+      font-size: 0.7rem;
 
-}
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-name span {
-	display: block;
-	text-shadow: 2px 2px #111;
-}
+    .fut-player-card .player-card-bottom .player-info .player-name span {
+      display: block;
+      text-shadow: 2px 2px #111;
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-features {
-  height: 75px !important;
-	margin: 0.5rem auto;
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-box-pack: center;
-	-ms-flex-pack: center;
-	align-items: center;
-  justify-content: space-around;
-}
+    .fut-player-card .player-card-bottom .player-info .player-features {
+      height: 75px !important;
+      margin: 0.5rem auto;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      align-items: center;
+      justify-content: space-around;
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-features .player-features-col {
-  width: 130px !important;
-  height: 100%;
-  margin: 0 0.5rem;
-	/* border-right: 2px solid rgba(233, 204, 116, 0.1); */
-}
+    .fut-player-card .player-card-bottom .player-info .player-features .player-features-col {
+      width: 130px !important;
+      height: 100%;
+      margin: 0 0.5rem;
+      /* border-right: 2px solid rgba(233, 204, 116, 0.1); */
+    }
 
-.barre-features-col{
-  width: 2px !important;
-  height: 100%;
-  background-color: rgba(233, 204, 116, 0.1);
-}
+    .barre-features-col{
+      width: 2px !important;
+      height: 100%;
+      background-color: rgba(233, 204, 116, 0.1);
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-features .player-features-col span {
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	font-size: 1.2rem;
-	text-transform: uppercase;
-}
+    .fut-player-card .player-card-bottom .player-info .player-features .player-features-col span {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-features .player-features-col span .player-feature-value {
-	margin-right: 0.3rem;
-	font-weight: 700;
-}
+    .fut-player-card .player-card-bottom .player-info .player-features .player-features-col span .player-feature-value {
+      margin-right: 0.3rem;
+      font-weight: 700;
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-features .player-features-col span .player-feature-title {
-	font-weight: 300;
-}
+    .fut-player-card .player-card-bottom .player-info .player-features .player-features-col span .player-feature-title {
+      font-weight: 300;
+    }
 
-.fut-player-card .player-card-bottom .player-info .player-features .player-features-col:last-child {
-	border: 0;
-} 
+    .fut-player-card .player-card-bottom .player-info .player-features .player-features-col:last-child {
+      border: 0;
+    } 
 
-.skills-row{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
+    .fut-player-card a{
+      text-decoration: none;
+      color: #e9cc74;
+    }
+
+    .skills-row{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+    .pagination{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .pagination a{
+        background-color: #e7d696;
+        color: #1a160c;
+        border: none;
+        margin: 0 0.5rem;
+    }
+    .pagination a:hover{
+        background-color: #1a160c;
+        color: #e7d696;
+    }
+    .pagination a:active{
+        background-color: #e7d696 !important;
+        color: #1a160c !important;
+    }
+    .pagination a:focus{
+        background-color: #1a160c;
+        color: #e7d696;
+        box-shadow: none;
+    }
+    
   </style>
 
 </head>
@@ -486,84 +536,50 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
         </div>
       </div>
     </div>
-    <!-- row2 -->
-    <!-- <div class="row" style="margin-top: 8px">
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <div class="table-responsive">
-              <table id="employee_data" class="table align-middle mb-0 bg-white ">
-                <thead class="bg-light">
-                  <tr>
-                    <td>code profile</td>
-                    <td>Designation</td>
-                    <td>Disponibility</td>
-                    <td>Competences</td>
-                    <td>Ajouter favoris</td>
-                    <td>Plus de détails</td>
-
-
-
-                  </tr>
-                </thead>
-                <?php
-                foreach ($etudiants as $row) {
-                  echo '  
-                              <tr>  
-                                   <td> <span class="badge badge-primary rounded-pill d-inline"
-                                   >' . $row["code_profile"] . '</span></td>  
-                                   <td>' . $row["designation"] . '</td>';
-                  if ($row["disponibility"] > date("Y-m-d")) {
-                    $Disponibility = $row["disponibility"];
-                  } else {
-                    $Disponibility = 'immédiatement';
-                  }
-                  echo '<td><span class="badge bg-success">' . $Disponibility . '</span></td>';
-                  //récupérer les compétence de candidat
-                  $querySkills = "SELECT `nom_skills` FROM `skills` WHERE `id`IN (SELECT `id_skills`FROM `student_skills` WHERE `id_student`=$row[id])";
-                  $stmtSkills = $conn->prepare($querySkills);
-                  $stmtSkills->execute();
-                  $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
-                  echo ' <td>';
-                  foreach ($Skills as $x) {
-
-
-
-                    echo '<span class="badge bg-warning">' . $x["nom_skills"] . '</span>';
-                  }
-                  echo '</span></td>';
-                  //TEST Favorites EXIST
-                  $condidatId = $row['id'];
-                  $query = $conn->prepare("SELECT `id_client`,`id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id] AND `id_candidate`=$condidatId");
-                  $query->execute();
-                  $Favorites = $query->fetch();
-                  echo "<td>";
-                  if ($Favorites) {
-                    echo "<form action='./removeFavorites.php' method='POST'><button type='submit'  class='btn btn-secondary' value='$condidatId' name='condidatId'>Retirer de la liste de favoris <span class='bi bi-bookmark'></span></button> </form>";
-                  } else {
-
-                    echo " <form action='./addFavorites.php' method='POST'><button type='submit'  class='btn btn-info' value='$condidatId' name='condidatId'>Ajouter  aux favoris <span class='bi bi-bookmark'></span></button></form>
-                                 ";
-                  }
-                  echo "</td> ";
-                  $url = "./profile.php?code_profile=" . $row["code_profile"];
-                  echo "<td> <a  href='$url'><button type='button' class=btn btn-primary'> Edit<span class='bi bi-pencil-square'></span></button>
-                                   </a></td>  
-                              </tr>  
-                              ";
-                }
-                ?>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
 
     <div class="row skills-row">
-      <?php
+      <form action="">
+        <input class="form-control" type="text" name="searchBar" placeholder="Rechercher un candidat" aria-label="Search" style="width: 50%; margin: 1rem auto;">
+      </form>
+      <?php 
+      // pour éviter l'erreur de undefined index
+      $searchBar = isset($_GET['searchBar']) ? $_GET['searchBar'] : null;
+      if ($searchBar) {
+        // rechercher par compétence
+        $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
+                                FROM student
+                                JOIN student_skills ON student.`id` = student_skills.`id_student`
+                                JOIN skills ON student_skills.`id_skills` = skills.`id`
+                                WHERE skills.`nom_skills` LIKE :searchBar
+                                GROUP BY student.`id`";
+        $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
+        $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
+        if ($stmtSearchEtudiants->rowCount() == 0) {
+          // rechercher par soft skills
+          $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
+                                  FROM student
+                                  JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
+                                  JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
+                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar
+                                  GROUP BY student.`id`";
+            $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
+            $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
+          }
+
+        
+        if ($stmtSearchEtudiants->rowCount() == 0) {
+          $etudiants = $etudiants;
+          echo '<div class="alert alert-danger" role="alert" style="width: 50%; margin: 1rem auto;">
+          Aucun candidat trouvé
+          </div>';
+        } else {
+          $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
+        }
+      }
+      
       foreach ($etudiants as $row) {
         echo '<div class="fut-player-card">
+        <a href="./profile.php?code_profile='.$row['code_profile'].'">
         <div class="player-card-top">
           <div class="player-master-info">
             <div class="player-rating">
@@ -599,9 +615,9 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
               $query->execute();
               $Favorites=$query->fetch();
               if($Favorites){
-                echo "<form action='./removeFavorites.php' method='POST'><button  id='starButton' type='submit' class='btn btn-fav-student fav' value='$condidatId' name='condidatId'><i class='fas fa-star' style='color: #ffdd00;'></i></button></form>";
+                echo "<form action='./removeFavorites.php' method='POST'><button title='Retirer des favoris' id='starButton' type='submit' class='btn btn-fav-student fav' value='$condidatId' name='condidatId'><i class='fas fa-star' style='color: #ffdd00;'></i></button></form>";
               } else {
-                echo "<form action='./addFavorites.php' method='POST'><button type='submit'  id='starButton' class='btn btn-fav-student not-fav' value='$condidatId' name='condidatId'><i class='far fa-star' style='color: #ffdd00;'></i></button></form>";
+                echo "<form action='./addFavorites.php' method='POST'><button title='Mettre en favori' type='submit'  id='starButton' class='btn btn-fav-student not-fav' value='$condidatId' name='condidatId'><i class='far fa-star' style='color: #ffdd00;'></i></button></form>";
               }
               echo '</span>
             </div>
@@ -653,13 +669,20 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
               $stmtSoftSkills ->execute();
               $SoftSkills =  $stmtSoftSkills ->fetchAll(PDO::FETCH_ASSOC);
 
+              if ($SoftSkills == null) {
+                $SoftSkills = array(
+                  array(
+                    "nom_soft_skills" => "Aucune compétence soft",
+                    "value_skills" => 0
+                  )
+                );
+              }
               foreach($SoftSkills as $softSkill){
                 $moyenneSoftSkills = 0;
                 $total = 0;
                 $total += $softSkill["value_skills"];
                 $diviseur = count($SoftSkills);
                 $moyenneSoftSkills = $total / $diviseur;
-
               }
                 echo '<span>
                   <div class="player-feature-value">'.$moyenneSoftSkills.'</div>
@@ -678,12 +701,27 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
             echo'</div>
           </div>
         </div>
-      </div>';
+        </a>
+        </div>';
       }  
       ?>
-    </div>
+      
     </div>
 
+    <?php
+      if ($searchBar) {
+        $pages = 1;
+      } else {
+        echo '
+          <div class="pagination">';
+              for ($i = 1; $i <= $pages; $i++):
+                  echo '<a href="interns.php?page='; echo $i .'" class="btn">'; echo $i.'</a>';
+              endfor;
+          echo '</div>';
+      }
+    ?>
+    
+  </div>
 
 
 
@@ -692,12 +730,12 @@ $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
   </main>
   
   <!-- MDB -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
+  <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
   <script>
     $(document).ready(function() {
       $('#employee_data').DataTable();
     });
-  </script>
+  </script> -->
 </body>
 
 </html>
