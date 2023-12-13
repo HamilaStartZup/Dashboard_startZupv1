@@ -536,15 +536,54 @@ $Next = $page + 1;
         </div>
       </div>
     </div>
-
+    <?php $disponibility = isset($_GET['disponibility']) ? $_GET['disponibility'] : null; ?>
+    <form class="form-inline" action="" style="width: 80%; margin: 1rem auto; justify-content: center;">
+      <input class="form-control" type="text" name="searchBar" placeholder="Rechercher un candidat" aria-label="Search" style="width: 50%; margin: 10px;">
+      <input class="form-check-input" type="checkbox" name="disponibility" id="disponibility" value="disponibility" style="margin: 10px;" <?php echo ($disponibility === 'disponibility') ? 'checked' : ''; ?>> Disponible uniquement </input>
+      <button class="btn btn-outline-success" type="submit" style="margin: 10px;">Rechercher</button>
+    </form>
     <div class="row skills-row">
-      <form action="">
-        <input class="form-control" type="text" name="searchBar" placeholder="Rechercher un candidat" aria-label="Search" style="width: 50%; margin: 1rem auto;">
-      </form>
-      <?php 
+      <?php
       // pour éviter l'erreur de undefined index
       $searchBar = isset($_GET['searchBar']) ? $_GET['searchBar'] : null;
-      if ($searchBar) {
+      if ($searchBar && $disponibility == "disponibility") {
+        // rechercher par compétence
+        $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
+                                FROM student
+                                JOIN student_skills ON student.`id` = student_skills.`id_student`
+                                JOIN skills ON student_skills.`id_skills` = skills.`id`
+                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`disponibility` < CURDATE()
+                                GROUP BY student.`id`";
+        $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
+        $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
+        if ($stmtSearchEtudiants->rowCount() > 0) {
+          $requete = true;
+        } else {
+          $requete = false;
+        }
+        if ($stmtSearchEtudiants->rowCount() == 0) {
+          // rechercher par soft skills
+          $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
+                                  FROM student
+                                  JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
+                                  JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
+                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`disponibility` > CURDATE()
+                                  GROUP BY student.`id`";
+            $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
+            $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
+          }
+          if ($stmtSearchEtudiants->rowCount() > 0) {
+            $requete = true;
+          } else {
+            $requete = false;
+          }
+        if ($stmtSearchEtudiants->rowCount() == 0) {
+          $etudiants = $etudiants;
+        } else {
+          $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
+        }
+      }
+      elseif ($searchBar && $disponibility == null) {
         // rechercher par compétence
         $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
                                 FROM student
@@ -554,6 +593,11 @@ $Next = $page + 1;
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
+        if ($stmtSearchEtudiants->rowCount() > 0) {
+          $requete = true;
+        } else {
+          $requete = false;
+        }
         if ($stmtSearchEtudiants->rowCount() == 0) {
           // rechercher par soft skills
           $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
@@ -566,150 +610,198 @@ $Next = $page + 1;
             $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
           }
 
-        
+          if ($stmtSearchEtudiants->rowCount() > 0) {
+            $requete = true;
+          } else {
+            $requete = false;
+          }
         if ($stmtSearchEtudiants->rowCount() == 0) {
           $etudiants = $etudiants;
-          echo '<div class="alert alert-danger" role="alert" style="width: 50%; margin: 1rem auto;">
-          Aucun candidat trouvé
-          </div>';
         } else {
           $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
         }
+      } elseif ($searchBar == null && $disponibility == "disponibility") {
+        // rechercher par compétence
+        $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
+                                FROM student
+                                JOIN student_skills ON student.`id` = student_skills.`id_student`
+                                JOIN skills ON student_skills.`id_skills` = skills.`id`
+                                WHERE student.`disponibility` < CURDATE()
+                                GROUP BY student.`id`";
+        $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
+        $stmtSearchEtudiants->execute();
+        if ($stmtSearchEtudiants->rowCount() > 0) {
+          $requete = true;
+        } else {
+          $requete = false;
+        }
+        if ($stmtSearchEtudiants->rowCount() == 0) {
+          // rechercher par soft skills
+          $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
+                                  FROM student
+                                  JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
+                                  JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
+                                  WHERE student.`disponibility` < CURDATE()
+                                  GROUP BY student.`id`";
+            $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
+            $stmtSearchEtudiants->execute();
+          }
+
+          if ($stmtSearchEtudiants->rowCount() > 0) {
+            $requete = true;
+          } else {
+            $requete = false;
+          }
+        if ($stmtSearchEtudiants->rowCount() == 0) {
+          $etudiants = $etudiants;
+        } else {
+          $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
+        }
+      } elseif ($searchBar == null && $disponibility == null) {
+        $etudiants = $etudiants; // variable qui contient les étudiants de base
+        $requete = true;
       }
       
-      foreach ($etudiants as $row) {
-        echo '<div class="fut-player-card">
-        <a href="./profile.php?code_profile='.$row['code_profile'].'">
-        <div class="player-card-top">
-          <div class="player-master-info">
-            <div class="player-rating">
-              <span>97</span>
-            </div>
-            <div class="player-position">
-              <span></span>
-            </div>
-            <div class="player-club">
-              <img src="../images/drapeau/allemagne.png" alt="" draggable="false"/>
-            </div>
-            <div class="player-club">
-              <img src="../images/drapeau/royaume-uni.png" alt="" draggable="false"/>
-            </div>
-          </div>
-          <div class="player-picture">';
-            if ($row['gender'] == "homme"){
-              echo '<img src="../images/homme-bg-remove.png" alt="avatar" draggable="false"/>';
-            } else {
-              echo '<img src="../images/femme-bg-remove.png" alt="avatar" draggable="false"/>';
-            }
-            echo '<div class="player-extra">
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-          <div class="player-master-info">
-            <div class="player-rating">
-              <span>';
-              //TEST Favorites EXIST
-              $condidatId=$row['id'];
-              $query= $conn->prepare("SELECT `id_client`,`id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id] AND `id_candidate`=$condidatId");
-              $query->execute();
-              $Favorites=$query->fetch();
-              if($Favorites){
-                echo "<form action='./removeFavorites.php' method='POST'><button title='Retirer des favoris' id='starButton' type='submit' class='btn btn-fav-student fav' value='$condidatId' name='condidatId'><i class='fas fa-star' style='color: #ffdd00;'></i></button></form>";
-              } else {
-                echo "<form action='./addFavorites.php' method='POST'><button title='Mettre en favori' type='submit'  id='starButton' class='btn btn-fav-student not-fav' value='$condidatId' name='condidatId'><i class='far fa-star' style='color: #ffdd00;'></i></button></form>";
-              }
-              echo '</span>
-            </div>
-          </div>
-        </div>
-        <div class="player-card-bottom">
-          <div class="player-info">
-            <!-- Player Name-->
-            <div class="player-name">
-              <span>'.$row["code_profile"].'</span>
-              <small id="code-etu">'.$row["designation"].'</small>
-            </div>
-            <!-- Player Features-->';
-            //récupérer les compétence de candidat
-            $querySkills = "SELECT skills.`nom_skills`, student_skills.`value_skills`
-                            FROM `skills`
-                            INNER JOIN `student_skills` ON skills.`id` = student_skills.`id_skills`
-                            WHERE student_skills.`id_student` = $row[id]
-                            ORDER BY student_skills.`value_skills` DESC";
-            $stmtSkills = $conn->prepare($querySkills);
-            $stmtSkills ->execute();
-            $Skills =  $stmtSkills ->fetchAll(PDO::FETCH_ASSOC);
-            echo '<div class="player-features">
-              <div class="player-features-col">';
-              // Les 3 premières compétences
-              $numSkills = count($Skills);
-                for($i = 0; $i < min(3, $numSkills); $i++){
-                  echo '<span>
-                    <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
-                    <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
-                  </span>';
-                };
-                echo'</div>
-                <div class="barre-features-col">
-                </div>
-              <div class="player-features-col">';
-                for($i=3; $i < min(6, $numSkills); $i++){
-                  echo '<span>
-                    <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
-                    <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
-                  </span>';
-                };
-              $querySoftSkills ="SELECT *
-                                FROM soft_skills
-                                JOIN student_soft_skills ON soft_skills.id = student_soft_skills.soft_skills_id
-                                JOIN student ON student.id = student_soft_skills.student_id
-                                WHERE student.id = $row[id]";
-              $stmtSoftSkills = $conn->prepare($querySoftSkills);
-              $stmtSoftSkills ->execute();
-              $SoftSkills =  $stmtSoftSkills ->fetchAll(PDO::FETCH_ASSOC);
-
-              if ($SoftSkills == null) {
-                $SoftSkills = array(
-                  array(
-                    "nom_soft_skills" => "Aucune compétence soft",
-                    "value_skills" => 0
-                  )
-                );
-              }
-              foreach($SoftSkills as $softSkill){
-                $moyenneSoftSkills = 0;
-                $total = 0;
-                $total += $softSkill["value_skills"];
-                $diviseur = count($SoftSkills);
-                $moyenneSoftSkills = $total / $diviseur;
-              }
-                echo '<span>
-                  <div class="player-feature-value">'.$moyenneSoftSkills.'</div>
-                  <div class="player-feature-title">SOFT</div>
-                </span>
+      if ( $requete == true ) {
+        foreach ($etudiants as $row) {
+          echo '<div class="fut-player-card">
+          <a href="./profile.php?code_profile='.$row['code_profile'].'">
+          <div class="player-card-top">
+            <div class="player-master-info">
+              <div class="player-rating">
+                <span>97</span>
+              </div>
+              <div class="player-position">
+                <span></span>
+              </div>
+              <div class="player-club">
+                <img src="../images/drapeau/allemagne.png" alt="" draggable="false"/>
+              </div>
+              <div class="player-club">
+                <img src="../images/drapeau/royaume-uni.png" alt="" draggable="false"/>
               </div>
             </div>
-            <div class="disponibilite" style="display: flex; justify-content: center;">';
-              if ($row["disponibility"] > date("Y-m-d")) {
-                $Disponibility = date("d-m-Y", strtotime($row["disponibility"]));
-                echo '<button type="submit" class="btn btn-dispo-student" value="" name="condidatId" style="background-color: #F38D68; font-size: 0.8rem; font-weight: 600; border-radius: 5px; border: none; margin-top: 0.5rem;">'.$Disponibility.'</button>';
+            <div class="player-picture">';
+              if ($row['gender'] == "homme"){
+                echo '<img src="../images/homme-bg-remove.png" alt="avatar" draggable="false"/>';
               } else {
-                $Disponibility='Disponible';
-                echo '<button type="submit" class="btn btn-dispo-student" value="" name="condidatId" style="background-color: #D4DF9E; font-size: 0.8rem; font-weight: 600; border-radius: 5px; border: none; margin-top: 0.5rem;">'.$Disponibility.'</button>';
-              }   
-            echo'</div>
+                echo '<img src="../images/femme-bg-remove.png" alt="avatar" draggable="false"/>';
+              }
+              echo '<div class="player-extra">
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="player-master-info">
+              <div class="player-rating">
+                <span>';
+                //TEST Favorites EXIST
+                $condidatId=$row['id'];
+                $query= $conn->prepare("SELECT `id_client`,`id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id] AND `id_candidate`=$condidatId");
+                $query->execute();
+                $Favorites=$query->fetch();
+                if($Favorites){
+                  echo "<form action='./removeFavorites.php' method='POST'><button title='Retirer des favoris' id='starButton' type='submit' class='btn btn-fav-student fav' value='$condidatId' name='condidatId'><i class='fas fa-star' style='color: #ffdd00;'></i></button></form>";
+                } else {
+                  echo "<form action='./addFavorites.php' method='POST'><button title='Mettre en favori' type='submit'  id='starButton' class='btn btn-fav-student not-fav' value='$condidatId' name='condidatId'><i class='far fa-star' style='color: #ffdd00;'></i></button></form>";
+                }
+                echo '</span>
+              </div>
+            </div>
           </div>
-        </div>
-        </a>
-        </div>';
-      }  
+          <div class="player-card-bottom">
+            <div class="player-info">
+              <!-- Player Name-->
+              <div class="player-name">
+                <span>'.$row["code_profile"].'</span>
+                <small id="code-etu">'.$row["designation"].'</small>
+              </div>
+              <!-- Player Features-->';
+              //récupérer les compétence de candidat
+              $querySkills = "SELECT skills.`nom_skills`, student_skills.`value_skills`
+                              FROM `skills`
+                              INNER JOIN `student_skills` ON skills.`id` = student_skills.`id_skills`
+                              WHERE student_skills.`id_student` = $row[id]
+                              ORDER BY student_skills.`value_skills` DESC";
+              $stmtSkills = $conn->prepare($querySkills);
+              $stmtSkills ->execute();
+              $Skills =  $stmtSkills ->fetchAll(PDO::FETCH_ASSOC);
+              echo '<div class="player-features">
+                <div class="player-features-col">';
+                // Les 3 premières compétences
+                $numSkills = count($Skills);
+                  for($i = 0; $i < min(3, $numSkills); $i++){
+                    echo '<span>
+                      <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
+                      <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
+                    </span>';
+                  };
+                  echo'</div>
+                  <div class="barre-features-col">
+                  </div>
+                <div class="player-features-col">';
+                  for($i=3; $i < min(6, $numSkills); $i++){
+                    echo '<span>
+                      <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
+                      <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
+                    </span>';
+                  };
+                $querySoftSkills ="SELECT *
+                                  FROM soft_skills
+                                  JOIN student_soft_skills ON soft_skills.id = student_soft_skills.soft_skills_id
+                                  JOIN student ON student.id = student_soft_skills.student_id
+                                  WHERE student.id = $row[id]";
+                $stmtSoftSkills = $conn->prepare($querySoftSkills);
+                $stmtSoftSkills ->execute();
+                $SoftSkills =  $stmtSoftSkills ->fetchAll(PDO::FETCH_ASSOC);
+  
+                if ($SoftSkills == null) {
+                  $SoftSkills = array(
+                    array(
+                      "nom_soft_skills" => "Aucune compétence soft",
+                      "value_skills" => 0
+                    )
+                  );
+                }
+                foreach($SoftSkills as $softSkill){
+                  $moyenneSoftSkills = 0;
+                  $total = 0;
+                  $total += $softSkill["value_skills"];
+                  $diviseur = count($SoftSkills);
+                  $moyenneSoftSkills = $total / $diviseur;
+                }
+                  echo '<span>
+                    <div class="player-feature-value">'.$moyenneSoftSkills.'</div>
+                    <div class="player-feature-title">SOFT</div>
+                  </span>
+                </div>
+              </div>
+              <div class="disponibilite" style="display: flex; justify-content: center;">';
+                if ($row["disponibility"] > date("Y-m-d")) {
+                  $Disponibility = date("d-m-Y", strtotime($row["disponibility"]));
+                  echo '<button type="submit" class="btn btn-dispo-student" value="" name="condidatId" style="background-color: #F38D68; font-size: 0.8rem; font-weight: 600; border-radius: 5px; border: none; margin-top: 0.5rem;">'.$Disponibility.'</button>';
+                } else {
+                  $Disponibility='Disponible';
+                  echo '<button type="submit" class="btn btn-dispo-student" value="" name="condidatId" style="background-color: #D4DF9E; font-size: 0.8rem; font-weight: 600; border-radius: 5px; border: none; margin-top: 0.5rem;">'.$Disponibility.'</button>';
+                }   
+              echo'</div>
+            </div>
+          </div>
+          </a>
+          </div>';
+        }  
+      } else {      
+
+        echo '<div class="alert alert-danger" role="alert" style="width: 80%; margin: 1rem auto; justify-content: center;">
+                Aucun candidat ne correspond à votre recherche
+              </div>';
+      }
       ?>
       
     </div>
 
     <?php
-      if ($searchBar) {
+      if ($searchBar || $disponibility) {
         $pages = 1;
       } else {
         echo '
