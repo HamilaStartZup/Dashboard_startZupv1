@@ -546,13 +546,15 @@ $Next = $page + 1;
       <?php
       // pour éviter l'erreur de undefined index
       $searchBar = isset($_GET['searchBar']) ? $_GET['searchBar'] : null;
+
+      // quand je recherche par compétence et disponibilité
       if ($searchBar && $disponibility == "disponibility") {
         // rechercher par compétence
         $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
                                 FROM student
                                 JOIN student_skills ON student.`id` = student_skills.`id_student`
                                 JOIN skills ON student_skills.`id_skills` = skills.`id`
-                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`disponibility` < CURDATE()
+                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui'
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -567,7 +569,7 @@ $Next = $page + 1;
                                   FROM student
                                   JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
                                   JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
-                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`disponibility` > CURDATE()
+                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`disponibility` > CURDATE()  AND student.`pretEmploi`='oui'
                                   GROUP BY student.`id`";
             $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
             $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -583,13 +585,14 @@ $Next = $page + 1;
           $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
         }
       }
+      // quand je recherche par compétence uniquement
       elseif ($searchBar && $disponibility == null) {
         // rechercher par compétence
         $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
                                 FROM student
                                 JOIN student_skills ON student.`id` = student_skills.`id_student`
                                 JOIN skills ON student_skills.`id_skills` = skills.`id`
-                                WHERE skills.`nom_skills` LIKE :searchBar
+                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`pretEmploi`='oui'
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -604,7 +607,7 @@ $Next = $page + 1;
                                   FROM student
                                   JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
                                   JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
-                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar
+                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`pretEmploi`='oui'
                                   GROUP BY student.`id`";
             $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
             $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -620,13 +623,14 @@ $Next = $page + 1;
         } else {
           $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
         }
+      // lorsque je recherche par disponibilité uniquement
       } elseif ($searchBar == null && $disponibility == "disponibility") {
         // rechercher par compétence
         $querySearchEtudiants = "SELECT student.`id`, student.`code_profile`, student.`designation`, student.`gender`, student.`disponibility`
                                 FROM student
                                 JOIN student_skills ON student.`id` = student_skills.`id_student`
                                 JOIN skills ON student_skills.`id_skills` = skills.`id`
-                                WHERE student.`disponibility` < CURDATE()
+                                WHERE student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui'
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute();
@@ -641,7 +645,7 @@ $Next = $page + 1;
                                   FROM student
                                   JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
                                   JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
-                                  WHERE student.`disponibility` < CURDATE()
+                                  WHERE student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui'
                                   GROUP BY student.`id`";
             $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
             $stmtSearchEtudiants->execute();
@@ -657,6 +661,7 @@ $Next = $page + 1;
         } else {
           $etudiants = $stmtSearchEtudiants->fetchAll(PDO::FETCH_ASSOC);
         }
+      // lorsque je n'utilise aucun filtre
       } elseif ($searchBar == null && $disponibility == null) {
         $etudiants = $etudiants; // variable qui contient les étudiants de base
         $requete = true;
@@ -821,13 +826,6 @@ $Next = $page + 1;
 
   </main>
   
-  <!-- MDB -->
-  <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#employee_data').DataTable();
-    });
-  </script> -->
 </body>
 
 </html>
