@@ -4,6 +4,10 @@
 include '../config.php';
 session_start();
 
+if (!isset($_SESSION['email'])) {
+  header('Location: ../index.php');
+}
+
 // Script qui permet d'afficher les étudiants 20 par 20
 $limit = 20;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;

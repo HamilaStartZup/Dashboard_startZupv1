@@ -2,6 +2,11 @@
 session_start();
 // Database Connection
 include '../config.php';
+
+if (!isset($_SESSION['id'])) {
+    header("Location: ../index.php");
+}
+
 $queryFavorites = "SELECT * FROM `student` WHERE `id` IN (SELECT `id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id])";
 $stmtFavorites = $conn->prepare($queryFavorites);
 $stmtFavorites->execute();
@@ -36,9 +41,17 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
 
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/3181ebab68.js" crossorigin="anonymous"></script>
+
+<!-- FONT (OPTIONAL) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Saira+Semi+Condensed:300,400,700"/>
     <style>
         body {
             background-color: #fbfbfb;
+            overflow-x: hidden;
         }
 
         /* The actual timeline (the vertical ruler) */
@@ -169,6 +182,247 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
         tr.shown td.details-control {
             background: url('images/shrinkdata.PNG') no-repeat center;
         }
+        /* css card fifa */
+        .btn-fav-student{
+        border: none;
+        background-color: transparent;
+        font-size: 1.5rem;
+        }
+        .btn-fav-student:focus{
+        outline: none;
+        box-shadow: none;
+        }
+        .fut-player-card {
+        cursor: pointer;
+        margin: 20px;
+        position: relative;
+        width: 300px;
+        height: 485px;
+        background-image: url(https://selimdoyranli.com/cdn/fut-player-card/img/card_bg.png);
+        background-position: center center;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        padding: 3.8rem 0;
+        z-index: 2;
+        -webkit-transition: 200ms ease-in;
+        -o-transition: 200ms ease-in;
+        transition: 200ms ease-in;
+        }
+
+        .fut-player-card:hover {
+        -webkit-transform: scale(1.05);
+        -ms-transform: scale(1.05);
+        transform: scale(1.05);
+        z-index: 3;
+        }
+
+        .fut-player-card .player-card-top {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        color: #e9cc74;
+        padding: 0 1.5rem;
+        /* height: 100px; */
+        }
+
+        .fut-player-card .player-card-top .player-master-info {
+        /* position: absolute; */
+        line-height: 2.2rem;
+        font-weight: 300;
+        padding: 1.5rem 0;
+        text-transform: uppercase;
+        }
+
+        .fut-player-card .player-card-top .player-master-info .player-rating {
+        font-size: 2rem;
+        }
+
+        .fut-player-card .player-card-top .player-master-info .player-position {
+        font-size: 1.4rem;
+        }
+
+        .fut-player-card .player-card-top .player-master-info .player-nation {
+        display: block;
+        width: 2rem;
+        height: 25px;
+        margin: 0.3rem 0;
+        }
+
+        .fut-player-card .player-card-top .player-master-info .player-nation img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
+        }
+
+        .fut-player-card .player-card-top .player-master-info .player-club {
+        display: block;
+        width: 2.1rem;
+        height: 40px;
+        }
+
+        .fut-player-card .player-card-top .player-master-info .player-club img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
+        }
+
+        .fut-player-card .player-card-top .player-picture {
+        width: 200px;
+        margin: 0 auto;
+        overflow: hidden;
+        }
+
+        .fut-player-card .player-card-top .player-picture img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
+        position: relative;
+        right: -1rem;
+        bottom: 0;
+        }
+
+        .fut-player-card .player-card-top .player-picture .player-extra {
+        position: absolute;
+        right: 0;
+        bottom: -0.5rem;
+        overflow: hidden;
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        width: 100%;
+        height: 2rem;
+        padding: 0 1.5rem;
+        text-align: right;
+        background: none;
+        }
+
+        .fut-player-card .player-card-top .player-picture .player-extra span {
+        margin-left: 0.6rem;
+        text-shadow: 2px 2px #333;
+        }
+
+        .fut-player-card .player-card-bottom {
+        position: relative;
+        }
+
+        .fut-player-card .player-card-bottom .player-info {
+        display: block;
+        padding: 0.3rem 0;
+        color: #e9cc74;
+        width: 90%;
+        margin: 0 auto;
+        height: auto;
+        position: relative;
+        z-index: 2;
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-name {
+        width: 100%;
+        display: block;
+        text-align: center;
+        font-size: 1.6rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid rgba(233, 204, 116, 0.1);
+        padding-bottom: 0.3rem;
+        overflow: hidden;
+        }
+
+        #code-etu{
+        font-size: 0.7rem;
+
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-name span {
+        display: block;
+        text-shadow: 2px 2px #111;
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-features {
+        height: 75px !important;
+        margin: 0.5rem auto;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        align-items: center;
+        justify-content: space-around;
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-features .player-features-col {
+        width: 130px !important;
+        height: 100%;
+        margin: 0 0.5rem;
+        /* border-right: 2px solid rgba(233, 204, 116, 0.1); */
+        }
+
+        .barre-features-col{
+        width: 2px !important;
+        height: 100%;
+        background-color: rgba(233, 204, 116, 0.1);
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-features .player-features-col span {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-features .player-features-col span .player-feature-value {
+        margin-right: 0.3rem;
+        font-weight: 700;
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-features .player-features-col span .player-feature-title {
+        font-weight: 300;
+        }
+
+        .fut-player-card .player-card-bottom .player-info .player-features .player-features-col:last-child {
+        border: 0;
+        } 
+
+        .fut-player-card a{
+        text-decoration: none;
+        color: #e9cc74;
+        }
+
+        .skills-row{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        }
+        .pagination{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .pagination a{
+            background-color: #e7d696;
+            color: #1a160c;
+            border: none;
+            margin: 0 0.5rem 2rem 0.5rem; /* sens: haut et bas, gauche et droite */
+        }
+        .pagination a:hover{
+            background-color: #1a160c;
+            color: #e7d696;
+        }
+        .pagination a:active{
+            background-color: #e7d696 !important;
+            color: #1a160c !important;
+        }
+        .pagination a:focus{
+            background-color: #1a160c;
+            color: #e7d696;
+            box-shadow: none;
+        }
     </style>
 
 </head>
@@ -203,10 +457,10 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
                             <li class="nav-item">
                                 <a class="nav-link" href="./listFavorites.php">List des favoris</a>
                             </li>
-        
-        <li class="nav-item">
-          <a class="nav-link" href="./calendar_client.php">Calendrier</a>
-        </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="./calendar_client.php">Calendrier</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./contact_us.html">Contact</a>
                             </li>
@@ -262,100 +516,136 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
     </header>
     <main>
 
-        <div style="margin-top: 18px" class="row">
-            <?php foreach ($Favorites as $row) { ?>
-                <div class="col-sm-4">
-
-
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <button type="button" class="btn btn-lg shadow-lg p-3 mb-5  rounded" style="background-color:#A648C2 ;"><?php echo $row['code_profile'] ?></button>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="pb-3">
-                                        <h5 class="card-title"><?php echo $row['designation'] ?></h5>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <button type="button" class="btn btn-success"><span class="bi bi-alarm-fill"></span> Disponibilité: <span></span><?php echo $row['disponibility'] ?></button>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <?php
-                            echo "<form action='./removeFavorites.php?prev=2' method='POST'><button type='submit' value='$row[id]' name='condidatId'class='btn btn-danger'><span class='bi bi-trash'></span> Retirer de la liste de favoris</button><span></span>";
-                            ?>
-                            <?php
-                            $url = "./profile.php?code_profile=" . $row["code_profile"];
-                            echo "<a  href='$url'><button type='button' class='btn btn-primary'><span class='bi bi-arrow-up-right-square-fill'></span> Voir plus</button></a>";
-                            ?>
-                        </div>
-                    </div>
-                    <br>
+        <div style="margin-top: 18px; padding: 2rem;" class="row">
+            <?php foreach ($Favorites as $row) {
+            echo '<div class="fut-player-card">
+            <a href="./profile.php?code_profile='.$row['code_profile'].'">
+            <div class="player-card-top">
+              <div class="player-master-info">
+                <div class="player-rating">
+                  <span>97</span>
                 </div>
-            <?php } ?>
+                <div class="player-position">
+                  <span></span>
+                </div>
+                <div class="player-club">
+                  <img src="../images/drapeau/allemagne.png" alt="" draggable="false"/>
+                </div>
+                <div class="player-club">
+                  <img src="../images/drapeau/royaume-uni.png" alt="" draggable="false"/>
+                </div>
+              </div>
+              <div class="player-picture">';
+                if ($row['gender'] == "homme"){
+                  echo '<img src="../images/homme-bg-remove.png" alt="avatar" draggable="false"/>';
+                } else {
+                  echo '<img src="../images/femme-bg-remove.png" alt="avatar" draggable="false"/>';
+                }
+                echo '<div class="player-extra">
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+              <div class="player-master-info">
+                <div class="player-rating">
+                  <span>';
+                  //TEST Favorites EXIST
+                  $condidatId=$row['id'];
+                  $query= $conn->prepare("SELECT `id_client`,`id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id] AND `id_candidate`=$condidatId");
+                  $query->execute();
+                  $Favorites=$query->fetch();
+                  if($Favorites){
+                    echo "<form action='./removeFavorites.php' method='POST'><button title='Retirer des favoris' id='starButton' type='submit' class='btn btn-fav-student fav' value='$condidatId' name='condidatId'><i class='fas fa-star' style='color: #ffdd00;'></i></button></form>";
+                  } else {
+                    echo "<form action='./addFavorites.php' method='POST'><button title='Mettre en favori' type='submit'  id='starButton' class='btn btn-fav-student not-fav' value='$condidatId' name='condidatId'><i class='far fa-star' style='color: #ffdd00;'></i></button></form>";
+                  }
+                  echo '</span>
+                </div>
+              </div>
+            </div>
+            <div class="player-card-bottom">
+              <div class="player-info">
+                <!-- Player Name-->
+                <div class="player-name">
+                  <span>'.$row["code_profile"].'</span>
+                  <small id="code-etu">'.$row["designation"].'</small>
+                </div>
+                <!-- Player Features-->';
+                //récupérer les compétence de candidat
+                $querySkills = "SELECT skills.`nom_skills`, student_skills.`value_skills`
+                                FROM `skills`
+                                INNER JOIN `student_skills` ON skills.`id` = student_skills.`id_skills`
+                                WHERE student_skills.`id_student` = $row[id]
+                                ORDER BY student_skills.`value_skills` DESC";
+                $stmtSkills = $conn->prepare($querySkills);
+                $stmtSkills ->execute();
+                $Skills =  $stmtSkills ->fetchAll(PDO::FETCH_ASSOC);
+                echo '<div class="player-features">
+                  <div class="player-features-col">';
+                  // Les 3 premières compétences
+                  $numSkills = count($Skills);
+                    for($i = 0; $i < min(3, $numSkills); $i++){
+                      echo '<span>
+                        <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
+                        <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
+                      </span>';
+                    };
+                    echo'</div>
+                    <div class="barre-features-col">
+                    </div>
+                  <div class="player-features-col">';
+                    for($i=3; $i < min(6, $numSkills); $i++){
+                      echo '<span>
+                        <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
+                        <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
+                      </span>';
+                    };
+                  $querySoftSkills ="SELECT *
+                                    FROM soft_skills
+                                    JOIN student_soft_skills ON soft_skills.id = student_soft_skills.soft_skills_id
+                                    JOIN student ON student.id = student_soft_skills.student_id
+                                    WHERE student.id = $row[id]";
+                  $stmtSoftSkills = $conn->prepare($querySoftSkills);
+                  $stmtSoftSkills ->execute();
+                  $SoftSkills =  $stmtSoftSkills ->fetchAll(PDO::FETCH_ASSOC);
+    
+                  if ($SoftSkills == null) {
+                    $SoftSkills = array(
+                      array(
+                        "nom_soft_skills" => "Aucune compétence soft",
+                        "value_skills" => 0
+                      )
+                    );
+                  }
+                  foreach($SoftSkills as $softSkill){
+                    $moyenneSoftSkills = 0;
+                    $total = 0;
+                    $total += $softSkill["value_skills"];
+                    $diviseur = count($SoftSkills);
+                    $moyenneSoftSkills = $total / $diviseur;
+                  }
+                    echo '<span>
+                      <div class="player-feature-value">'.$moyenneSoftSkills.'</div>
+                      <div class="player-feature-title">SOFT</div>
+                    </span>
+                  </div>
+                </div>
+                <div class="disponibilite" style="display: flex; justify-content: center;">';
+                  if ($row["disponibility"] > date("Y-m-d")) {
+                    $Disponibility = date("d-m-Y", strtotime($row["disponibility"]));
+                    echo '<button type="submit" class="btn btn-dispo-student" value="" name="condidatId" style="background-color: #F38D68; font-size: 0.8rem; font-weight: 600; border-radius: 5px; border: none; margin-top: 0.5rem;">'.$Disponibility.'</button>';
+                  } else {
+                    $Disponibility='Disponible';
+                    echo '<button type="submit" class="btn btn-dispo-student" value="" name="condidatId" style="background-color: #D4DF9E; font-size: 0.8rem; font-weight: 600; border-radius: 5px; border: none; margin-top: 0.5rem;">'.$Disponibility.'</button>';
+                  }   
+                echo'</div>
+              </div>
+            </div>
+            </a>
+            </div>';
+          } ?>
         </div>
-
-
-
-
-
-        <footer class="bg-light text-center  rounded-3 text-white" style="margin-top: 18px;">
-            <!-- Grid container -->
-            <div class="container p-4 pb-0">
-                <!-- Section: Social media -->
-                <section class="mb-4">
-                    <!-- Facebook -->
-                    <a class="btn text-white btn-floating m-1" style="background-color: #878f99;" href="#!" role="button"><i class="fab fa-facebook-f"></i></a>
-
-                    <!-- Twitter -->
-                    <a class="btn text-white btn-floating m-1" style="background-color: #55acee;" href="#!" role="button"><i class="fab fa-twitter"></i></a>
-
-                    <!-- Google -->
-                    <a class="btn text-white btn-floating m-1" style="background-color: #dd4b39;" href="#!" role="button"><i class="fab fa-google"></i></a>
-
-                    <!-- Instagram -->
-                    <a class="btn text-white btn-floating m-1" style="background-color: #ac2bac;" href="#!" role="button"><i class="fab fa-instagram"></i></a>
-
-                    <!-- Linkedin -->
-                    <a class="btn text-white btn-floating m-1" style="background-color: #0082ca;" href="#!" role="button"><i class="fab fa-linkedin-in"></i></a>
-                    <!-- Github -->
-                    <a class="btn text-white btn-floating m-1" style="background-color: #333333;" href="#!" role="button"><i class="fab fa-github"></i></a>
-                </section>
-                <!-- Section: Social media -->
-            </div>
-            <!-- Grid container -->
-
-            <!-- Copyright -->
-            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-                © 2020 Copyright:
-                <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-            </div>
-            <!-- Copyright -->
-        </footer>
-    </main>
-
-    <!-- MDB -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
-    <script>
-        // Initialization for ES Users
-        import {
-            Ripple,
-            initMDB
-        } from "mdb-ui-kit";
-
-        initMDB({
-            Ripple
-        });
-    </script>
+    </main>    
 </body>
 
 </html>
