@@ -3,7 +3,7 @@ session_start();
 // Database Connection
 include '../config.php';
 
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['email'])) {
     header("Location: ../index.php");
 }
 
@@ -516,7 +516,7 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
     </header>
     <main>
 
-        <div style="margin-top: 18px; padding: 2rem;" class="row">
+        <div style="margin-top: 8.2rem; padding: 2rem; justify-content: center;" class="row">
             <?php foreach ($Favorites as $row) {
             echo '<div class="fut-player-card">
             <a href="./profile.php?code_profile='.$row['code_profile'].'">
