@@ -11,7 +11,7 @@ $stmt = $conn->prepare($queryUser);
 $stmt->execute();
 $student = $stmt->fetch();
 
-// requête pour requpere les competences
+// requête pour récupérer les competences
 $queryEtudiants = "SELECT * FROM skills";
 $stmtEtudiants = $conn->prepare($queryEtudiants);
 $stmtEtudiants ->execute();
@@ -77,39 +77,20 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // Vérifier si aucune compétence n'est cochée ou que "aucun" est coché
-    if (count($competences) == 0 || in_array(0, $competences)) { // 0 = id de la compétence "Aucune"
-        // Attribuer la compétence "Aucune" à l'étudiant
-        $queryAucune = "INSERT INTO student_skills (id_student, id_skills) VALUES ('$id_student', '0')";
-        $dejaAucune = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '0'";
-        if ($conn->query($dejaAucune)->rowCount() == 0) {
-            $stmtAucune = $conn->prepare($queryAucune);
-            $stmtAucune->execute();
-        } else {
-            // ne rien faire
-        }
-        // Supprimer les autres compétences de l'étudiant (s'il y en a)
-        $queryDeleteOthers = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills != '0'";
-        $stmtDeleteOthers = $conn->prepare($queryDeleteOthers);
-        $stmtDeleteOthers->execute();
-    } else {
-        // Supprimer la compétence "Aucune" de l'étudiant 
-        $queryDeleteAucune = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '0'";
-        $stmtDeleteAucune = $conn->prepare($queryDeleteAucune);
-        $stmtDeleteAucune->execute();
-    }
     // SI UNE VALEUR DE COMPETENCE EST MODIFIER ON LA MODIFIE DANS LA TABLE student_skills
-    foreach($competences as $key => $value){
-        $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$value'";
+    foreach($competences as $competence){
+        // éviter le illegal string offset
+        $idCompetences = $competence; 
+        $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = $idCompetences";
         $stmtEtudiants = $conn->prepare($queryEtudiants);
         $stmtEtudiants ->execute();
         $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
         if ($SkillsEtudiant && count($SkillsEtudiant) > 0){
             $queryUpdate = "UPDATE student_skills SET value_skills = :value_skills WHERE id_student = :id_student AND id_skills = :id_skills";
             $stmtUpdate = $conn->prepare($queryUpdate);
-            $stmtUpdate->bindParam(':value_skills', $valueCompetences[$value]);
+            $stmtUpdate->bindParam(':value_skills', $_POST['competences'][$idCompetences]);
             $stmtUpdate->bindParam(':id_student', $id_student);
-            $stmtUpdate->bindParam(':id_skills', $value);
+            $stmtUpdate->bindParam(':id_skills', $idCompetences);
         
             if ($stmtUpdate->execute()) {
                 
@@ -496,10 +477,10 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 echo '<td>';
                                                 if ($SkillsEtudiant && count($SkillsEtudiant) > 0) {
                                                     foreach ($SkillsEtudiant as $skillEtudiant) {
-                                                        echo '<input type="text" class="form-control" id="competences" name="competences[]" value="' . $skillEtudiant['value_skills'] . '">';
+                                                        echo '<input type="text" class="form-control" id="competences_'. $skill['id'] .'" name="competences['. $skill['id'] .']" value="' . $skillEtudiant['value_skills'] . '">';
                                                     }
                                                 } else {
-                                                    echo '<input type="text" class="form-control" id="competences" name="competences[]">';
+                                                    echo '<input type="text" class="form-control" id="competences_'. $skill['id'] .'" name="competences['. $skill['id'] .']">';
                                                 }
                                                 echo '</td>';
                                                 echo '</tr>';
