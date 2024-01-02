@@ -17,6 +17,13 @@ foreach ($etudiants as $index => $etudiant) {
   }
 }
 $pourcentageActif = ($actif / $length) * 100;
+
+// Requête pour vérifier si l'appel a été fait aujourd'hui
+$date = date('Y-m-d');
+$sql = "SELECT * FROM `appel` WHERE `appel`.`date_enregistrement` = '$date'"; // selectionner tous les appels du jour
+$result = $conn->prepare($sql);
+$result->execute();
+$rows = $result->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -199,6 +206,11 @@ $pourcentageActif = ($actif / $length) * 100;
 
   .btn-validation:focus-visible {
     background-color: #2ecc71 !important;
+    box-shadow: none !important;
+  }
+
+  .btn-validation:disabled {
+    background-color: #3ad177 !important;
     box-shadow: none !important;
   }
   /* bloque le css bootstrap */
@@ -412,6 +424,11 @@ $pourcentageActif = ($actif / $length) * 100;
           </div>
           <div class="card-body">
             <div class="table-responsive">
+            <?php if (count($rows) > 0) : ?>
+              <div class="alert alert-info" role="alert">
+                L'appel a déjà été enregistré pour aujourd'hui.
+              </div> 
+            <?php endif; ?>
               <!-- Feuille de présence -->
               <div class="row">
                 <div class="col-sm feuille ">
@@ -469,14 +486,6 @@ $pourcentageActif = ($actif / $length) * 100;
                         <?php endforeach; ?>
                       </tbody>
                     </table>
-                    <?php
-                      $date = date('Y-m-d');
-                      $sql = "SELECT * FROM `appel` WHERE `appel`.`date_enregistrement` = '$date'"; // selectionner tous les appels du jour
-                      $result = $conn->prepare($sql);
-                      $result->execute();
-                      $rows = $result->fetchAll(PDO::FETCH_ASSOC);
-                    ?>
-
                     <?php if (count($rows) == 0) : ?>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary btn-validation" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -501,9 +510,9 @@ $pourcentageActif = ($actif / $length) * 100;
                       </div>
                     </div>
                     <?php else : ?>
-                      <div class="alert alert-info" role="alert">
-                        L'appel a déjà été enregistré pour aujourd'hui.
-                      </div>  
+                      <button type="button" class="btn btn-primary btn-validation" disabled>
+                        Valider
+                      </button> 
                     <?php endif; ?>
                   </form>
                 </div>
