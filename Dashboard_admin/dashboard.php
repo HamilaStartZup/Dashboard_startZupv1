@@ -307,7 +307,7 @@
                                   echo "<tr>";
                                   echo "<td>";
                                   echo "<div class='d-flex align-items-center'>";
-                                  echo "<img src='https://mdbootstrap.com/img/new/avatars/8.jpg' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
+                                  echo "<img src='$etudiant[avatar]' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
                                   echo "<div class='ms-3'>";
                                   echo "<p class='fw-bold mb-1'>$etudiant[prenom] <span></span> $etudiant[nom]</p>";
                                   echo "<p class='text-muted mb-0'>john.doe@gmail.com</p>";
@@ -315,8 +315,8 @@
                                   echo "</div>";
                                   echo "</td>";
                                   echo "<td>";
-                                  echo "<p class='fw-normal mb-1'>Software engineer</p>";
-                                  echo "<p class='text-muted mb-0'>IT department</p>";
+                                  echo "<p class='fw-normal mb-1'>$etudiant[designation]</p>";
+                                  echo "<p class='text-muted mb-0'>$etudiant[code_profile]</p>";
                                   echo "</td>";
                                   echo "<td>";
                                   if ($etudiant['status'] == "active") {
@@ -329,7 +329,7 @@
                                   echo "<td>";
                                 $url="./profile.php?id=$etudiant[id]";
                                 
-                                  echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Modifier</a>";
+                                  echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Voir</a>";
 
                                   
                                   echo "</td>";
