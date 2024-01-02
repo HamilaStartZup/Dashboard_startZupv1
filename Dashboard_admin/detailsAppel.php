@@ -77,6 +77,8 @@ if ($_SESSION['status'] == "Admin") {
     type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"
     ></script>
+    <!-- Icon Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 </head>
 <style>
   body {
@@ -106,7 +108,14 @@ if ($_SESSION['status'] == "Admin") {
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
   }
   .feuilleDAppel{
-    margin-top: 30px;
+    margin-top: 5rem;
+    width: 100%;
+  }
+  .feuilleDAppel .table{
+    margin-top: 2rem;
+  }
+  .feuilleDAppel .btnDelete{
+    margin-top: 2rem;
     width: 100%;
   }
 </style>
@@ -379,12 +388,13 @@ if ($_SESSION['status'] == "Admin") {
 
 <!-- Feuille d'appel -->
 <div class="feuilleDAppel">
-    <div class="container">
-        <div class="row">
-        <div class="col-12">
-            <h1 class="text-center">Feuille d'appel</h1>
-            <h2 class="text-center">Date : <?php echo $date; ?></h2>
-            <table class="table table-striped">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="text-center">Feuille d'appel</h1>
+        <h2 class="text-center">Date : <?php echo $date; ?></h2>
+        <form action="" method="POST">
+          <table class="table table-striped">
             <thead>
                 <tr>
                 <th scope="col">Nom</th>
@@ -407,8 +417,24 @@ if ($_SESSION['status'] == "Admin") {
                 </tr>
                 <?php } ?>
             </tbody>
-            </table>
-        </div>
-        </div>
+          </table>
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-danger btnDelete"><i class='bi bi-trash3-fill'></i></button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
+<?php
+// Supprimer cette appel
+$dateParams = $dateTime->format('Y-m-d');
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST['_method'] === 'DELETE') {
+  $sql = "DELETE FROM `appel` WHERE `appel`.`date_enregistrement` = '$dateParams'"; // selectionner tous les appels de la date envoyée par l'URL
+  $result = $conn->prepare($sql);
+  $result->execute();
+  $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+  echo "<script>
+  window.location.href = './listeAppels.php'
+  </script>";
+}
+?>

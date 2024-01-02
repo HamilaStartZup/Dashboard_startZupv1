@@ -7,9 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Appeler la fonction pour enregistrer les données en base de données
     $result = saveAppelData($etudiants, $conn);
 
-    // Renvoyer une réponse JSON
-    header('Content-Type: application/json');
-    echo json_encode($result);
+    // Renvoyer un popup de confirmation
+    echo "<script>
+    alert('L appel a été enregistré avec succès.')
+
+    window.location.href = '../listeAppels.php'
+    </script>";
+
+
     exit; // Arrêter l'exécution du reste de la page
 }
 
