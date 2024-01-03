@@ -76,9 +76,14 @@ if ($_SESSION['status'] == "Admin") {
     <script
     type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"
+    
     ></script>
     <!-- Icon Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
 </head>
 <style>
   body {
@@ -419,7 +424,25 @@ if ($_SESSION['status'] == "Admin") {
             </tbody>
           </table>
           <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="btn btn-danger btnDelete"><i class='bi bi-trash3-fill'></i></button>
+          <button type="button" class="btn btn-danger btnDelete" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class='bi bi-trash3-fill'></i></button>
+          <!-- Modal -->
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Suppression</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Êtes vous sûr de vouloir supprimer l'appel ?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <input type="submit" value="Valider" class="btn btn-danger">
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </div>

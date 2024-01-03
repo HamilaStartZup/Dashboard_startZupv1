@@ -1,11 +1,17 @@
 <?php
 include('../../config.php');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $etudiants = $_POST['etudiants']; 
 
     // Appeler la fonction pour enregistrer les données en base de données
     $result = saveAppelData($etudiants, $conn);
+
+    // Appeler la fonction pour générer le fichier Excel
+    $excelFilePath = generateExcelFile($etudiants);
 
     // Renvoyer un popup de confirmation
     echo "<script>
@@ -52,5 +58,54 @@ function saveAppelData($etudiants, $conn)
     } catch (PDOException $e) {
         return ['success' => false, 'message' => 'Erreur lors de l\'enregistrement des données de l\'appel: ' . $e->getMessage()];
     }
+}
+
+// Fonction pour générer le fichier Excel
+function generateExcelFile($etudiants)
+{
+    require_once '../../vendor/autoload.php'; // Inclure le fichier d'autoloading de PhpSpreadsheet
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // En-têtes du tableau Excel
+    $sheet->setCellValue('A1', 'Nom');
+    $sheet->setCellValue('B1', 'Prénom');
+    $sheet->setCellValue('C1', 'Présent le matin');
+    $sheet->setCellValue('D1', 'Présent l\'après-midi');
+    $sheet->setCellValue('E1', 'Commentaire');
+
+    // Remplissage des données du tableau Excel
+    $row = 2;
+    // Régler la largeur des colonnes
+    $sheet->getColumnDimension('A')->setWidth(25);
+    $sheet->getColumnDimension('B')->setWidth(25);
+    $sheet->getColumnDimension('C')->setWidth(20);
+    $sheet->getColumnDimension('D')->setWidth(20);
+    $sheet->getColumnDimension('E')->setWidth(40);
+    foreach ($etudiants as $index => $etudiant) {
+        $sheet->setCellValue('A' . $row, $etudiant['nom']);
+        $sheet->setCellValue('B' . $row, $etudiant['prenom']);
+        // Récupérer les données du formulaire
+        $sheet->setCellValue('C' . $row, empty($_POST['presentM'][$index]) ? 'n' : 'yes'); // Utilisation de empty() pour vérifier si la case est cochée
+        $sheet->setCellValue('D' . $row, empty($_POST['presentAM'][$index]) ? 'n' : 'yes');
+        $sheet->setCellValue('E' . $row, isset($_POST['commentaire' . $index]) ? $_POST['commentaire' . $index] : ''); // Utilisation de isset() pour vérifier si le commentaire existe
+        $row++; // Incrémenter le numéro de ligne
+    }
+
+    // Création d'un répertoire pour stocker les fichiers Excel
+    $dir = '../appel/' . date('m_Y') . '/';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+
+    // Nom du fichier Excel
+    $excelFilePath = $dir . date('d') . '.xlsx';
+
+    // Sauvegarde du fichier Excel
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($excelFilePath);
+
+    return $excelFilePath;
 }
 ?>
