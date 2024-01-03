@@ -31,9 +31,9 @@
   ob_flush() 
 ?>
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en">  
 <head>
+  <meta charset="UTF-8" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
@@ -429,7 +429,7 @@
                           foreach ($Skills as $x) {
                             $skill = $x["nom_skills"];
                             $valueSkill = $x["value_skills"];
-                            if( $valueSkill!=0){
+                            if( $valueSkill>=0){
                             echo "<p class='mb-1' style='font-size: .77rem;'>$skill</p>
                             <div class='progress   rounded'  style='height: 25px;'>
                             <div class='progress-bar' role='progressbar' style='width:$valueSkill%;' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>$valueSkill%</div>

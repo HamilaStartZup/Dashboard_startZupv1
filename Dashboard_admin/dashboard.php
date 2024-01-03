@@ -59,6 +59,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <meta charset="UTF-8" />
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
   <!-- Google Fonts -->
@@ -310,7 +311,7 @@
                                   echo "<img src='$etudiant[avatar]' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
                                   echo "<div class='ms-3'>";
                                   echo "<p class='fw-bold mb-1'>$etudiant[prenom] <span></span> $etudiant[nom]</p>";
-                                  echo "<p class='text-muted mb-0'>john.doe@gmail.com</p>";
+                                  echo "<p class='text-muted mb-0'>$etudiant[email]</p>";
                                   echo "</div>";
                                   echo "</div>";
                                   echo "</td>";

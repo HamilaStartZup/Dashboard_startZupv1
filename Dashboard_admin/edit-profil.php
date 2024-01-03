@@ -77,6 +77,7 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+
     // SI UNE VALEUR DE COMPETENCE EST MODIFIER ON LA MODIFIE DANS LA TABLE student_skills
     foreach($competences as $competence){
         // éviter le illegal string offset
@@ -101,27 +102,40 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
         
     }
 
-    // Si un soft skill est coché on l'ajoute dans la table student_soft_skills sinon on le supprime
-    foreach($softSkills as $softSkill){
+    // Récupération des compétences cochées dans le formulaire
+    $SoftcompetencesCoches = isset($_POST['softSkills']) ? $_POST['softSkills'] : array();
+
+    // Si un soft skill est coché, on l'ajoute dans la table student_soft_skills, sinon on le supprime
+    foreach ($softSkills as $softSkill) {
         $idSoftSkill = $softSkill['id'];
+        
+        // Vérification si la compétence est cochée dans le formulaire
+        $cocheDansFormulaire = in_array($idSoftSkill, $SoftcompetencesCoches);
+
         $querySoftSkillsEtudiant = "SELECT * FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '$idSoftSkill'";
         $stmtSoftSkillsEtudiant = $conn->prepare($querySoftSkillsEtudiant);
         $stmtSoftSkillsEtudiant->execute();
         $softSkillsEtudiant = $stmtSoftSkillsEtudiant->fetchAll(PDO::FETCH_ASSOC);
-        if ($_POST['softSkills']) {
-            if(in_array($idSoftSkill, $_POST['softSkills'])){
-                if(count($softSkillsEtudiant) == 0){
-                    $queryInsert = "INSERT INTO student_soft_skills (student_id, soft_skills_id) VALUES ('$id_student', '$idSoftSkill')";
-                    $stmtInsert = $conn->prepare($queryInsert);
-                    $stmtInsert->execute();
-                }
-            }else if(count($softSkillsEtudiant) > 0){
+
+        if ($cocheDansFormulaire) {
+            // Si la compétence est cochée dans le formulaire
+            if (count($softSkillsEtudiant) == 0) {
+                // Si elle n'est pas présente dans la base de données, on l'ajoute
+                $queryInsert = "INSERT INTO student_soft_skills (student_id, soft_skills_id) VALUES ('$id_student', '$idSoftSkill')";
+                $stmtInsert = $conn->prepare($queryInsert);
+                $stmtInsert->execute();
+            }
+        } else {
+            // Si la compétence n'est pas cochée dans le formulaire
+            if (count($softSkillsEtudiant) > 0) {
+                // Si elle est présente dans la base de données, on la supprime
                 $queryDelete = "DELETE FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '$idSoftSkill'";
                 $stmtDelete = $conn->prepare($queryDelete);
                 $stmtDelete->execute();
             }
         }
     }
+
     // Si une valeur de soft skill est modifiée on la modifie dans la table student_soft_skills
     foreach($softSkills as $softSkill){
         $idSoftSkill = $softSkill['id'];
