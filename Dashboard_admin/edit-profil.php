@@ -51,29 +51,36 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $pretEmploi = $_POST['pretEmploi'];
     $vehicule = $_POST['vehicule'];
     $description = $_POST['description'];
-
     $competences =$_POST['ary']; // tableau des compétences
     $valueCompetences = $_POST['competences']; // tableau des valeurs des compétences
+    // Si tout les skills sont décoché on supprime tout les skills de l'étudiant
+    if(!$competences){
+        $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student'";
+        $stmtDelete = $conn->prepare($queryDelete);
+        $stmtDelete->execute();
+        $competences = array();
+    } else if ($competences && count($competences) > 0 && $Skills){
 
-    // SI UNE COMPETENCE EST COCHEE ON L'AJOUTE DANS LA TABLE student_skills SINON ON LA SUPPRIME
-    foreach($Skills as $skill){
-        $idSkill = $skill['id'];
-        $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
-        $stmtEtudiants = $conn->prepare($queryEtudiants);
-        $stmtEtudiants ->execute();
-        $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
-        if ($competences){
-
-            if(in_array($idSkill, $competences)){
-                if(count($SkillsEtudiant) == 0){
-                    $queryInsert = "INSERT INTO student_skills (id_student, id_skills) VALUES ('$id_student', '$idSkill')";
-                    $stmtInsert = $conn->prepare($queryInsert);
-                    $stmtInsert->execute();
+        // SI UNE COMPETENCE EST COCHEE ON L'AJOUTE DANS LA TABLE student_skills SINON ON LA SUPPRIME
+        foreach($Skills as $skill){
+            $idSkill = $skill['id'];
+            $queryEtudiants = "SELECT * FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
+            $stmtEtudiants = $conn->prepare($queryEtudiants);
+            $stmtEtudiants ->execute();
+            $SkillsEtudiant = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+            if ($competences){
+    
+                if(in_array($idSkill, $competences)){
+                    if(count($SkillsEtudiant) == 0){
+                        $queryInsert = "INSERT INTO student_skills (id_student, id_skills) VALUES ('$id_student', '$idSkill')";
+                        $stmtInsert = $conn->prepare($queryInsert);
+                        $stmtInsert->execute();
+                    }
+                }else if(count($SkillsEtudiant) > 0){
+                    $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
+                    $stmtDelete = $conn->prepare($queryDelete);
+                    $stmtDelete->execute();
                 }
-            }else if(count($SkillsEtudiant) > 0){
-                $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
-                $stmtDelete = $conn->prepare($queryDelete);
-                $stmtDelete->execute();
             }
         }
     }
