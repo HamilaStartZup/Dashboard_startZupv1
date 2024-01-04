@@ -53,6 +53,7 @@
   $nombreTotal = count($etudiants); // on compte le nombre total d'étudiants
 
   $pourcentageActif = ($nombreActifs / $nombreTotal) * 100; // puis on calcule le pourcentage d'étudiants actifs
+  $pourcentageActif = round($pourcentageActif, 2); // on arrondi le pourcentage à 2 chiffres après la virgule
 
 ?>
 
