@@ -265,9 +265,9 @@
                                   echo "</td>";
                                   echo "<td> $user[comment]</td>";
                                   echo "<td>";
-                                  $url="./profile.php?id=$user[id]";
+                                  $url="./profile-user.php?id=$user[id]";
                                 
-                                  echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Modifier</a>";
+                                  echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Voir</a>";
 
                                   
                                   echo "</td>";
