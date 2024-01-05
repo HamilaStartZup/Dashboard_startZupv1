@@ -1,0 +1,28 @@
+Options -Indexes
+
+<Files "config.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# désactiver le listing des répertoires
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+</IfModule>
+
+# chemins absolus pour les fichiers php
+RewriteEngine On
+RewriteRule ^accueil$ Dashboard_admin/dashboard.php
+RewriteRule ^accueil-([0-9]+)$ ./Dashboard_admin/dashboard.php?page=$1
+RewriteRule ^profil-([0-9]+)$ ./Dashboard_admin/profile.php?id=$1
+RewriteRule ^modifier-profil-([0-9]+)$ ./Dashboard_admin/edit-profil.php?id=$1
+RewriteRule ^ajouter-un-candidat$ ./Dashboard_admin/addCandidats.php
+RewriteRule ^liste-de-rdv$ ./Dashboard_admin/List_rdv.php
+RewriteRule ^gerer-rdv-([0-9]+)-([^/]+)$ Dashboard_admin/mange_rdv.php?users_id=$1&email=$2 [L]
+RewriteRule ^calendrier$ ./Dashboard_admin/Calendar.php
+RewriteRule ^liste-des-appels$ ./Dashboard_admin/listeAppels.php
+RewriteRule ^details-appel/([0-9]{2}/[0-9]{2}/[0-9]{4})$ ./Dashboard_admin/detailsAppel.php?date=$1
+RewriteRule ^appel$ ./Dashboard_admin/presence.php
+RewriteRule ^ajouter-client-admin$ ./Dashboard_admin/add_client_admin.php
+RewriteRule ^client-([0-9]+)$ Dashboard_admin/profile-user.php?id=$1
+RewriteRule ^login$ Login.html

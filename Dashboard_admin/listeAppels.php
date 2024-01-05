@@ -36,6 +36,8 @@
 <html lang="en">
 <meta charset="UTF-8">
 <head>
+    <meta charset="UTF-8" />
+    <base href="/Dashboard_startZupv1/Dashboard_admin/">
     <!-- Font Awesome -->
     <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"

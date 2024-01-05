@@ -60,6 +60,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <base href="/Dashboard_startZupv1/Dashboard_admin/">
   <meta charset="UTF-8" />
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
@@ -130,7 +131,7 @@
   <div class="position-sticky">
     <div class="list-group list-group-flush mx-3 mt-4">
       <a
-          href="./dashboard.php"
+          href="./accueil"
           class="list-group-item list-group-item-action py-2 ripple active "
           aria-current="true"
           >
