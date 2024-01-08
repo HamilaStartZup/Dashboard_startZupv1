@@ -131,7 +131,7 @@
   <div class="position-sticky">
     <div class="list-group list-group-flush mx-3 mt-4">
       <a
-          href="./accueil"
+          href="/Dashboard_startZupv1/accueil"
           class="list-group-item list-group-item-action py-2 ripple active "
           aria-current="true"
           >
@@ -139,7 +139,7 @@
           ><span>Main dashboard</span>
       </a>
       <a
-          href="./addCandidats.php"
+          href="/Dashboard_startZupv1/ajouter-un-candidat"
           class="list-group-item list-group-item-action py-2 ripple "
         
           >
@@ -147,7 +147,7 @@
           ><span>Ajouter des candidats</span>
       </a>
       <a
-          href="./List_rdv.php"
+          href="/Dashboard_startZupv1/liste-de-rdv"
           class="list-group-item list-group-item-action py-2 ripple"
           ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a
         >
@@ -158,7 +158,7 @@
         ><span>Analytics</span></a
         >
         <a
-          href="./Calendar.php"
+          href="/Dashboard_startZupv1/calendrier"
           class="list-group-item list-group-item-action py-2 ripple "
           
           >
@@ -176,19 +176,19 @@
         ><span>International</span></a
         >
         <a
-          href="listeAppels.php"
+          href="/Dashboard_startZupv1/liste-des-appels"
           class="list-group-item list-group-item-action py-2 ripple ripple s"
           ><i class="fa-sharp fa-solid fa-list me-3"></i>
           <span>Liste d'appels</span></a
         >
       <a
-          href="./presence.php"
+          href="/Dashboard_startZupv1/appel"
           class="list-group-item list-group-item-action py-2 ripple"
           ><i class="fas fa-calendar fa-fw me-3"></i
         ><span>Présence</span></a
         >
       <a
-          href="./add_client_admin.php"
+          href="/Dashboard_startZupv1/ajouter-client-admin"
           class="list-group-item list-group-item-action py-2 ripple"
           ><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a
         >
