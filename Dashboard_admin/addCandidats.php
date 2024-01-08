@@ -5,7 +5,7 @@
 session_start();
 // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
 if ($_SESSION['status'] != "Admin") {
-  header("Location: ../failedAccess.php");
+  header("Location: acces-refuse");
 }
 //conx
 require('../config.php');
@@ -69,8 +69,12 @@ $SoftSkills = $stmtSoftSkills->fetchAll(PDO::FETCH_ASSOC);
     }
 
     .sidebar .active {
-      border-radius: 5px;
-      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+      border-radius: 5px!important;
+      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%) !important;
+      z-index: 2!important;
+    color: var(--mdb-list-group-active-color) !important;
+    background-color: var(--mdb-list-group-active-bg) !important;
+    border-color: var(--mdb-list-group-active-border-color) !important;
     }
 
     .sidebar-sticky {
@@ -178,29 +182,78 @@ $SoftSkills = $stmtSoftSkills->fetchAll(PDO::FETCH_ASSOC);
   <header>
     <!-- Sidebar -->
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-      <div class="position-sticky">
-        <div class="list-group list-group-flush mx-3 mt-4">
-          <a href="./dashboard.php" class="list-group-item list-group-item-action py-2 ripple">
-            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-          </a>
-          <a href="./addCandidats.php" class="list-group-item list-group-item-action py-2 ripple active" aria-current="true">
-            <i class="fas fa-user-graduate me-3"></i><span>Ajouter des candidats</span>
-          </a>
-          <a href="List_rdv.php" class="list-group-item list-group-item-action py-2 ripple " ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a>
-          <a href="./Calendar.php" class="list-group-item list-group-item-action py-2 ripple">
-      <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
-          </a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
-          <a href="listeAppels.php" class="list-group-item list-group-item-action py-2 ripple ripple "><i class="fa-sharp fa-solid fa-list me-3"></i>
-            <span>Liste d'appels</span></a>
-          <a href="./presence.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i><span>Présence</span></a>
-          <a href="./add_client_admin.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a>
-          <a href="../logout.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a>
-        </div>
-      </div>
-    </nav>
+  <div class="position-sticky">
+    <div class="list-group list-group-flush mx-3 mt-4">
+      <a
+          href="/Dashboard_startZupv1/accueil"
+          class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true"
+          >
+        <i class="fas fa-tachometer-alt fa-fw me-3"></i
+          ><span>Main dashboard</span>
+      </a>
+      <a
+          href="/Dashboard_startZupv1/ajouter-un-candidat"
+          class="list-group-item list-group-item-action py-2 ripple active"
+        
+          >
+        <i class="fas fa-user-graduate me-3"></i
+          ><span>Ajouter des candidats</span>
+      </a>
+      <a
+          href="/Dashboard_startZupv1/liste-de-rdv"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a
+        >
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-line fa-fw me-3"></i
+        ><span>Analytics</span></a
+        >
+        <a
+          href="/Dashboard_startZupv1/calendrier"
+          class="list-group-item list-group-item-action py-2 ripple "
+          
+          >
+          <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
+      </a>
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
+        >
+      <a
+          href="#"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-globe fa-fw me-3"></i
+        ><span>International</span></a
+        >
+        <a
+          href="/Dashboard_startZupv1/liste-des-appels"
+          class="list-group-item list-group-item-action py-2 ripple ripple s"
+          ><i class="fa-sharp fa-solid fa-list me-3"></i>
+          <span>Liste d'appels</span></a
+        >
+      <a
+          href="/Dashboard_startZupv1/appel"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-calendar fa-fw me-3"></i
+        ><span>Présence</span></a
+        >
+      <a
+          href="/Dashboard_startZupv1/ajouter-client-admin"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a
+        >
+      <a
+      href="../logout.php"
+          class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a
+        >
+    </div>
+  </div>
+</nav>
     <!-- Sidebar -->
 
     <!-- Navbar -->
