@@ -68,14 +68,14 @@ if ($verif->fetchColumn() == 0) {
 
   echo'jddjeje'.$resultlastId['id'];
   echo '<script> alert("Le candidat a été ajouté avec succès.");
-  location.replace("addCandidats.php");
+  location.replace("/Dashboard_startZupv1/ajouter-un-candidat");
   </script>';
             
         
       
   } else {
       echo '<script> alert("Le compte est déjà existant avec cette adresse email!");
-      location.replace("addCandidats.php");
+      location.replace("/Dashboard_startZupv1/ajouter-un-candidat");
       </script>';
   }
 }
