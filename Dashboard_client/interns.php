@@ -57,12 +57,12 @@ $Next = $page + 1;
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
 
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://kit.fontawesome.com/3181ebab68.js" crossorigin="anonymous"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/3181ebab68.js" crossorigin="anonymous"></script>
 
-<!-- FONT (OPTIONAL) -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Saira+Semi+Condensed:300,400,700"/>
+  <!-- FONT (OPTIONAL) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Saira+Semi+Condensed:300,400,700"/>
 
   <style>
     body{
@@ -558,7 +558,7 @@ $Next = $page + 1;
                                 FROM student
                                 JOIN student_skills ON student.`id` = student_skills.`id_student`
                                 JOIN skills ON student_skills.`id_skills` = skills.`id`
-                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui'
+                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui' AND student.`status`='active'
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -573,7 +573,7 @@ $Next = $page + 1;
                                   FROM student
                                   JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
                                   JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
-                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`disponibility` > CURDATE()  AND student.`pretEmploi`='oui'
+                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`disponibility` < CURDATE()  AND student.`pretEmploi`='oui' AND student.`status`='active'
                                   GROUP BY student.`id`";
             $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
             $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -596,7 +596,7 @@ $Next = $page + 1;
                                 FROM student
                                 JOIN student_skills ON student.`id` = student_skills.`id_student`
                                 JOIN skills ON student_skills.`id_skills` = skills.`id`
-                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`pretEmploi`='oui'
+                                WHERE skills.`nom_skills` LIKE :searchBar AND student.`pretEmploi`='oui' AND student.`status`='active'
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -611,7 +611,7 @@ $Next = $page + 1;
                                   FROM student
                                   JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
                                   JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
-                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`pretEmploi`='oui'
+                                  WHERE soft_skills.`soft_skills_name` LIKE :searchBar AND student.`pretEmploi`='oui' AND student.`status`='active'
                                   GROUP BY student.`id`";
             $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
             $stmtSearchEtudiants->execute(['searchBar' => '%' . $searchBar . '%']);
@@ -634,7 +634,7 @@ $Next = $page + 1;
                                 FROM student
                                 JOIN student_skills ON student.`id` = student_skills.`id_student`
                                 JOIN skills ON student_skills.`id_skills` = skills.`id`
-                                WHERE student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui'
+                                WHERE student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui' AND student.`status`='active'
                                 GROUP BY student.`id`";
         $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
         $stmtSearchEtudiants->execute();
@@ -649,7 +649,7 @@ $Next = $page + 1;
                                   FROM student
                                   JOIN student_soft_skills ON student.`id` = student_soft_skills.`student_id`
                                   JOIN soft_skills ON student_soft_skills.`soft_skills_id` = soft_skills.`id`
-                                  WHERE student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui'
+                                  WHERE student.`disponibility` < CURDATE() AND student.`pretEmploi`='oui' AND student.`status`='active'
                                   GROUP BY student.`id`";
             $stmtSearchEtudiants = $conn->prepare($querySearchEtudiants);
             $stmtSearchEtudiants->execute();
