@@ -330,7 +330,7 @@
                                   echo "</td>";
                                   echo "<td> $etudiant[designation]</td>";
                                   echo "<td>";
-                                $url="./profile.php?id=$etudiant[id]";
+                                $url="/Dashboard_startZupv1/profil-$etudiant[id]";
                                 
                                   echo " <a  href='$url'    class='btn btn-link btn-sm btn-rounded'>Voir</a>";
 
@@ -344,7 +344,7 @@
                         <!-- Ajout des boutons de navigation -->
                         <div class="pagination">
                             <?php for ($i = 1; $i <= $pages; $i++): ?>
-                                <a href="dashboard.php?page=<?php echo $i; ?>" class="btn btn-info"><?php echo $i; ?></a>
+                                <a href="/Dashboard_startZupv1/accueil-<?php echo $i; ?>" class="btn btn-info"><?php echo $i; ?></a>
                             <?php endfor; ?>
                         </div>
                     </div>
