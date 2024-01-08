@@ -23,14 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`) VALUES ('$Email','$Nom','$Designation','$Comment','Admin', '$HashPass')";
           $conn->exec($sql);
           echo '<script> alert("Le client a été enregistré avec succès.");
-                   location.replace("add_client_admin.php");
+                   location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
 </script>';
 
 
 
      } else {
           echo '<script> alert("Le compte est déjà existant avec cette adresse email!");
-                location.replace("add_client_admin.php");
+                location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
                 </script>';
      }
 }

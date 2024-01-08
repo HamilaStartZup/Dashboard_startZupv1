@@ -26,3 +26,4 @@ RewriteRule ^appel$ ./Dashboard_admin/presence.php
 RewriteRule ^ajouter-client-admin$ ./Dashboard_admin/add_client_admin.php
 RewriteRule ^client-([0-9]+)$ Dashboard_admin/profile-user.php?id=$1
 RewriteRule ^login$ Login.html
+RewriteRule ^acces-echoue$ ./failedAccess.php

@@ -7,11 +7,11 @@ if ($_SESSION['status'] != "Admin") {
     header("Location: ../failedAccess.php");
 }
 
- // requête pour récupérer la liste des  client qui ont  des  rdv et le nombre de  rdv  par  client
- $queryRDV = "SELECT  users_id,username,logo,rdv_number,Email from users INNER JOIN (SELECT COUNT(*) as rdv_number,`users_id` FROM `rdv` GROUP BY`users_id`) as R ON users.id=R.users_id;";
- $stmtRDV = $conn->prepare($queryRDV);
- $stmtRDV ->execute();
- $RDVS = $stmtRDV ->fetchAll(PDO::FETCH_ASSOC);
+// requête pour récupérer la liste des  client qui ont  des  rdv et le nombre de  rdv  par  client
+$queryRDV = "SELECT  users_id,username,logo,rdv_number,Email from users INNER JOIN (SELECT COUNT(*) as rdv_number,`users_id` FROM `rdv` GROUP BY`users_id`) as R ON users.id=R.users_id;";
+$stmtRDV = $conn->prepare($queryRDV);
+$stmtRDV->execute();
+$RDVS = $stmtRDV->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -101,24 +101,23 @@ if ($_SESSION['status'] != "Admin") {
         <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
             <div class="position-sticky">
                 <div class="list-group list-group-flush mx-3 mt-4">
-                    <a href="./dashboard.php" class="list-group-item list-group-item-action py-2 ripple">
+                    <a href="/Dashboard_startZupv1/accueil" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
                         <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
                     </a>
-                    <a href="./addCandidats.php" class="list-group-item list-group-item-action py-2 ripple ">
+                    <a href="/Dashboard_startZupv1/ajouter-un-candidat" class="list-group-item list-group-item-action py-2 ripple">
                         <i class="fas fa-user-graduate me-3"></i><span>Ajouter des candidats</span>
                     </a>
-                                     <a href="List_rdv.php" class="list-group-item list-group-item-action py-2 ripple active " aria-current="true"><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a>
+                    <a href="/Dashboard_startZupv1/liste-de-rdv" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a>
-                    <a href="./Calendar.php" class="list-group-item list-group-item-action py-2 ripple">
-                  <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
+                    <a href="/Dashboard_startZupv1/calendrier" class="list-group-item list-group-item-action py-2 ripple ">
+                        <i class="fas fa-calendar fa-fw me-3"></i><span>CALENDRIER</span>
                     </a>
-                    
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
-                    <a href="listeAppels.php" class="list-group-item list-group-item-action py-2 ripple ripple s"><i class="fa-sharp fa-solid fa-list me-3"></i>
+                    <a href="/Dashboard_startZupv1/liste-des-appels" class="list-group-item list-group-item-action py-2 ripple ripple s"><i class="fa-sharp fa-solid fa-list me-3"></i>
                         <span>Liste d'appels</span></a>
-                    <a href="./presence.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i><span>Présence</span></a>
-                    <a href="./add_client_admin.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a>
+                    <a href="/Dashboard_startZupv1/appel" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i><span>Présence</span></a>
+                    <a href="/Dashboard_startZupv1/ajouter-client-admin" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a>
                     <a href="../logout.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a>
                 </div>
             </div>
@@ -178,32 +177,31 @@ if ($_SESSION['status'] != "Admin") {
                             </thead>
                             <tbody>
                                 <?php
-                                     foreach ($RDVS as $RDV) {
-                                            echo'       <tr>
+                                foreach ($RDVS as $RDV) {
+                                    echo '       <tr>
                                             <td>';
-        
-                                               echo"<img src='$RDV[logo]' alt='' style='width: 45px; height: 45px' />";
-        
-                                           echo' </td>
+
+                                    echo "<img src='$RDV[logo]' alt='' style='width: 45px; height: 45px' />";
+
+                                    echo ' </td>
                                             <td>';
-        
-       echo$RDV['username'];
-        
-        echo'</td>
-        <td> <h3> <span class="badge badge-primary">';echo$RDV['rdv_number'];echo'</span></h3>';
-     
-        echo'</td>';
-        $url="./mange_rdv.php?users_id=".$RDV["users_id"]."& email=".$RDV["Email"];
-        echo"<td> <a  href='$url'><i class='fas fa-angles-right'></i></a></td> ";
-        
-                                       echo' </tr>';
 
+                                    echo $RDV['username'];
 
-                                        
-                                     }
-                                
+                                    echo '</td>
+        <td> <h3> <span class="badge badge-primary">';
+                                    echo $RDV['rdv_number'];
+                                    echo '</span></h3>';
+
+                                    echo '</td>';
+                                    $url = "/Dashboard_startZupv1/gerer-rdv-" . $RDV["users_id"] . "-" . $RDV["Email"];
+                                    echo "<td> <a  href='$url'><i class='fas fa-angles-right'></i></a></td> ";
+
+                                    echo ' </tr>';
+                                }
+
                                 ?>
-                         
+
 
 
                             </tbody>
