@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo "<script>
     alert('L appel a été enregistré avec succès.')
 
-    window.location.href = '../listeAppels.php'
+    window.location.href = '/Dashboard_startZupv1/liste-des-appels'
     </script>";
 
 
