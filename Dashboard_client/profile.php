@@ -17,6 +17,8 @@ $result = $query->fetch();
 <html lang="en">
 
 <head>
+  <meta charset="utf-8" />
+  <base href="/Dashboard_startZupv1/Dashboard_client/">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -157,87 +159,116 @@ $result = $query->fetch();
   <header>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <!-- Container wrapper -->
-      <div class="container-fluid">
-        <!-- Toggle button -->
-        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+          <!-- Toggle button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+          </button>
 
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <!-- Navbar brand -->
-          <a class="navbar-brand mt-2 mt-lg-0" href="#">
-            <a class="navbar-brand" href="#">
-              <img src="../images/icon.png" height="25" alt="KJJJ" />
+          <!-- Collapsible wrapper -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+              <a class="navbar-brand" href="#">
+                <img
+                  src="../images/icon.png"
+                  height="25"
+                  alt="KJJJ" />
 
-            </a>
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" href="#">Accueil</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="./interns.php"> Les stagiaires</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="./listFavorites.php">List des favoris</a>
-              </li>
-         
-        <li class="nav-item">
-          <a class="nav-link" href="./calendar_client.php">Calendrier</a>
-        </li>
-              <li class="nav-item">
-                <a class="nav-link" href="./contact_us.html">Contact</a>
-              </li>
-            </ul>
-            <!-- Left links -->
-        </div>
-        <!-- Collapsible wrapper -->
+              </a>
+              <!-- Left links -->
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/home">Accueil</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/les-stagiaires"> Les
+                    stagiaires</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/Dashboard_startZupv1/favoris">List
+                    des favoris</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/votre-calendrier">Calendrier</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/contact">Contact</a>
+                </li>
+              </ul>
+              <!-- Left links -->
+            </div>
+            <!-- Collapsible wrapper -->
 
-        <!-- Right elements -->
-        <div class="d-flex align-items-center">
-          <!-- Icon -->
+            <!-- Right elements -->
+            <div class="d-flex align-items-center">
+              <!-- Icon -->
 
+              <!-- Notifications -->
+              <div class="dropdown">
 
-          <!-- Notifications -->
-          <div class="dropdown">
-
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-              <li>
-                <a class="dropdown-item" href="#">Some news</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Another news</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
-            </ul>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuLink">
+                  <li>
+                    <a class="dropdown-item" href="#">Some news</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Another news</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </li>
+                </ul>
+              </div>
+              <!-- Avatar -->
+              <div class="dropdown">
+                <a
+                  class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                  href="#"
+                  id="navbarDropdownMenuAvatar"
+                  role="button"
+                  data-mdb-toggle="dropdown"
+                  aria-expanded="false">
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                    class="rounded-circle"
+                    height="25"
+                    alt="Black and White Portrait of a Man"
+                    loading="lazy" />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuAvatar">
+                  <li>
+                    <a class="dropdown-item" href="#">My profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Settings</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="../logout.php">Logout</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- Right elements -->
           </div>
-          <!-- Avatar -->
-          <div class="dropdown">
-            <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <img src="https://img.freepik.com/photos-gratuite/icone-profil-utilisateur-recto_187299-39596.jpg?w=826&t=st=1700233197~exp=1700233797~hmac=ecf017b3fc31a8df3b9f1610d6b32041d2d9f7610b1d33ab8664b0e0ec680208" class="rounded-circle" height="25" alt="Black and White Portrait of a Man" loading="lazy" />
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-              <li>
-                <a class="dropdown-item" href="#">My profile</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Settings</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="../logout.php">Logout</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- Right elements -->
-      </div>
-      <!-- Container wrapper -->
+          <!-- Container wrapper -->
 
-    </nav>
+        </nav>
     <!-- Navbar -->
   </header>
   <!--Main Navigation-->

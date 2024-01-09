@@ -34,6 +34,8 @@ $Next = $page + 1;
 <html>
 
 <head>
+  <meta charset="utf-8" />
+  <base href="/Dashboard_startZupv1/Dashboard_client/">
   <meta content="initial-scale=1, maximum-scale=1, 
 		user-scalable=0" name="viewport" />
 
@@ -446,88 +448,116 @@ $Next = $page + 1;
   <header>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <!-- Container wrapper -->
-      <div class="container-fluid">
-        <!-- Toggle button -->
-        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+          <!-- Toggle button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+          </button>
 
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <!-- Navbar brand -->
-          <a class="navbar-brand mt-2 mt-lg-0" href="#">
-            <a class="navbar-brand" href="#">
-              <img src="../images/icon.png" height="25" alt="KJJJ" />
+          <!-- Collapsible wrapper -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+              <a class="navbar-brand" href="#">
+                <img
+                  src="../images/icon.png"
+                  height="25"
+                  alt="KJJJ" />
 
-            </a>
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" href="./dashboard_client.html">Accueil</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="./interns.php"> Les stagiaires</a>
-              </li>
+              </a>
+              <!-- Left links -->
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/home">Accueil</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/les-stagiaires"> Les
+                    stagiaires</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/Dashboard_startZupv1/favoris">List
+                    des favoris</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/votre-calendrier">Calendrier</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="/Dashboard_startZupv1/contact">Contact</a>
+                </li>
+              </ul>
+              <!-- Left links -->
+            </div>
+            <!-- Collapsible wrapper -->
 
-              <li class="nav-item">
-                <a class="nav-link" href="./listFavorites.php">List des favoris</a>
-              </li>
+            <!-- Right elements -->
+            <div class="d-flex align-items-center">
+              <!-- Icon -->
 
-              <li class="nav-item">
-                <a class="nav-link" href="./calendar_client.php">Calendrier</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="./contact_us.html">Contact</a>
-              </li>
-            </ul>
-            <!-- Left links -->
-        </div>
-        <!-- Collapsible wrapper -->
+              <!-- Notifications -->
+              <div class="dropdown">
 
-        <!-- Right elements -->
-        <div class="d-flex align-items-center">
-          <!-- Icon -->
-
-
-          <!-- Notifications -->
-          <div class="dropdown">
-
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-              <li>
-                <a class="dropdown-item" href="#">Some news</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Another news</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
-            </ul>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuLink">
+                  <li>
+                    <a class="dropdown-item" href="#">Some news</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Another news</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </li>
+                </ul>
+              </div>
+              <!-- Avatar -->
+              <div class="dropdown">
+                <a
+                  class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                  href="#"
+                  id="navbarDropdownMenuAvatar"
+                  role="button"
+                  data-mdb-toggle="dropdown"
+                  aria-expanded="false">
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                    class="rounded-circle"
+                    height="25"
+                    alt="Black and White Portrait of a Man"
+                    loading="lazy" />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuAvatar">
+                  <li>
+                    <a class="dropdown-item" href="#">My profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Settings</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="../logout.php">Logout</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- Right elements -->
           </div>
-          <!-- Avatar -->
-          <div class="dropdown">
-            <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25" alt="Black and White Portrait of a Man" loading="lazy" />
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-              <li>
-                <a class="dropdown-item" href="#">My profile</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Settings</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="../logout.php">Logout</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- Right elements -->
-      </div>
-      <!-- Container wrapper -->
+          <!-- Container wrapper -->
 
-    </nav>
+        </nav>
     <!-- Navbar -->
   </header>
   <main style="margin-top: 8px">
@@ -674,7 +704,7 @@ $Next = $page + 1;
       if ( $requete == true ) {
         foreach ($etudiants as $row) {
           echo '<div class="fut-player-card">
-          <a href="./profile.php?code_profile='.$row['code_profile'].'">
+          <a href="/Dashboard_startZupv1/profil-'.$row['code_profile'].'">
           <div class="player-card-top">
             <div class="player-master-info">
               <div class="player-rating">
@@ -816,7 +846,7 @@ $Next = $page + 1;
         echo '
           <div class="pagination">';
               for ($i = 1; $i <= $pages; $i++):
-                  echo '<a href="interns.php?page='; echo $i .'" class="btn">'; echo $i.'</a>';
+                  echo '<a href="/Dashboard_startZupv1/les-stagiaires-'; echo $i .'" class="btn">'; echo $i.'</a>';
               endfor;
           echo '</div>';
       }
