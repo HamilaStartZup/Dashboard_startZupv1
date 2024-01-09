@@ -264,8 +264,13 @@
             <div class="col-lg-4">
               <div class="card mb-4">
                 <div class="card-body text-center">
-                  <img src="<?php echo "$Profile[logo]"; ?>" alt="avatar"
-                    class="rounded-circle img-fluid" style="width: 150px;">
+                  <?php
+                    if ($Profile['logo'] == null || $Profile['logo'] == "") {
+                      echo "<img src='https://mdbootstrap.com/img/new/avatars/8.jpg' alt='avatar' class='rounded-circle img-fluid' style='width: 150px;'>";
+                    } else {
+                      echo "<img src='$Profile[logo]' alt='avatar' class='rounded-circle img-fluid' style='width: 150px;'>";
+                    }
+                  ?>
                   <h5 class="my-3"> <?php echo "$Profile[username]";?> </h5>
                   <p class="text-muted mb-1"> <?php echo "$Profile[lastname]";?> </p>
                   <p class="text-muted mb-4"><?php echo "$Profile[firstname]";?></p>
