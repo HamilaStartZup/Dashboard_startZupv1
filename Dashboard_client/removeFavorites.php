@@ -10,8 +10,8 @@ $prev = $_GET['prev'];
 
 if ($prev == 2) {
     //if on click remouve fav  from list interface
-    header("Location:./listFavorites.php");
+    header("Location: /Dashboard_startZupv1/les-stagiaires");
 } else {
     //if on click remouve fav interns interface
-    header("Location:./interns.php");
+    header("Location: /Dashboard_startZupv1/les-stagiaires");
 }
