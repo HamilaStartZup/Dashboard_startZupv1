@@ -118,9 +118,13 @@
     }
     .themeStatutEmployable{
       color: green;
+      margin: 0;
+      font-size: large;
     }
     .themeStatutNonEmployable{
       color: red;
+      margin: 0;
+      font-size: large;
     }
     .colBtnEmploie{
       display: flex;
@@ -200,9 +204,9 @@
         <div class="col">
           
         </div>
-        <div class="col employabilité">
+        <div class="col employabilité" style="display: flex; flex-direction:row-reverse; align-items:center;">
           <div class="colBtnEmploie">
-            <b>Prêt à l'emploi : </b>
+            <!-- <b>Prêt à l'emploi : </b> -->
             <?php
 
             if (isset($_GET['id']) && is_numeric($_GET['id'])){
@@ -222,10 +226,10 @@
               }
               echo "<form action='' method='POST'>";
               if ($Profile['pretEmploi'] == "non"){
-                echo "<button type='submit' class='btn btn-success'>Oui</button>";
+                echo "<button type='submit' class='btn btn-danger'>Changer de statut</button>";
                 echo "<input type='hidden' name='id' value='$student_id'>";
               } else {
-                echo "<button type='submit' class='btn btn-danger'>Non</button>";
+                echo "<button type='submit' class='btn btn-success'>Changer de statut</button>";
                 echo "<input type='hidden' name='id' value='$student_id'>";
               }
               echo "</form>";
