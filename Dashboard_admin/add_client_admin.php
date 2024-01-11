@@ -142,7 +142,7 @@
                     </h5>
                     <div class="input-group">
                       <div class="form-outline">
-                        <form method="get" action="" class="d-none d-md-flex input-group w-auto my-auto form-outline">
+                        <form method="GET" action="" class="d-none d-md-flex input-group w-auto my-auto form-outline">
                           <input type="search" id="searchProfil" name="searchProfil" class="form-control" />
                           <label class="form-label" for="searchProfil">Search</label>
                         </div>
@@ -172,7 +172,7 @@
 
                               if (isset($_GET['searchProfil']) && !empty($_GET['searchProfil'])) {
                                 $searchProfil = $_GET['searchProfil'];
-                                $queryUsers = "SELECT * FROM users WHERE firstname LIKE '$searchProfil' OR lastname LIKE '$searchProfil' OR Email LIKE '$searchProfil'";
+                                $queryUsers = "SELECT * FROM users WHERE firstname LIKE :searchProfil OR lastname LIKE :searchProfil OR Email LIKE :searchProfil";  
                                 $stmtUsers = $conn->prepare($queryUsers);
                                 $stmtUsers->bindParam(':searchProfil', $searchProfil, PDO::PARAM_STR);
                                 $stmtUsers->execute();
