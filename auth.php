@@ -20,9 +20,11 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
             $_SESSION['id']=$user['id'];
             //compare different permission
             if($user['status']=='Admin'){
-                header("Location:Dashboard_admin/dashboard.php");
+                header("Location:/Dashboard_startZupv1/accueil");
+            } elseif($user['status']=='Formateur'){
+                header("Location:/Dashboard_startZupv1/appel");
             } else {
-                header("Location:Dashboard_client/dashboard_client.html");
+                header("Location:/Dashboard_startZupv1/home");
             }
         } else {
             echo "<script >

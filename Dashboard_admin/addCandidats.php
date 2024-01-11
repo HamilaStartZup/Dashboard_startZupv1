@@ -5,7 +5,7 @@
 session_start();
 // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
 if ($_SESSION['status'] != "Admin") {
-  header("Location: acces-refuse");
+  header("Location: /Dashboard_startZupv1/acces-echoue");
 }
 //conx
 require('../config.php');

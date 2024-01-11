@@ -4,8 +4,9 @@ include '../config.php';
 session_start();
 
 if ($_SESSION['status'] != "Admin") {
-  header("Location: ../failedAccess.php");
+    header("Location: /Dashboard_startZupv1/acces-echoue");
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     if (isset($_POST['newSkill']) && !empty($_POST['newSkill'])) {
         $newSkill = trim($_POST['newSkill']); // trim supprime les espaces avant et après la chaine de caractère

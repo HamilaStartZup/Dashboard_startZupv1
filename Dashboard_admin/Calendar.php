@@ -1,8 +1,11 @@
 <?php
 //index.php
+include('../config.php');
 
-
-
+session_start();
+if ($_SESSION['status'] != "Admin") {
+  header("Location: /Dashboard_startZupv1/acces-echoue");
+}
 
 ?>
 <!DOCTYPE html>

@@ -4,7 +4,7 @@ include("../config.php");
 session_start();
 // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
 if ($_SESSION['status'] != "Admin") {
-    header("Location: ../failedAccess.php");
+    header("Location: /Dashboard_startZupv1/acces-echoue");
 }
 
 // requête pour récupérer la liste des  client qui ont  des  rdv et le nombre de  rdv  par  client

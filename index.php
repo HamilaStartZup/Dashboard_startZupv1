@@ -1,6 +1,5 @@
 <?php
-
-	header('Location:./Login.html');
+	header('Location:/Dashboard_startZupv1/login');
 	exit;
 ?>
 

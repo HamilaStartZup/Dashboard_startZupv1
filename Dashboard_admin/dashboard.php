@@ -4,7 +4,7 @@ include("../config.php");
 session_start();
 // Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
 if ($_SESSION['status'] != "Admin") {
-  header("Location: ../failedAccess.php");
+  header("Location: /Dashboard_startZupv1/acces-echoue");
 }
 
 // Script qui permet d'afficher les étudiants 8 par 8

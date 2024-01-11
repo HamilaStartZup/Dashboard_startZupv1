@@ -34,7 +34,7 @@ if ($_SESSION['status'] == "Admin") {
     // echo "Date convertie : " . $dateParams . "<br>";
     // echo json_encode($rows);
 } else {
-    header('Location: ../index.php');
+    header('Location: /Dashboard_startZupv1/acces-echoue');
 }
 ?>
 

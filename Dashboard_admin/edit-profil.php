@@ -3,8 +3,8 @@ include('../config.php');
 
 session_start();
 if ($_SESSION['status'] != "Admin") {
-    header("Location: ../index.php");
-}
+    header("Location: /Dashboard_startZupv1/acces-echoue");
+  }
 $id_student = $_GET['id'];
 $queryUser = "SELECT * FROM student WHERE id = '$id_student'";
 $stmt = $conn->prepare($queryUser);
