@@ -22,7 +22,7 @@ if(!file_exists($upload_dir)){ // si le dossier n'existe pas
   mkdir($upload_dir, 0777, true); // on le crée
 }
 
-$photo = $Nom . "_" . $Prenom . "_" . basename($_FILES['avatar']['name']); // nom du fichier
+$photo = $Nom . "_" . $Prenom . "_avatar.jpg"; // nom du fichier
 $photoPath = $upload_dir . $photo; // chemin complet avec nom du fichier
 if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] == UPLOAD_ERR_NO_FILE) { // si aucun avatar n'est fourni ou si erreur lors de l'upload
   $initialsImage = generateInitialsImage($Nom, $Prenom, $upload_dir); // générer une image avec les initiales

@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           mkdir($upload_dir, 0777, true); // on le crée
      }
 
-     $logo = basename($_FILES['logoClient']['name']); // nom du fichier
+     $logo = "logo"; // nom du fichier
      $logoPath = $upload_dir . $logo; // chemin complet avec nom du fichier
 
 
@@ -38,14 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`, `logo`) VALUES ('$Email','$Nom','$Designation','$Comment','Client', '$HashPass', '$logoPath')";
           $conn->exec($sql);
           echo '<script> alert("Le client a été enregistré avec succès.");
-                   location.replace("add_client_admin.php");
+                   location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
                </script>';
 
 
 
      } else {
           echo '<script> alert("Le compte est déjà existant avec cette adresse email!");
-                location.replace("add_client_admin.php");
+                location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
                 </script>';
      }
 }

@@ -24,9 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $conn->exec($sql);
           echo '<script> alert("Le client a été enregistré avec succès.");
                    location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
-</script>';
-
-
+          </script>';
 
      } else {
           echo '<script> alert("Le compte est déjà existant avec cette adresse email!");
