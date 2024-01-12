@@ -12,7 +12,7 @@ $limit = 8;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($page - 1) * $limit;
 
-$query = "SELECT * FROM student LIMIT $start, $limit";
+$query = "SELECT * FROM student ORDER BY nom ASC LIMIT $start, $limit";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -39,18 +39,18 @@ $length = $resultTotalEtudiants['totalCandidates'];
 $queryEtudiants = "SELECT * FROM student";
 $stmtEtudiants = $conn->prepare($queryEtudiants);
 $stmtEtudiants->execute();
-// $etudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
+$PourcentageEtudiants = $stmtEtudiants ->fetchAll(PDO::FETCH_ASSOC);
 
-$etuActif = array_filter($etudiants, function ($etudiant) { // on filtre le tableau pour ne garder que les étudiants actifs
+$etuActif = array_filter($PourcentageEtudiants, function ($etudiant) { // on filtre le tableau pour ne garder que les étudiants actifs
   return $etudiant['status'] === "active";
 });
-$etuInactif = array_filter($etudiants, function ($etudiant) { // on filtre le tableau pour ne garder que les étudiants inactifs
+$etuInactif = array_filter($PourcentageEtudiants, function ($etudiant) { // on filtre le tableau pour ne garder que les étudiants inactifs
   return $etudiant['status'] === "not active";
 });
 
 $nombreActifs = count($etuActif); // on compte le nombre d'étudiants actifs
 $nombreInactifs = count($etuInactif); // on compte le nombre d'étudiants inactifs
-$nombreTotal = count($etudiants); // on compte le nombre total d'étudiants
+$nombreTotal = count($PourcentageEtudiants); // on compte le nombre total d'étudiants
 
 $pourcentageActif = ($nombreActifs / $nombreTotal) * 100; // puis on calcule le pourcentage d'étudiants actifs
 $pourcentageActif = round($pourcentageActif, 2); // on arrondi le pourcentage à 2 chiffres après la virgule
@@ -259,7 +259,7 @@ $pourcentageActif = round($pourcentageActif, 2); // on arrondi le pourcentage à
                   echo "<div class='d-flex align-items-center'>";
                   echo "<img src='$etudiant[avatar]' alt='' style='width: 45px; height: 45px' class='rounded-circle'/>";
                   echo "<div class='ms-3'>";
-                  echo "<p class='fw-bold mb-1'>$etudiant[prenom] <span></span> $etudiant[nom]</p>";
+                  echo "<p class='fw-bold mb-1'>$etudiant[nom] <span></span> $etudiant[prenom]</p>";
                   echo "<p class='text-muted mb-0'>$etudiant[email]</p>";
                   echo "</div>";
                   echo "</div>";

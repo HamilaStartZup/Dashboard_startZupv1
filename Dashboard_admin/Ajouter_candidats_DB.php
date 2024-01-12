@@ -68,7 +68,7 @@ if ($verif->fetchColumn() == 0) {
 
   echo'jddjeje'.$resultlastId['id'];
   echo '<script> alert("Le candidat a été ajouté avec succès.");
-  location.replace("/Dashboard_startZupv1/ajouter-un-candidat");
+  location.replace("/Dashboard_startZupv1/accueil");
   </script>';
             
         
