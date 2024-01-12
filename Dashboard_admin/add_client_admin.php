@@ -437,7 +437,7 @@ group_add
                 document.getElementById('confirm_pass').value != "") {
                
             } else {
-                alert("Veuillez remplir tous les champs");
+                // alert("Veuillez remplir tous les champs");
             }
         }
     </script>

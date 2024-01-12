@@ -28,25 +28,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      $verif->execute();
 
      // Insertion dans DB
-     if ($verif->fetchColumn() == 0) {
-          if ($logo == "") {
-               $logoPath = null;
+     if (!empty($Nom) && !empty($Email) && !empty($Designation) && !empty($Comment) && !empty($Password))
+          if ($verif->fetchColumn() == 0) {
+               if ($logo == "") {
+                    $logoPath = null;
+               } else {
+                    move_uploaded_file($_FILES['logoClient']['tmp_name'], $logoPath); // 
+               }
+
+               $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`, `logo`) VALUES ('$Email','$Nom','$Designation','$Comment','Client', '$HashPass', '$logoPath')";
+               $conn->exec($sql);
+               echo '<script> alert("Le client a été enregistré avec succès.");
+                    location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
+                    </script>';
+
+
+
           } else {
-               move_uploaded_file($_FILES['logoClient']['tmp_name'], $logoPath); // 
+               echo '<script> alert("Le compte est déjà existant avec cette adresse email!");
+                    location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
+                    </script>';
           }
-
-          $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`,`status`, `password`, `logo`) VALUES ('$Email','$Nom','$Designation','$Comment','Client', '$HashPass', '$logoPath')";
-          $conn->exec($sql);
-          echo '<script> alert("Le client a été enregistré avec succès.");
-                   location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
+     else {
+          echo '<script> alert("Veuillez remplir tous les champs!");
+               location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
                </script>';
-
-
-
-     } else {
-          echo '<script> alert("Le compte est déjà existant avec cette adresse email!");
-                location.replace("/Dashboard_StartZupv1/ajouter-client-admin");
-                </script>';
      }
 }
 
