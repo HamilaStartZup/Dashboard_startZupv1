@@ -2,6 +2,10 @@
 session_start();
 require('../config.php');
 
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 if ($_SESSION['status'] == "Admin") {
     // Récupérer la date envoyée par l'URL
     $date = $_GET['date'];
@@ -35,6 +39,141 @@ if ($_SESSION['status'] == "Admin") {
     // echo json_encode($rows);
 } else {
     header('Location: /Dashboard_startZupv1/acces-echoue');
+}
+
+
+
+
+// Fonction pour récupérer le taux d'absence chaque semaine
+function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
+{
+    try {
+        // calculer le taux d'absence pour chaque étudiant un par un
+        $stmtSelect = $conn->prepare("SELECT nom, prenom, date_enregistrement, COUNT(*) AS total, SUM(CASE WHEN matin = 'absent' AND apres_midi = 'absent' THEN 2 WHEN matin = 'absent' OR apres_midi = 'absent' THEN 1 ELSE 0 END) AS absence_count FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
+        $stmtSelect->bindParam(1, $weekStartDate);
+        $stmtSelect->bindParam(2, $weekEndDate);
+        $stmtSelect->execute();
+        $resultSelect = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($resultSelect as $index => $etudiant) {
+          if ($etudiant['total'] > 0) {
+            // Somme des absence d'un étudiant
+            $absenceCountEtudiant = $etudiant['absence_count'];
+            print($absenceCountEtudiant);
+            // Nombre total de demi-journée de cours dans la semaine
+            $totalCoursSemaine = 10;
+            // Calculer le taux d'absence d'un étudiant
+            $absenceRateEtudiant = ($absenceCountEtudiant / $totalCoursSemaine) * 100;
+            // Ajouter le taux d'absence d'un étudiant dans le tableau
+            $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
+            // Ajouter la liste de jours ou l'étudiant est absent 
+            $stmtSelect = $conn->prepare("SELECT date_enregistrement, matin, apres_midi FROM appel WHERE nom = ? AND prenom = ? AND date_enregistrement BETWEEN ? AND ?");
+            $stmtSelect->bindParam(1, $etudiant['nom']);
+            $stmtSelect->bindParam(2, $etudiant['prenom']);
+            $stmtSelect->bindParam(3, $weekStartDate);
+            $stmtSelect->bindParam(4, $weekEndDate);
+            $stmtSelect->execute();
+            $resultSelectEtudiant = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
+            $resultSelect[$index]['absence_list'] = $resultSelectEtudiant;
+            print_r($resultSelectEtudiant);
+          } else {            
+            $absenceRateEtudiant = 0;
+            $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
+          }
+        }
+
+        // Calcul du taux d'absence total de la semaine
+        // Somme des absence de tous les étudiants
+        $absenceCount = array_sum(array_column($resultSelect, 'absence_count'));
+        // Nombre total de demi-journée de cours dans la semaine
+        $totalCoursSemaine = 10;
+
+        // Calculer le taux d'absence total de la semaine
+        $absenceRate = ($absenceCount / $totalCoursSemaine) * 100;
+
+
+        // return ['success' => true, 'absence_rate' => $absenceRate, 'absence_rate_etudiant' => $resultSelect];
+        return ['success' => true, 'absence_rate_etudiant' => $resultSelect, 'absence_rate' => $absenceRate];
+    } catch (PDOException $e) {
+        return ['success' => false, 'message' => 'Erreur lors de la récupération du taux d\'absence: ' . $e->getMessage()];
+    }
+}
+
+// Définir la semaine de la date d'appel consultée avec dateParams
+$currentWeekNumber = date('W', strtotime($dateParams)); // Obtenir le numéro de la semaine avec la date d'appel consultée
+$currentYear = date('Y', strtotime($dateParams)); // Obtenir l'année avec la date d'appel consultée
+
+// Obtenir la date de début de la semaine
+$weekStartDate = date('Y-m-d', strtotime($currentYear . 'W' . str_pad($currentWeekNumber, 2, '1', STR_PAD_LEFT)));
+
+// Obtenir la date de fin de la semaine
+$weekEndDate = date('Y-m-d', strtotime($weekStartDate . ' +4 days'));
+
+
+// Appeler la fonction getAbsenceSemaine avec la semaine actuelle
+$result = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
+
+// Appeler la fonction pour pouvoir télécharger le fichier Excel du tau d'absence de la semaine
+RapportSemaineExcel($result); 
+
+
+// Fonction pour pouvoir télécharger le fichier Excel du tau d'absence de la semaine
+function RapportSemaineExcel($result)
+{
+  require_once '../vendor/autoload.php'; // Inclure le fichier d'autoloading de PhpSpreadsheet
+  // initialisation de la date pour récupérer le numéro de la semaine
+  $date = date('Y-m-d');
+  $dateTime = DateTime::createFromFormat('Y-m-d', $date);
+  $currentWeekNumber = date('W', strtotime($date)); // Obtenir le numéro de la semaine avec la date d'appel consultée
+  $currentYear = date('Y', strtotime($date)); // Obtenir l'année avec la date d'appel consultée
+  $currentMonth = date('F', strtotime($date)); // Obtenir le mois avec la date d'appel consultée
+  // Créer le fichier Excel
+  $spreadsheet = new Spreadsheet();
+  $sheet = $spreadsheet->getActiveSheet();
+
+  // Ajouter les données dans le fichier Excel
+  $sheet->setCellValue('A1', 'Nom');
+  $sheet->setCellValue('B1', 'Prénom');
+  $sheet->setCellValue('C1', 'Taux d\'absence');
+
+  $sheet->getColumnDimension('A')->setWidth(25);
+  $sheet->getColumnDimension('B')->setWidth(25);
+  $sheet->getColumnDimension('C')->setWidth(25);
+
+  // Ajouter les données dans le fichier Excel
+  $row = 2;
+  foreach ($result['absence_rate_etudiant'] as $etudiant) { // Parcourir les étudiants
+      $sheet->setCellValue('A' . $row, $etudiant['nom']); // Ajouter le nom de l'étudiant
+      $sheet->setCellValue('B' . $row, $etudiant['prenom']); // Ajouter le prénom de l'étudiant
+      $sheet->setCellValue('C' . $row, $etudiant['absence_rate']); // Ajouter le taux d'absence de l'étudiant
+      $row++; // Incrémenter le numéro de ligne
+  }
+
+  // Enregistrer le fichier Excel
+  $dir = './appel/rapport_semaine/' . date('m_Y') . '/'; // Créer un répertoire pour stocker les fichiers Excel
+
+  if (!is_dir($dir)) { // Vérifier si le répertoire existe
+      mkdir($dir, 0777, true); // Créer le répertoire
+  }
+
+  $excelFilePath = $dir . 'semaine_' . $currentWeekNumber . '_' . $currentMonth . '_' . $currentYear  . '.xlsx'; // Nom du fichier Excel
+  $writer = new Xlsx($spreadsheet); // Créer un objet PhpSpreadsheet
+  $writer->save($excelFilePath); // Enregistrer le fichier Excel
+
+  return $excelFilePath;
+
+
+  // Télécharger le fichier Excel
+  header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  header('Content-Disposition: attachment;filename="' . $excelFilePath . '"');
+  header('Cache-Control: max-age=0');
+  header('Expires: Fri, 11 Nov 2011 11:11:11 GMT');
+  header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+  header('Cache-Control: cache, must-revalidate');
+  header('Pragma: public');
+  header('Content-Length: ' . filesize($excelFilePath));
+  readfile($excelFilePath);
+  exit;
 }
 ?>
 
@@ -394,6 +533,36 @@ if ($_SESSION['status'] == "Admin") {
       </div>
     </div>
   </div>
+  <!-- afficher les taux d'absence de la semaine de chaque étudiants -->
+  <!-- on affiche si vendredi -->
+  <?php if (date('l', strtotime($dateParams)) == 'Friday') { ?>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="text-center">Taux d'absence de la semaine</h1>
+            <table class="table table-striped">
+              <thead>
+                  <tr>
+                    <a href="./appel/rapport_semaine/<?php echo date('m_Y'); ?>/semaine_<?php echo $currentWeekNumber; ?>.xlsx" class="btn btn-success" style="margin-bottom: 1rem;"><i class="bi bi-download"></i> Télécharger le fichier Excel</a>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Taux d'absence</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <?php foreach ($result['absence_rate_etudiant'] as $row) { ?>
+                  <tr>
+                      <td><?php echo $row['nom']; ?></td>
+                      <td><?php echo $row['prenom']; ?></td>
+                      <td><?php echo $row['absence_rate']; ?>%</td>
+                  </tr>
+                  <?php } ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  <?php } ?>
 </div>
 <?php
 // Supprimer cette appel
