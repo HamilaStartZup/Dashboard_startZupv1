@@ -59,7 +59,7 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
           if ($etudiant['total'] > 0) {
             // Somme des absence d'un étudiant
             $absenceCountEtudiant = $etudiant['absence_count'];
-            print($absenceCountEtudiant);
+            
             // Nombre total de demi-journée de cours dans la semaine
             $totalCoursSemaine = 10;
             // Calculer le taux d'absence d'un étudiant
@@ -75,7 +75,6 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
             $stmtSelect->execute();
             $resultSelectEtudiant = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
             $resultSelect[$index]['absence_list'] = $resultSelectEtudiant;
-            print_r($resultSelectEtudiant);
           } else {            
             $absenceRateEtudiant = 0;
             $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
@@ -114,8 +113,7 @@ $weekEndDate = date('Y-m-d', strtotime($weekStartDate . ' +4 days'));
 $result = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
 
 // Appeler la fonction pour pouvoir télécharger le fichier Excel du tau d'absence de la semaine
-RapportSemaineExcel($result); 
-
+RapportSemaineExcel($result);  // Voir quand appeler la fonction efficacement
 
 // Fonction pour pouvoir télécharger le fichier Excel du tau d'absence de la semaine
 function RapportSemaineExcel($result)
@@ -135,17 +133,41 @@ function RapportSemaineExcel($result)
   $sheet->setCellValue('A1', 'Nom');
   $sheet->setCellValue('B1', 'Prénom');
   $sheet->setCellValue('C1', 'Taux d\'absence');
+  $sheet->setCellValue('D1', 'Jours d\'absence');
+  $sheet->setCellValue('E1', 'Nombre de jours d\'absence');
 
   $sheet->getColumnDimension('A')->setWidth(25);
   $sheet->getColumnDimension('B')->setWidth(25);
   $sheet->getColumnDimension('C')->setWidth(25);
+  $sheet->getColumnDimension('D')->setWidth(45);
+  $sheet->getColumnDimension('E')->setWidth(25);
+  $spreadsheet->getActiveSheet()->getStyle('D')->getAlignment()->setWrapText(true);
 
   // Ajouter les données dans le fichier Excel
   $row = 2;
   foreach ($result['absence_rate_etudiant'] as $etudiant) { // Parcourir les étudiants
       $sheet->setCellValue('A' . $row, $etudiant['nom']); // Ajouter le nom de l'étudiant
       $sheet->setCellValue('B' . $row, $etudiant['prenom']); // Ajouter le prénom de l'étudiant
-      $sheet->setCellValue('C' . $row, $etudiant['absence_rate']); // Ajouter le taux d'absence de l'étudiant
+      $sheet->setCellValue('C' . $row, $etudiant['absence_rate'] . ' %'); // Ajouter le taux d'absence de l'étudiant
+      
+      // Initialiser une variable pour stocker les informations sur les absences
+      $absenceInfo = '';
+
+      foreach ($etudiant['absence_list'] as $absence) {
+        $formattedDate = date('l d', strtotime($absence['date_enregistrement'])); // Formatage de la date
+        if ($absence['matin'] == 'absent' && $absence['apres_midi'] == 'absent') {
+          $absenceInfo .= $formattedDate . ' : Journée complète, ' . "\n";
+        } elseif ($absence['matin'] == 'absent') {
+            $absenceInfo .= $formattedDate . ' : ' . $absence['matin'] . ' le matin, ' . "\n";
+        } elseif ($absence['apres_midi'] == 'absent') {
+            $absenceInfo .= $formattedDate . ' : ' . $absence['apres_midi'] . ' l\'après-midi, ' . "\n";
+        } else {
+            // Si l'étudiant est présent, vous pouvez ajouter un message ou laisser vide selon vos besoins
+        }
+      }
+      // Ajouter les informations d'absence à la cellule 'D' . $row
+      $sheet->setCellValue('D' . $row, $absenceInfo);
+      $sheet->setCellValue('E' . $row, $etudiant['absence_count']); // Ajouter le nombre de jours d'absence de l'étudiant
       $row++; // Incrémenter le numéro de ligne
   }
 
@@ -485,6 +507,15 @@ function RapportSemaineExcel($result)
         <h1 class="text-center">Feuille d'appel</h1>
         <h2 class="text-center">Date : <?php echo $date; ?></h2>
         <form action="" method="POST">
+          <?php 
+            // Initialisation des variables de date pour leurs utilisations global
+            $currentWeekNumber = date('W', strtotime($dateParams)); // Obtenir le numéro de la semaine avec la date d'appel consultée
+            $currentYear = date('Y', strtotime($dateParams)); // Obtenir l'année avec la date d'appel consultée
+            $currentMonth = date('F', strtotime($dateParams)); // Obtenir le mois avec la date d'appel consultée
+          ?>
+          <a style="float: right;" href="./appel/rapport_semaine/<?php echo date('m_Y', strtotime($dateParams)); ?>/semaine_<?php echo $currentWeekNumber; ?>_<?php echo $currentMonth; ?>_<?php echo $currentYear; ?>.xlsx" class="btn btn-warning" style="margin-bottom: 1rem;"><i class="bi bi-download"></i> Télécharger le rapport hebdomadaire</a>
+          <a href="./appel/<?php echo date('m_Y', strtotime($dateParams)); ?>/<?php echo date('d', strtotime($dateParams)); ?>.xlsx " class="btn btn-success" style="float: right; margin-right: 20px;"><i class="bi bi-download"></i> Télécharger l'appel du jours</a>
+          
           <table class="table table-striped">
             <thead>
                 <tr>
@@ -536,17 +567,18 @@ function RapportSemaineExcel($result)
   <!-- afficher les taux d'absence de la semaine de chaque étudiants -->
   <!-- on affiche si vendredi -->
   <?php if (date('l', strtotime($dateParams)) == 'Friday') { ?>
-      <div class="container" style="width: 100%;">
+      <div class="container" style="width: 100%; margin-top: 4rem;">
         <div class="row">
           <div class="col-12">
             <h1 class="text-center">Taux d'absence de la semaine</h1>
             <table class="table table-striped">
               <thead>
                   <tr>
-                    <a href="./appel/rapport_semaine/<?php echo date('m_Y'); ?>/semaine_<?php echo $currentWeekNumber; ?>.xlsx" class="btn btn-success" style="margin-bottom: 1rem;"><i class="bi bi-download"></i> Télécharger le fichier Excel</a>
+                    <?php $currentMonth = date('F', strtotime($date)); // Obtenir le mois avec la date d'appel consultée ?>
                     <th scope="col">Nom</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Taux d'absence</th>
+                    <th scope="col">Jours d'absence</th>
                   </tr>
               </thead>
               <tbody>
@@ -555,6 +587,18 @@ function RapportSemaineExcel($result)
                       <td><?php echo $row['nom']; ?></td>
                       <td><?php echo $row['prenom']; ?></td>
                       <td><?php echo $row['absence_rate']; ?>%</td>
+                      <td>
+                        <?php foreach ($row['absence_list'] as $absence) { ?>
+                          <?php if ($absence['matin'] == 'absent' && $absence['apres_midi'] == 'absent') { ?>
+                            <p><?php echo $absence['date_enregistrement']; ?> : Journée complète</p>
+                          <?php } else if ($absence['matin'] == 'absent') { ?>
+                            <p><?php echo $absence['date_enregistrement']; ?> : <?php echo $absence['matin']; ?> le matin</p>
+                          <?php } else if ($absence['apres_midi'] == 'absent') { ?>
+                            <p><?php echo $absence['date_enregistrement']; ?> : <?php echo $absence['apres_midi']; ?> l'après-midi</p>
+                          <?php } else { ?>
+                            <!-- rien car il est présent-->
+                          <?php } ?>
+                        <?php } ?>
                   </tr>
                   <?php } ?>
               </tbody>
