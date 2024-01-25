@@ -225,7 +225,7 @@
                     </div>
                 </div>
             </div>
-            <div class="fab-container">
+            <div class="fab-container" style="position: fixed;">
   <div class="fab shadow">
     <div class="fab-content">
     <span class="material-icons">
@@ -259,7 +259,7 @@ group_add
   <i class="fas fa-user fa-lg me-3 fa-fw"></i>
   <div class="form-outline flex-fill mb-0">
     <input type="text" id="form3Example1c" name="nomClient" class="form-control" />
-    <label class="form-label" for="form3Example1c">Your Name</label>
+    <label class="form-label" for="form3Example1c">Nom</label>
   </div>
 </div>
 
@@ -267,28 +267,28 @@ group_add
   <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
   <div class="form-outline flex-fill mb-0">
     <input type="email" id="form3Example3c" name="emailClient" class="form-control" />
-    <label class="form-label" for="form3Example3c">Your Email</label>
+    <label class="form-label" for="form3Example3c">Email</label>
   </div>
 </div>
 <div class="d-flex flex-row align-items-center mb-4">
   <i class="fas fa-sticky-note fa-lg me-3 fa-fw"></i>
   <div class="form-outline flex-fill mb-0">
     <input type="text" id="form4Example4c"  name="descriptionClient" class="form-control" />
-    <label class="form-label" for="form3Example3c">des</label>
+    <label class="form-label" for="form3Example3c">Description</label>
   </div>
 </div>
 <div class="d-flex flex-row align-items-center mb-4">
   <i class="fas fa-file-alt fa-lg me-3 fa-fw"></i>
   <div class="form-outline flex-fill mb-0">
     <input type="textarea" id="form5Example5c" name="comentaireClient" class="form-control" />
-    <label class="form-label" for="form3Example3c">commentaire</label>
+    <label class="form-label" for="form3Example3c">Commentaire</label>
   </div>
 </div>
 <div class="d-flex flex-row align-items-center mb-4">
   <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
   <div class="form-outline flex-fill mb-0">
     <input type="password" id="pass"  name='passwordClient' class="form-control" />
-    <label class="form-label" for="form3Example4c">Password</label>
+    <label class="form-label" for="form3Example4c">Mot-de-passe</label>
   </div>
 </div>
 
@@ -296,7 +296,7 @@ group_add
   <i class="fas fa-key fa-lg me-3 fa-fw"></i>
   <div class="form-outline flex-fill mb-0">
     <input type="password" id="confirm_pass" class="form-control" onkeyup="validate_password()" />
-    <label class="form-label" for="form3Example4cd">Repeat your password</label>
+    <label class="form-label" for="form3Example4cd">Répétez votre mot-de-passe</label>
   </div>
 </div>
 
@@ -348,7 +348,7 @@ group_add
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="text" id="form3Example1c" name="nomClient" class="form-control" />
-                      <label class="form-label" for="form3Example1c">Your Name</label>
+                      <label class="form-label" for="form3Example1c">Nom</label>
                     </div>
                   </div>
 
@@ -356,28 +356,37 @@ group_add
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="email" id="form3Example3c" name="emailClient" class="form-control" />
-                      <label class="form-label" for="form3Example3c">Your Email</label>
+                      <label class="form-label" for="form3Example3c">Email</label>
                     </div>
                   </div>
+                  
+                  <div class="d-flex flex-row align-items-center mb-4">
+                  <i class="fa-solid fa-phone fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="number" id="phoneClient" name="phoneClient" class="form-control" onkeyup="len_phone()" />
+                      <label class="form-label" for="form3Example3c">Numéro de téléphone (Optionnel)</label>
+                    </div>
+                  </div>
+
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-sticky-note fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="text" id="form4Example4c"  name="descriptionClient" class="form-control" />
-                      <label class="form-label" for="form3Example3c">des</label>
+                      <label class="form-label" for="form3Example3c">Déscription</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-file-alt fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="textarea" id="form5Example5c" name="comentaireClient" class="form-control" />
-                      <label class="form-label" for="form3Example3c">commentaire</label>
+                      <label class="form-label" for="form3Example3c">Commentaire</label>
                     </div>
                   </div>
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="password" id="pass"  name='passwordClient' class="form-control" />
-                      <label class="form-label" for="form3Example4c">Password</label>
+                      <label class="form-label" for="form3Example4c">Mot-de-passe</label>
                     </div>
                   </div>
 
@@ -385,7 +394,7 @@ group_add
                     <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="password" id="confirm_pass" class="form-control" onkeyup="validate_password()" />
-                      <label class="form-label" for="form3Example4cd">Repeat your password</label>
+                      <label class="form-label" for="form3Example4cd">Répétez votre mot-de-passe</label>
                     </div>
                   </div>
 
@@ -439,6 +448,14 @@ group_add
             } else {
                 // alert("Veuillez remplir tous les champs");
             }
+        }
+
+        function len_phone(){
+          var phone = document.getElementById('phoneClient').value;
+          console.log(phone);
+          if (phone.length > 15) {
+            alert("Le numéro de téléphone est trop long!");
+          }
         }
     </script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>

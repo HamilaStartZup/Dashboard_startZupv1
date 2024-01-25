@@ -5,6 +5,7 @@ require('../config.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $Nom = $_POST['nomClient'];
     $Email = $_POST['emailClient'];
+    $Phone = $_POST['phoneClient'];
     $Designation = $_POST['descriptionClient'];
     $Comment = $_POST['comentaireClient'];
     $Password = $_POST['passwordClient'];
@@ -34,9 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $logoPath = null;
             }
 
-            $sql = "INSERT INTO users(`Email`, `firstname`, `description`, `comment`, `status`, `password`, `logo`) VALUES (:email, :firstname, :description, :comment, 'Client', :password, :logo)";
+            $sql = "INSERT INTO users(`Email`, `phone`, `firstname`, `description`, `comment`, `status`, `password`, `logo`) VALUES (:email, :phone, :firstname, :description, :comment, 'Client', :password, :logo)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':email', $Email, PDO::PARAM_STR);
+            if (!empty($Phone)){
+                $Phone = $_POST['phoneClient'];
+            } else {
+                $Phone = null;
+            }
+            $stmt->bindParam(':phone', $Phone, PDO::PARAM_STR);
             $stmt->bindParam(':firstname', $Nom, PDO::PARAM_STR);
             $stmt->bindParam(':description', $Designation, PDO::PARAM_STR);
             $stmt->bindParam(':comment', $Comment, PDO::PARAM_STR);
