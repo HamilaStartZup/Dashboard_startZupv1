@@ -1,45 +1,44 @@
 <?php
 require('config.php');
-$query= $conn->prepare("SELECT*FROM users WHERE Email = ?");
-$query->execute([$_POST['email']]);
-$user=$query->fetch();
 
 if (!empty($_POST['email']) && !empty($_POST['password'])) {
     $emailUser = $_POST['email'];
-    $checkIfUserAlreadyExists = $conn->prepare("SELECT * FROM users WHERE Email = '$emailUser'");
-    $checkIfUserAlreadyExists->execute();
 
-    if($checkIfUserAlreadyExists->rowCount() > 0){
+    // Utilisation d'une requête préparée pour éviter les injections SQL
+    $checkIfUserAlreadyExists = $conn->prepare("SELECT * FROM users WHERE Email = ?");
+    $checkIfUserAlreadyExists->execute([$emailUser]);
+
+    if ($checkIfUserAlreadyExists->rowCount() > 0) {
+        $user = $checkIfUserAlreadyExists->fetch();
         $mdpUser = $_POST['password'];
-        // if ($user &&($_POST['password']==$user['password']))
-        if (password_verify($mdpUser, $user['password'])){
+
+        // Utilisation de password_verify pour vérifier le mot de passe haché
+        if (password_verify($mdpUser, $user['password'])) {
             session_start();
-            $_SESSION['username']=$user['username'];
-            $_SESSION['email']=$user['Email'];
-            $_SESSION['status']=$user['status'];
-            $_SESSION['id']=$user['id'];
-            //compare different permission
-            if($user['status']=='Admin'){
-                header("Location:/Dashboard_startZupv1/accueil");
-            } elseif($user['status']=='Formateur'){
-                header("Location:/Dashboard_startZupv1/appel");
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['email'] = $user['Email'];
+            $_SESSION['status'] = $user['status'];
+            $_SESSION['id'] = $user['id'];
+
+            // Comparaison des différentes permissions
+            if ($user['status'] == 'Admin') {
+                header("Location: /Dashboard_startZupv1/accueil");
+            } elseif ($user['status'] == 'Formateur') {
+                header("Location: /Dashboard_startZupv1/appel");
             } else {
-                header("Location:/Dashboard_startZupv1/home");
+                header("Location: /Dashboard_startZupv1/home");
             }
         } else {
-            echo "<script >
-            window.alert('email ou mot de passe incorrect');
+            echo "<script>
+                window.alert('Email ou mot de passe incorrect');
+                window.location.href='index.php';
+                </script>";
+        }
+    } else {
+        echo "<script>
+            window.alert('Compte inexistant');
             window.location.href='index.php';
             </script>";
-        }
-    }
-    else {
-        echo "<script >
-        window.alert('Compte inexistant');
-        window.location.href='index.php';
-        </script>";
     }
 }
-
-
 ?>

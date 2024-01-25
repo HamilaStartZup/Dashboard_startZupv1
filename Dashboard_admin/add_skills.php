@@ -7,14 +7,21 @@ if ($_SESSION['status'] != "Admin") {
     header("Location: /Dashboard_startZupv1/acces-echoue");
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['newSkill']) && !empty($_POST['newSkill'])) {
-        $newSkill = trim($_POST['newSkill']); // trim supprime les espaces avant et après la chaine de caractère
-        if ($newSkill != ""){
-            $sqlInsertSkill = "INSERT INTO skills (nom_skills) VALUES ('$newSkill')";
-            $sqlInsertSkillResult = $conn->prepare($sqlInsertSkill);
-            $sqlInsertSkillResult->execute();
-            echo "<script>alert('Compétence ajoutée avec succès !')</script>";
+        $newSkill = trim($_POST['newSkill']);
+        
+        // Validation côté serveur
+        if (!empty($newSkill)) {
+            $sqlInsertSkill = "INSERT INTO skills (nom_skills) VALUES (:newSkill)";
+            $stmt = $conn->prepare($sqlInsertSkill);
+            $stmt->bindParam(':newSkill', $newSkill, PDO::PARAM_STR);
+            
+            if ($stmt->execute()) {
+                echo "<script>alert('Compétence ajoutée avec succès !')</script>";
+            } else {
+                echo "<script>alert('Une erreur est survenue lors de l'ajout de la compétence.')</script>";
+            }
         } else {
             echo "<script>alert('Veuillez bien remplir le champ !')</script>";
         }

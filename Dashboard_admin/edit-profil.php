@@ -55,10 +55,12 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $valueCompetences = $_POST['competences']; // tableau des valeurs des compétences
     // Si tout les skills sont décoché on supprime tout les skills de l'étudiant
     if(!$competences){
-        $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student'";
+        $queryDelete = "DELETE FROM student_skills WHERE id_student = :id_student";
         $stmtDelete = $conn->prepare($queryDelete);
+        $stmtDelete->bindParam(':id_student', $id_student, PDO::PARAM_INT);
         $stmtDelete->execute();
-        $competences = array();
+        $competences = array();  // Réinitialisation du tableau des compétences
+
     } else if ($competences && count($competences) > 0 && $Skills){
 
         // SI UNE COMPETENCE EST COCHEE ON L'AJOUTE DANS LA TABLE student_skills SINON ON LA SUPPRIME
@@ -72,13 +74,17 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     
                 if(in_array($idSkill, $competences)){
                     if(count($SkillsEtudiant) == 0){
-                        $queryInsert = "INSERT INTO student_skills (id_student, id_skills) VALUES ('$id_student', '$idSkill')";
+                        $queryInsert = "INSERT INTO student_skills (id_student, id_skills) VALUES (:id_student, :idSkill)";
                         $stmtInsert = $conn->prepare($queryInsert);
+                        $stmtInsert->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+                        $stmtInsert->bindParam(':idSkill', $idSkill, PDO::PARAM_INT);
                         $stmtInsert->execute();
                     }
                 }else if(count($SkillsEtudiant) > 0){
-                    $queryDelete = "DELETE FROM student_skills WHERE id_student = '$id_student' AND id_skills = '$idSkill'";
+                    $queryDelete = "DELETE FROM student_skills WHERE id_student = :id_student AND id_skills = :idSkill";
                     $stmtDelete = $conn->prepare($queryDelete);
+                    $stmtDelete->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+                    $stmtDelete->bindParam(':idSkill', $idSkill, PDO::PARAM_INT);
                     $stmtDelete->execute();
                 }
             }
@@ -128,16 +134,20 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
             // Si la compétence est cochée dans le formulaire
             if (count($softSkillsEtudiant) == 0) {
                 // Si elle n'est pas présente dans la base de données, on l'ajoute
-                $queryInsert = "INSERT INTO student_soft_skills (student_id, soft_skills_id) VALUES ('$id_student', '$idSoftSkill')";
+                $queryInsert = "INSERT INTO student_soft_skills (student_id, soft_skills_id) VALUES (:id_student, :idSoftSkill)";
                 $stmtInsert = $conn->prepare($queryInsert);
+                $stmtInsert->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':idSoftSkill', $idSoftSkill, PDO::PARAM_INT);
                 $stmtInsert->execute();
             }
         } else {
             // Si la compétence n'est pas cochée dans le formulaire
             if (count($softSkillsEtudiant) > 0) {
                 // Si elle est présente dans la base de données, on la supprime
-                $queryDelete = "DELETE FROM student_soft_skills WHERE student_id = '$id_student' AND soft_skills_id = '$idSoftSkill'";
+                $queryDelete = "DELETE FROM student_soft_skills WHERE student_id = :id_student AND soft_skills_id = :idSoftSkill";
                 $stmtDelete = $conn->prepare($queryDelete);
+                $stmtDelete->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+                $stmtDelete->bindParam(':idSoftSkill', $idSoftSkill, PDO::PARAM_INT);
                 $stmtDelete->execute();
             }
         }
