@@ -56,11 +56,12 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
     $resultSelect = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
 
     // Nombre total de demi-journée de cours dans la semaine
-    $lenCours = $conn->prepare("SELECT matin, apres_midi FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
-    $lenCours->bindParam(1, $weekStartDate);
-    $lenCours->bindParam(2, $weekEndDate);
-    $lenCours->execute();
-    $totalCoursSemaine = $lenCours->rowCount();
+    // $lenCours = $conn->prepare("SELECT matin, apres_midi FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
+    // $lenCours->bindParam(1, $weekStartDate);
+    // $lenCours->bindParam(2, $weekEndDate);
+    // $lenCours->execute();
+    // Le code ci dessus ne fonctionne pas et est à revoir
+    $totalCoursSemaine = 10;
 
     foreach ($resultSelect as $index => $etudiant) {
       if ($etudiant['total'] > 0) {
