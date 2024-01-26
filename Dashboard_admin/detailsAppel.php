@@ -47,55 +47,60 @@ if ($_SESSION['status'] == "Admin") {
 // Fonction pour récupérer le taux d'absence chaque semaine
 function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
 {
-    try {
-        // calculer le taux d'absence pour chaque étudiant un par un
-        $stmtSelect = $conn->prepare("SELECT nom, prenom, date_enregistrement, COUNT(*) AS total, SUM(CASE WHEN matin = 'absent' AND apres_midi = 'absent' THEN 2 WHEN matin = 'absent' OR apres_midi = 'absent' THEN 1 ELSE 0 END) AS absence_count FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
-        $stmtSelect->bindParam(1, $weekStartDate);
-        $stmtSelect->bindParam(2, $weekEndDate);
+  try {
+    // calculer le taux d'absence pour chaque étudiant un par un
+    $stmtSelect = $conn->prepare("SELECT nom, prenom, date_enregistrement, COUNT(*) AS total, SUM(CASE WHEN matin = 'absent' AND apres_midi = 'absent' THEN 2 WHEN matin = 'absent' OR apres_midi = 'absent' THEN 1 ELSE 0 END) AS absence_count FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
+    $stmtSelect->bindParam(1, $weekStartDate);
+    $stmtSelect->bindParam(2, $weekEndDate);
+    $stmtSelect->execute();
+    $resultSelect = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
+
+    // Nombre total de demi-journée de cours dans la semaine
+    $lenCours = $conn->prepare("SELECT matin, apres_midi FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
+    $lenCours->bindParam(1, $weekStartDate);
+    $lenCours->bindParam(2, $weekEndDate);
+    $lenCours->execute();
+    $totalCoursSemaine = $lenCours->rowCount();
+
+    foreach ($resultSelect as $index => $etudiant) {
+      if ($etudiant['total'] > 0) {
+        // Somme des absence d'un étudiant
+        $absenceCountEtudiant = $etudiant['absence_count'];
+        
+        // Calculer le taux d'absence d'un étudiant
+        $absenceRateEtudiant = ($absenceCountEtudiant / $totalCoursSemaine) * 100;
+        // Ajouter le taux d'absence d'un étudiant dans le tableau
+        $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
+        // Ajouter la liste de jours ou l'étudiant est absent 
+        $stmtSelect = $conn->prepare("SELECT date_enregistrement, matin, apres_midi FROM appel WHERE nom = ? AND prenom = ? AND date_enregistrement BETWEEN ? AND ?");
+        $stmtSelect->bindParam(1, $etudiant['nom']);
+        $stmtSelect->bindParam(2, $etudiant['prenom']);
+        $stmtSelect->bindParam(3, $weekStartDate);
+        $stmtSelect->bindParam(4, $weekEndDate);
         $stmtSelect->execute();
-        $resultSelect = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($resultSelect as $index => $etudiant) {
-          if ($etudiant['total'] > 0) {
-            // Somme des absence d'un étudiant
-            $absenceCountEtudiant = $etudiant['absence_count'];
-            
-            // Nombre total de demi-journée de cours dans la semaine
-            $totalCoursSemaine = 10;
-            // Calculer le taux d'absence d'un étudiant
-            $absenceRateEtudiant = ($absenceCountEtudiant / $totalCoursSemaine) * 100;
-            // Ajouter le taux d'absence d'un étudiant dans le tableau
-            $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
-            // Ajouter la liste de jours ou l'étudiant est absent 
-            $stmtSelect = $conn->prepare("SELECT date_enregistrement, matin, apres_midi FROM appel WHERE nom = ? AND prenom = ? AND date_enregistrement BETWEEN ? AND ?");
-            $stmtSelect->bindParam(1, $etudiant['nom']);
-            $stmtSelect->bindParam(2, $etudiant['prenom']);
-            $stmtSelect->bindParam(3, $weekStartDate);
-            $stmtSelect->bindParam(4, $weekEndDate);
-            $stmtSelect->execute();
-            $resultSelectEtudiant = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
-            $resultSelect[$index]['absence_list'] = $resultSelectEtudiant;
-          } else {            
-            $absenceRateEtudiant = 0;
-            $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
-          }
-        }
-
-        // Calcul du taux d'absence total de la semaine
-        // Somme des absence de tous les étudiants
-        $absenceCount = array_sum(array_column($resultSelect, 'absence_count'));
-        // Nombre total de demi-journée de cours dans la semaine
-        $totalCoursSemaine = 10;
-
-        // Calculer le taux d'absence total de la semaine
-        $absenceRate = ($absenceCount / $totalCoursSemaine) * 100;
-
-
-        // return ['success' => true, 'absence_rate' => $absenceRate, 'absence_rate_etudiant' => $resultSelect];
-        return ['success' => true, 'absence_rate_etudiant' => $resultSelect, 'absence_rate' => $absenceRate];
-    } catch (PDOException $e) {
-        return ['success' => false, 'message' => 'Erreur lors de la récupération du taux d\'absence: ' . $e->getMessage()];
+        $resultSelectEtudiant = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
+        $resultSelect[$index]['absence_list'] = $resultSelectEtudiant;
+      } else {            
+        $absenceRateEtudiant = 0;
+        $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
+      }
     }
+
+    // Calcul du taux d'absence total de la semaine
+    // Somme des absence de tous les étudiants
+    $absenceCount = array_sum(array_column($resultSelect, 'absence_count'));
+    // Nombre total de demi-journée de cours dans la semaine
+    $totalCoursSemaine = 10;
+
+    // Calculer le taux d'absence total de la semaine
+    $absenceRate = ($absenceCount / $totalCoursSemaine) * 100;
+
+
+    // return ['success' => true, 'absence_rate' => $absenceRate, 'absence_rate_etudiant' => $resultSelect];
+    return ['success' => true, 'absence_rate_etudiant' => $resultSelect, 'absence_rate' => $absenceRate];
+  } catch (PDOException $e) {
+    return ['success' => false, 'message' => 'Erreur lors de la récupération du taux d\'absence: ' . $e->getMessage()];
+  }
 }
 
 // Définir la semaine de la date d'appel consultée avec dateParams
@@ -103,10 +108,10 @@ $currentWeekNumber = date('W', strtotime($dateParams)); // Obtenir le numéro de
 $currentYear = date('Y', strtotime($dateParams)); // Obtenir l'année avec la date d'appel consultée
 
 // Obtenir la date de début de la semaine
-$weekStartDate = date('Y-m-d', strtotime($currentYear . 'W' . str_pad($currentWeekNumber, 2, '1', STR_PAD_LEFT)));
+$weekStartDate = date('Y-m-d', strtotime($currentYear . 'W' . str_pad($currentWeekNumber, 2, '1', STR_PAD_LEFT))); // '1' pour lundi selectionner le Lundi de la semaine actuelle
 
 // Obtenir la date de fin de la semaine
-$weekEndDate = date('Y-m-d', strtotime($weekStartDate . ' +4 days'));
+$weekEndDate = date('Y-m-d', strtotime($weekStartDate . ' +4 days')); // On ajoute 4 jours à la date de début de la semaine (lundi) pour obtenir la date de fin de la semaine vendredi
 
 
 // Appeler la fonction getAbsenceSemaine avec la semaine actuelle
@@ -134,7 +139,7 @@ function RapportSemaineExcel($result)
   $sheet->setCellValue('B1', 'Prénom');
   $sheet->setCellValue('C1', 'Taux d\'absence');
   $sheet->setCellValue('D1', 'Jours d\'absence');
-  $sheet->setCellValue('E1', 'Nombre de jours d\'absence');
+  $sheet->setCellValue('E1', 'Nombre de demi-journée(s) d\'absence');
 
   $sheet->getColumnDimension('A')->setWidth(25);
   $sheet->getColumnDimension('B')->setWidth(25);
@@ -565,6 +570,7 @@ function RapportSemaineExcel($result)
     </div>
   </div>
   <!-- afficher les taux d'absence de la semaine de chaque étudiants -->
+
   <!-- on affiche si vendredi -->
   <?php if (date('l', strtotime($dateParams)) == 'Friday') { ?>
       <div class="container" style="width: 100%; margin-top: 4rem;">
