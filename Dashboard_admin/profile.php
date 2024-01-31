@@ -292,6 +292,39 @@
                   </ul>
                 </div>
               </div>
+
+              <!--langues-->
+            <div class="card mb-4 ">
+              <div class="shadow-lg p-3 mb-5 bg-body  rounded">
+                <p class="text-muted"><b>LANGUES</b></p>
+              </div>
+              <div class="card-body ">
+                <ul>
+
+                  <?php
+                  //get list of  Languages
+                  $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `student_languages` WHERE `id_student`=$Profile[id]) as L ON languages.id=L.id_language;";
+                  $stmtLanguages = $conn->prepare($queryLanguages);
+                  $stmtLanguages->execute();
+                  $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
+                  foreach ($Languages as $Language) {
+                    echo " <li class='list-group-item d-flex justify-content-between align-items-center'>
+                      <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
+                      <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
+                    
+                    
+                      </li> <br>";
+                  }
+                  ?>
+
+
+                </ul>
+
+
+                <P> </P>
+              </div>
+            </div>
+            <!--langues end-->
             </div>
             <div class="col-lg-8">
               <div class="card mb-4">

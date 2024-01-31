@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $competences = $_POST['ary'];
     $selectedSoftSkills = $_POST['softSkills'];
+    $langues = $_POST['langues'];
 
     // Vérification de la présence dans la DB avec l'email
     $sql_verif = "SELECT COUNT(*) FROM student WHERE email = :email";
@@ -87,6 +88,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             foreach ($selectedSoftSkills as $softSkillId) {
                 $stmtSoftSkills->execute([$lastId, $softSkillId]);
+            }
+        }
+
+        if (!empty($langues)) {
+            foreach ($langues as $langue) {
+                $language = "INSERT INTO student_languages (id_student, id_language, language_level) VALUES (:lastId, :langue, 'débutant')";
+                $stmtLanguage = $conn->prepare($language);
+                $stmtLanguage->bindParam(':lastId', $lastId, PDO::PARAM_INT);
+                $stmtLanguage->bindParam(':langue', $langue, PDO::PARAM_INT);
+                $stmtLanguage->execute();
             }
         }
 

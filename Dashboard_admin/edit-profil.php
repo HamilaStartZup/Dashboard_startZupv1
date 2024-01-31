@@ -35,6 +35,19 @@ $stmtSoftSkillsEtudiant = $conn->prepare($querySoftSkillsEtudiant);
 $stmtSoftSkillsEtudiant->execute();
 $softSkillsEtudiant = $stmtSoftSkillsEtudiant->fetchAll(PDO::FETCH_ASSOC);
 
+// requête pour recuperer toutes les langues
+$queryLangues = "SELECT * FROM languages";
+$stmtLangues = $conn->prepare($queryLangues);
+$stmtLangues->execute();
+$langues = $stmtLangues->fetchAll(PDO::FETCH_ASSOC);
+
+// requête pour recupere les langues parler par l'étudiant
+$queryLanguesEtudiant = "SELECT * FROM student_languages WHERE id_student = '$id_student'";
+$stmtLanguesEtudiant = $conn->prepare($queryLanguesEtudiant);
+$stmtLanguesEtudiant->execute();
+$languesEtudiant = $stmtLanguesEtudiant->fetchAll(PDO::FETCH_ASSOC);
+
+
 if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
     $nom = $_POST['nom'];
@@ -173,7 +186,65 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
     }
-    
+
+    // Si une langue est cochée, on l'ajoute dans la table student_languages, sinon on la supprime
+    $languesCoches = isset($_POST['langues']) ? $_POST['langues'] : array();
+
+    foreach ($langues as $langue) {
+        $idLangue = $langue['id'];
+        // Vérification si la langue est cochée dans le formulaire
+        $cocheDansFormulaire = in_array($idLangue, $languesCoches);
+
+        $queryLanguesEtudiant = "SELECT * FROM student_languages WHERE id_student = '$id_student' AND id_language = '$idLangue'";
+        $stmtLanguesEtudiant = $conn->prepare($queryLanguesEtudiant);
+        $stmtLanguesEtudiant->execute();
+        $languesEtudiant = $stmtLanguesEtudiant->fetchAll(PDO::FETCH_ASSOC);
+
+
+        if ($cocheDansFormulaire) {
+            // Si la langue est cochée dans le formulaire
+            if (count($languesEtudiant) == 0) {
+                // Si elle n'est pas présente dans la base de données, on l'ajoute
+                $queryInsert = "INSERT INTO student_languages (id_student, id_language) VALUES (:id_student, :idLangue)";
+                $stmtInsert = $conn->prepare($queryInsert);
+                $stmtInsert->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':idLangue', $idLangue, PDO::PARAM_INT);
+                $stmtInsert->execute();
+            }
+        } else {
+            // Si la langue n'est pas cochée dans le formulaire
+            if (count($languesEtudiant) > 0) {
+                // Si elle est présente dans la base de données, on la supprime
+                $queryDelete = "DELETE FROM student_languages WHERE id_student = :id_student AND id_language = :idLangue";
+                $stmtDelete = $conn->prepare($queryDelete);
+                $stmtDelete->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+                $stmtDelete->bindParam(':idLangue', $idLangue, PDO::PARAM_INT);
+                $stmtDelete->execute();
+            }
+        }
+    }
+
+    // Si une valeur de langue est coché on la modifie dans la table student_languages
+    foreach($langues as $langue){
+        $idLangue = $langue['id'];
+        $cocheDansFormulaire = in_array($idLangue, $languesCoches);
+        $queryLanguesEtudiant = "SELECT * FROM student_languages WHERE id_student = '$id_student' AND id_language = '$idLangue'";
+        $stmtLanguesEtudiant = $conn->prepare($queryLanguesEtudiant);
+        $stmtLanguesEtudiant->execute();
+        $languesEtudiant = $stmtLanguesEtudiant->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($languesEtudiant && count($languesEtudiant) > 0){
+            $queryUpdate = "UPDATE student_languages SET language_level = :language_level WHERE id_student = :id_student AND id_language = :id_language";
+            $stmtUpdate = $conn->prepare($queryUpdate);
+            $stmtUpdate->bindParam(':language_level', $_POST['languesValues'][$idLangue]);
+            $stmtUpdate->bindParam(':id_student', $id_student);
+            $stmtUpdate->bindParam(':id_language', $idLangue);
+            if ($stmtUpdate->execute()) {
+            } else {
+                echo "Erreur lors de la mise à jour : " . implode(" ", $stmtUpdate->errorInfo());
+            }
+        }
+    }
     
 
 
@@ -377,7 +448,6 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         }
     </style>
-
 </head>
 <body>
     <!--Main Navigation-->
@@ -560,8 +630,61 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </table>
                             </div>
                         </div>
+                        
+                        <h3>Langues parler</h3>
+                        <div class="mb-4">
+                            <label for="langues" class="form-label">Langues parler</label>
+                            <div class="row">
+                                <div class="col">
+                                    <table class="table">
+                                        <tbody>
+                                            <?php
+                                            foreach ($langues as $langue) {
+                                                $idLangue = $langue['id'];
 
-                            <!-- checkbox des compétences -->
+                                                $queryLanguesEtudiant = "SELECT * FROM student_languages WHERE id_student = '$id_student' AND id_language = '$idLangue'";
+                                                $stmtLanguesEtudiant = $conn->prepare($queryLanguesEtudiant);
+                                                $stmtLanguesEtudiant->execute();
+                                                $languesEtudiant = $stmtLanguesEtudiant->fetchAll(PDO::FETCH_ASSOC);
+
+                                                $idLangue = $langue['id'];
+                                                // requête pour recupere le niveau de l'étudiant dans les langues
+                                                $queryLanguesEtudiant = "SELECT * FROM student_languages WHERE id_student = '$id_student' AND id_language = '$idLangue'";
+                                                $stmtLanguesEtudiant = $conn->prepare($queryLanguesEtudiant);
+                                                $stmtLanguesEtudiant->execute();
+                                                $niveauLanguesEtudiant = $stmtLanguesEtudiant->fetchAll(PDO::FETCH_ASSOC);
+                                                
+                                                echo '<tr>';
+                                                echo '<td>';
+                                                echo '<div class="form-check">';
+                                                echo '<input class="form-check-input" type="checkbox" value="' . $langue['id'] . '" id="' . $langue['id'] . '" name="langues[]" ' . (count($languesEtudiant) > 0 ? 'checked' : '') . '>';
+                                                echo '<label class="form-check-label" for="' . $langue['id'] . '">';
+                                                echo $langue['nom_language'];
+                                                echo '</label>';
+                                                echo '</div>';
+                                                echo '</td>';
+                                                
+                                                echo '<td>';
+                                                // Les valeurs dans $niveau doivent être écrit EXACTEMENT comme dans la base de donnée
+                                                $niveau = ["débutant", "élémentaire", "intermédiaire", "Avancé", "Fonctionnel", "Professionnel"];
+                                                foreach ($niveau as $n) {
+                                                    echo '<div class="form-check">';
+                                                    // la langue est coché dans le formulaire si elle est défini dans la base de données et que le niveau est égale à la valeur de la boucle qui stocke les niveaux
+                                                    echo '<input class="form-check-input" type="radio" name="languesValues[' . $langue['id'] . ']" value="' . $n . '" id="' . $n . '" ' . (isset($niveauLanguesEtudiant[0]['language_level']) && $niveauLanguesEtudiant[0]['language_level'] == $n ? 'checked' : '') . '>';
+                                                    // print_r(isset($niveauLanguesEtudiant[0]['language_level']) ? $niveauLanguesEtudiant[0]['language_level'] : 'Non défini');
+                                                    // la ligne au dessus permet d'afficher la valeur de la langue de l'étudiant si elle est défini
+                                                    echo '<label class="form-check-label" for="' . $n . '">' . $n . '</label>';
+                                                    echo '</div>';
+                                                }                        
+                                                echo '</td>';
+                                                echo '</tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>                        
                         <h3>
                             Informations professionnelles
                         </h3>

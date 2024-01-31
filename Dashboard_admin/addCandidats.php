@@ -22,6 +22,12 @@ $stmtSoftSkills->execute();
 $SoftSkills = $stmtSoftSkills->fetchAll(PDO::FETCH_ASSOC);
 
 
+// reqûete pour requpere les langues
+$queryLangues = "SELECT * FROM languages";
+$stmtLangues = $conn->prepare($queryLangues);
+$stmtLangues->execute();
+$langues = $stmtLangues->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -324,6 +330,18 @@ $SoftSkills = $stmtSoftSkills->fetchAll(PDO::FETCH_ASSOC);
                   } ?>
                 </select>
               </div>
+              <!--  langue -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="langues">Langues parler</label>
+                <select placeholder="liste de langues" name="langues[]" id="langues" multiple>
+                  <?php foreach ($langues as $row) {
+                    $r = $row['id'];
+                    echo "<option value='$r'>" . $row['nom_language'] . "</option>";
+                  } ?>
+                </select>
+              </div>
+              <!--  langue -->
+
               <!-- Message input -->
               <div class="form-outline mb-4">
                 <textarea class="form-control" id="description" name="description" rows="4"></textarea>
@@ -365,6 +383,16 @@ $SoftSkills = $stmtSoftSkills->fetchAll(PDO::FETCH_ASSOC);
     })
 
     new MultiSelectTag('softSkills', {
+      rounded: true, // default true
+      shadow: true, // default false
+      placeholder: 'Search', // default Search...
+      onChange: function(values) {
+
+        console.log(values)
+      }
+    })
+
+    new MultiSelectTag('langues', {
       rounded: true, // default true
       shadow: true, // default false
       placeholder: 'Search', // default Search...
