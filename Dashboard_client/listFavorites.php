@@ -562,14 +562,19 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="player-position">
                   <span></span>
-                </div>
-                <div class="player-club">
-                  <img src="../images/drapeau/allemagne.png" alt="" draggable="false"/>
-                </div>
-                <div class="player-club">
-                  <img src="../images/drapeau/royaume-uni.png" alt="" draggable="false"/>
-                </div>
-              </div>
+                </div>';
+              //get list of  Languages
+              $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `student_languages` WHERE `id_student`=$row[id]) as L ON languages.id=L.id_language;";
+              $stmtLanguages = $conn->prepare($queryLanguages);
+              $stmtLanguages->execute();
+              $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
+
+              foreach ($Languages as $Language) {
+                echo '<div class="player-nation">
+                  <img src="'.$Language["flag"].'" alt="" draggable="false"/>
+                </div>';
+              };
+              echo '</div>
               <div class="player-picture">';
         if ($row['gender'] == "homme") {
           echo '<img src="../images/homme-bg-remove.png" alt="avatar" draggable="false"/>';
