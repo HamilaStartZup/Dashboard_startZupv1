@@ -323,7 +323,7 @@ $result = $query->fetch();
 
                   <?php
                   //get list of  Languages
-                  $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `language` WHERE `id_student`=$result[id]) as L ON languages.id=L.id_language;";
+                  $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `student_languages` WHERE `id_student`=$result[id]) as L ON languages.id=L.id_language;";
                   $stmtLanguages = $conn->prepare($queryLanguages);
                   $stmtLanguages->execute();
                   $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
