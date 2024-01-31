@@ -69,7 +69,7 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
         $absenceCountEtudiant = $etudiant['absence_count'];
         
         // Calculer le taux d'absence d'un étudiant
-        $absenceRateEtudiant = ($absenceCountEtudiant / $totalCoursSemaine) * 100;
+        $absenceRateEtudiant = number_format((($absenceCountEtudiant / $totalCoursSemaine) * 100),2,'.','');
         // Ajouter le taux d'absence d'un étudiant dans le tableau
         $resultSelect[$index]['absence_rate'] = $absenceRateEtudiant;
         // Ajouter la liste de jours ou l'étudiant est absent 
