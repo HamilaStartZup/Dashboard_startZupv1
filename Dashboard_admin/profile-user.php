@@ -174,12 +174,15 @@
             <a class="navbar-brand" href="#">
                 <img src="../images/icon.png" height="25" alt="KJJJ"/>
             </a>
+            <?php if ($_SESSION['status'] === "Admin") : ?>
+              <a class="btn btn-warning d-none d-md-flex input-group w-auto my-auto" href="/Dashboard_StartZupv1/home">Aller vers le côté client</a>
+            <?php endif; ?>
             <!-- Search form -->
-            <form class="d-none d-md-flex input-group w-auto my-auto">
+            <!-- <form class="d-none d-md-flex input-group w-auto my-auto">
                 <input autocomplete="off" type="search" class="form-control rounded"
                        placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px"/>
                 <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-            </form>
+            </form> -->
         </div>
         <!-- Container wrapper -->
     </nav>

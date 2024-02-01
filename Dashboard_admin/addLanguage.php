@@ -175,23 +175,24 @@ if ($_SESSION['status'] != "Admin") {
         <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
         <!-- Container wrapper -->
         <div class="container-fluid">
-            <!-- Toggle button -->
-            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
-                    aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
 
-            <!-- Brand -->
-            <a class="navbar-brand" href="#">
-                <img src="../images/icon.png" height="25" alt="KJJJ"/>
-            </a>
-            <!-- Search form -->
-            <form class="d-none d-md-flex input-group w-auto my-auto">
-                <input autocomplete="off" type="search" class="form-control rounded"
-                       placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px"/>
-                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-            </form>
-        </div>
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">
+          <img src="../images/icon.png" height="25" alt="KJJJ" />
+        </a>
+        <?php if ($_SESSION['status'] === "Admin") : ?>
+          <a class="btn btn-warning d-none d-md-flex input-group w-auto my-auto" href="/Dashboard_StartZupv1/home">Aller vers le côté client</a>
+        <?php endif; ?>
+        <!-- Search form -->
+        <!-- <form class="d-none d-md-flex input-group w-auto my-auto">
+          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
+          <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form> -->
+      </div>
         <!-- Container wrapper -->
     </nav>
         <!-- Navbar -->
