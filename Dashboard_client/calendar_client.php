@@ -1,9 +1,11 @@
 <?php
-//index.php
+// Database Connection
+include '../config.php';
+session_start();
 
-
-
-
+if (!isset($_SESSION['email'])) {
+  header('Location: ../index.php');
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -221,6 +223,12 @@
                   <a class="nav-link"
                     href="/Dashboard_startZupv1/contact">Contact</a>
                 </li>
+                <?php if ($_SESSION['status'] == 'Admin') { ?>
+                  <li class="nav-item">
+                    <a class="nav-link btn btn-warning text-white"
+                      href="/Dashboard_startZupv1/accueil">Dashboard Admin</a>
+                  </li>
+                <?php } ?>
               </ul>
               <!-- Left links -->
             </div>

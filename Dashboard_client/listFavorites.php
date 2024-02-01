@@ -487,6 +487,12 @@ $Favorites = $stmtFavorites->fetchAll(PDO::FETCH_ASSOC);
               <li class="nav-item">
                 <a class="nav-link" href="/Dashboard_startZupv1/contact">Contact</a>
               </li>
+              <?php if ($_SESSION['status'] == 'Admin') { ?>
+                  <li class="nav-item">
+                    <a class="nav-link btn btn-warning text-white"
+                      href="/Dashboard_startZupv1/accueil">Dashboard Admin</a>
+                  </li>
+                <?php } ?>
             </ul>
             <!-- Left links -->
         </div>

@@ -30,10 +30,10 @@ RewriteRule ^login$ Login.html
 RewriteRule ^acces-echoue$ ./failedAccess.php
 
 ## url client
-RewriteRule ^home$ ./Dashboard_client/dashboard_client.html
+RewriteRule ^home$ ./Dashboard_client/dashboard_client.php
 RewriteRule ^les-stagiaires$ ./Dashboard_client/interns.php
 RewriteRule ^les-stagiaires-([0-9]+)$ ./Dashboard_client/interns.php?page=$1
 RewriteRule ^favoris$ ./Dashboard_client/listFavorites.php
 RewriteRule ^profil-([^/]+)$ ./Dashboard_client/profile.php?code_profile=$1
 RewriteRule ^votre-calendrier$ ./Dashboard_client/calendar_client.php
-RewriteRule ^contact$ ./Dashboard_client/contact_us.html
+RewriteRule ^contact$ ./Dashboard_client/contact_us.php
