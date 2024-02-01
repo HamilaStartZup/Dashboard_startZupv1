@@ -18,7 +18,7 @@ RewriteRule ^profil-([0-9]+)$ ./Dashboard_admin/profile.php?id=$1
 RewriteRule ^modifier-profil-([0-9]+)$ ./Dashboard_admin/edit-profil.php?id=$1
 RewriteRule ^ajouter-un-candidat$ ./Dashboard_admin/addCandidats.php
 RewriteRule ^liste-de-rdv$ ./Dashboard_admin/List_rdv.php
-RewriteRule ^gerer-rdv-([0-9]+)-([^/]+)$ Dashboard_admin/mange_rdv.php?users_id=$1&email=$2 [L]
+RewriteRule ^gerer-rdv-([0-9]+)-([^/]+)$ Dashboard_admin/manage_rdv.php?users_id=$1&email=$2 [L]
 RewriteRule ^calendrier$ ./Dashboard_admin/Calendar.php
 RewriteRule ^ajouter-un-skill$ ./Dashboard_admin/add_skills.php
 RewriteRule ^liste-des-appels$ ./Dashboard_admin/listeAppels.php
