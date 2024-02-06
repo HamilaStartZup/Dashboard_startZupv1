@@ -149,6 +149,12 @@ $result = $query->fetch();
       height: 20px;
       z-index: 400;
     }
+
+/* Dimension des drapeux avec la methode <img> */
+    .flag-lang{
+      width: 30px;
+      height: 22px;
+    }
   </style>
 
 </head>
@@ -196,7 +202,7 @@ $result = $query->fetch();
                     stagiaires</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/Dashboard_startZupv1/favoris">List
+                  <a class="nav-link" href="/Dashboard_startZupv1/favoris">Liste
                     des favoris</a>
                 </li>
                 <li class="nav-item">
@@ -327,9 +333,20 @@ $result = $query->fetch();
                   $stmtLanguages = $conn->prepare($queryLanguages);
                   $stmtLanguages->execute();
                   $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
+                  // foreach ($Languages as $Language) {
+                  //   echo " <li class='list-group-item d-flex justify-content-between align-items-center'>
+                  //     <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
+                  //     <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
+                    
+                    
+                  //     </li> <br>";
+                  // }
+                  
+                  //Methode alternatives pour afficher les drapeaux
                   foreach ($Languages as $Language) {
                     echo " <li class='list-group-item d-flex justify-content-between align-items-center'>
-                      <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
+                      <span class='badge'><img src='../images/drapeau/$Language[code].png' alt='$Language[nom_language]' class='flag-lang'>
+                      </span>
                       <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
                     
                     
@@ -339,7 +356,6 @@ $result = $query->fetch();
 
 
                 </ul>
-
 
                 <P> </P>
               </div>
@@ -585,9 +601,13 @@ $result = $query->fetch();
     function downloadPDF() {
       var elementHTML = document.getElementById("Profile");
 
-      html2canvas(elementHTML).then(function(canvas) {
+      var option = {
+        scrollY: 0
+      };
+
+      html2canvas(elementHTML, option).then(function(canvas) {
         var imgData = canvas.toDataURL('image/png');
-        docPDF.addImage(imgData, 'PNG', 15, 15, 180, 180);
+        docPDF.addImage(imgData, 'PNG', -15, -10, 240, 310);
 
         //  Sauvegarder le fichier PDF
         docPDF.save('profil_<?php echo $result['code_profile'] ?>.pdf');
