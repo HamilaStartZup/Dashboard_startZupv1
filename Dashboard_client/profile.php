@@ -4,7 +4,8 @@ include '../config.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-  header("Location: ../failedAccess.php");
+  header('Location: /Dashboard_startZupv1/acces-echoue');
+
 }
 
 // Fonction pour récupérer les données des étudiants selon student.code_profile dans l'url

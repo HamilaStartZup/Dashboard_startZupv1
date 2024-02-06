@@ -5,7 +5,7 @@ include '../config.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-  header('Location: ../index.php');
+  header('Location: /Dashboard_startZupv1/acces-echoue');
 }
 
 // Script qui permet d'afficher les étudiants 20 par 20

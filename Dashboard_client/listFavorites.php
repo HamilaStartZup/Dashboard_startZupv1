@@ -4,7 +4,7 @@ session_start();
 include '../config.php';
 
 if (!isset($_SESSION['email'])) {
-  header("Location: ../index.php");
+  header('Location: /Dashboard_startZupv1/acces-echoue');
 }
 
 $queryFavorites = "SELECT * FROM `student` WHERE `id` IN (SELECT `id_candidate` FROM `favorites_profil` WHERE `id_client`=$_SESSION[id])";
