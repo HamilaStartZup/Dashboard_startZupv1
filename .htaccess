@@ -28,6 +28,8 @@ RewriteRule ^ajouter-client-admin$ ./Dashboard_admin/add_client_admin.php
 RewriteRule ^client-([0-9]+)$ Dashboard_admin/profile-user.php?id=$1
 RewriteRule ^login$ Login.html
 RewriteRule ^acces-echoue$ ./failedAccess.php
+RewriteRule ^ajouter-une-langue$ ./Dashboard_admin/addLanguage.php
+RewriteRule ^ajouter-une-promotion$ ./Dashboard_admin/addPromo.php
 
 ## url client
 RewriteRule ^home$ ./Dashboard_client/dashboard_client.php
