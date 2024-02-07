@@ -50,6 +50,7 @@ $languesEtudiant = $stmtLanguesEtudiant->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
+    $id_promo = $_POST['promo'];
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $genre = $_POST['genre'];
@@ -275,7 +276,8 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtUpdateImage->execute();
     }
 
-    $queryUpdate = "UPDATE student SET 
+    $queryUpdate = "UPDATE student SET
+                    id_promo = :id_promo,
                     nom = :nom,
                     prenom = :prenom,
                     gender = :genre,
@@ -295,6 +297,7 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmtUpdate = $conn->prepare($queryUpdate);
 
+    $stmtUpdate->bindParam(':id_promo', $id_promo);
     $stmtUpdate->bindParam(':nom', $nom);
     $stmtUpdate->bindParam(':prenom', $prenom);
     $stmtUpdate->bindParam(':genre', $genre);
@@ -692,6 +695,20 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h3>
                             Informations professionnelles
                         </h3>
+                        <div class="mb-3">
+                            <label for="promo" class="form-label">Promotion</label>
+                            <select class="form-select" aria-label="Default select example"  name="promo" id="promo">
+                                <?php 
+                                    $sqlPromo = "SELECT * FROM promo WHERE date_fin > NOW()"; // On récupère les promos actives
+                                    $stmtPromo = $conn->prepare($sqlPromo);
+                                    $stmtPromo->execute();
+                                    $promos = $stmtPromo->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($promos as $promo) {
+                                        echo '<option value="' . $promo['id'] . '" ' . ($student['promo_id'] == $promo['id'] ? 'selected' : '') . '>' . $promo['nom'] . '</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
                         <div class="mb-3">
                             <label for="statut" class="form-label">Statut scolaire</label>
                             <select class="form-select" aria-label="Default select example" name="status">
