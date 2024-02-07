@@ -64,6 +64,7 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $pretEmploi = $_POST['pretEmploi'];
     $vehicule = $_POST['vehicule'];
     $description = $_POST['description'];
+    $commentaire = $_POST['commentaire'];
     $competences =$_POST['ary']; // tableau des compétences
     $valueCompetences = $_POST['competences']; // tableau des valeurs des compétences
     // Si tout les skills sont décoché on supprime tout les skills de l'étudiant
@@ -288,7 +289,8 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                     disponibility = :disponibility,
                     pretEmploi = :pretEmploi,
                     Vehicule = :vehicule,
-                    description = :description
+                    description = :description,
+                    commentaire = :commentaire
                     WHERE id = :id";
 
     $stmtUpdate = $conn->prepare($queryUpdate);
@@ -307,6 +309,7 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmtUpdate->bindParam(':pretEmploi', $pretEmploi);
     $stmtUpdate->bindParam(':vehicule', $vehicule);
     $stmtUpdate->bindParam(':description', $description);
+    $stmtUpdate->bindParam(':commentaire', $commentaire);
     $stmtUpdate->bindParam(':id', $id);
 
     if ($stmtUpdate->execute()) {
@@ -726,7 +729,11 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <input type="textarea" class="form-control" id="description" name="description" value="<?php echo $student['description'] ?>">
+                            <textarea rows="5" class="form-control" id="description" name="description"><?php echo $student['description'] ?> </textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="commentaire" class="form-label">Commentaire</label>
+                            <textarea rows="5" class="form-control" id="commentaire" name="commentaire"><?php echo $student['commentaire'] ?></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">Enregistrer</button>
