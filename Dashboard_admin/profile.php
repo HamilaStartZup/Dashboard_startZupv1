@@ -198,7 +198,7 @@
   <main   id='Profile' style="margin-top: 58px">
     <div class="container">
       <div class="row">
-        <div class="col">
+        <div class="col" data-html2canvas-ignore>
           <?php 
           $url = "/Dashboard_startZupv1/modifier-profil-$Profile[id]";
           echo "<a class='btn btn-info' href='$url'>Modifier</a>"
@@ -208,7 +208,7 @@
           
         </div>
         <div class="col employabilité" style="display: flex; flex-direction:row-reverse; align-items:center;">
-          <div class="colBtnEmploie">
+          <div class="colBtnEmploie" data-html2canvas-ignore> 
             <!-- <b>Prêt à l'emploi : </b> -->
             <?php
 
@@ -263,7 +263,7 @@
                   <p class="text-muted mb-1"> <?php echo "$Profile[designation]";?> </p>
                   <p class="text-muted mb-4"><?php echo "$Profile[adresse]";?></p>
                   <div class="d-flex justify-content-center mb-2">
-                    <button type="button" class="btn btn-primary" onclick="print()">Télécharger le profil</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadPDF()">Télécharger le profil</button>
 
                     <button type="button"  onclick="window.location.href='mailto:<?php echo "$Profile[email]";?>';"class="btn btn-outline-primary ms-1">Envoyer un email</button>
                   </div>
@@ -513,6 +513,29 @@
 echo $e->getMessage();
 }
 ?>
+<script>
+    var docPDF = new jsPDF('p', 'mm', 'a4');
+    function downloadPDF() {
+      var elementHTML = document.getElementById("Profile");
+      var largeurNav = document.getElementById("sidebarMenu").offsetWidth;
+      var option = {
+        scrollY: 0,
+        scrollX:0,
+        x : largeurNav,
+      };
+      html2canvas(elementHTML, option).then(function(canvas) {
+        var imgwidth= 255;
+        var imgheight= canvas.height * imgwidth / canvas.width ;
+        var imgX = 3;
+        var imgData = canvas.toDataURL('image/png');
+        docPDF.addImage(imgData, 'PNG', imgX, 5, (imgwidth - 2*imgX),(1.2*imgheight));
+
+        //  Sauvegarder le fichier PDF
+        docPDF.save('profil_<?php echo $student_id ?>.pdf');
+      });
+    }
+    //bar
+  </script>
   <script>
     
     window.jsPDF = window.jspdf.jsPDF;
