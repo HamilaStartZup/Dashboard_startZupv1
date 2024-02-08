@@ -68,6 +68,41 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $commentaire = $_POST['commentaire'];
     $competences =$_POST['ary']; // tableau des compétences
     $valueCompetences = $_POST['competences']; // tableau des valeurs des compétences
+    $linkStudent = $_POST['linksValues']; // tableau des valeurs des liens
+    // Si aucun lien n'ai rempli on supprime tout les liens de l'étudiant
+    foreach ($linkStudent as $key => $value) {
+        
+        $oldLinkQuery = "SELECT lien FROM link_student WHERE id_student = :id_student AND id = :id";
+        $stmtOldLink = $conn->prepare($oldLinkQuery);
+        $stmtOldLink->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+        $stmtOldLink->bindParam(':id', $key);
+        $stmtOldLink->execute();
+        $oldLink = $stmtOldLink->fetch(PDO::FETCH_ASSOC);
+        $nomApp = $_POST['nom_app_'.$key];
+        
+        if (trim($value) == "") {
+            $queryDelete = "DELETE FROM link_student WHERE id_student = :id_student AND id = :id";
+            $stmtDelete = $conn->prepare($queryDelete);
+            $stmtDelete->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+            $stmtDelete->bindParam(':id', $key);
+            $stmtDelete->execute();
+        } elseif (trim($value) != "" && $oldLink !== false) { // Si le lien n'existe pas, on l'ajoute
+            $queryInsert = "INSERT INTO link_student (id_student, nom_app, lien) VALUES (:id_student, :nom_app, :lien)";
+            $stmtInsert = $conn->prepare($queryInsert);
+            $stmtInsert->bindParam(':id_student', $id_student);
+            $stmtInsert->bindParam(':nom_app', $nomApp);
+            $stmtInsert->bindParam(':lien', $value);
+            $stmtInsert->execute();
+        } elseif (trim($value) != "") { // Si le lien est modifié, on le modifie
+            $queryUpdate = "UPDATE link_student SET lien = :lien WHERE id_student = :id_student AND id = :id";
+            $stmtUpdate = $conn->prepare($queryUpdate);
+            $stmtUpdate->bindParam(':lien', $value);
+            $stmtUpdate->bindParam(':id_student', $id_student);
+            $stmtUpdate->bindParam(':id', $key);
+            $stmtUpdate->execute();
+        }
+    }
+    
     // Si tout les skills sont décoché on supprime tout les skills de l'étudiant
     if(!$competences){
         $queryDelete = "DELETE FROM student_skills WHERE id_student = :id_student";
@@ -737,6 +772,38 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <h3>Informations complémentaires</h3>
+                        <?php
+                        $queryEtudiants = "SELECT * FROM link_student WHERE id_student = '$id_student'";
+                        $stmtEtudiants = $conn->prepare($queryEtudiants);
+                        $stmtEtudiants->execute();
+                        $linksEtudiant = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
+
+                        $queryLinks = "SELECT * FROM links";
+                        $stmtLinks = $conn->prepare($queryLinks);
+                        $stmtLinks->execute();
+                        $links = $stmtLinks->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
+                        <div class="mb-3">
+                            <label for="links" class="form-label">Liens</label>
+                            <?php
+                            foreach ($links as $link) {
+                                $nomApp = $link['nom_app'];
+                                $queryEtudiants = "SELECT * FROM link_student WHERE id_student = '$id_student' AND nom_app = '$nomApp'";
+                                $stmtEtudiants = $conn->prepare($queryEtudiants);
+                                $stmtEtudiants->execute();
+                                $linksEtudiant = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
+
+                                echo '<div class="form-check">';
+                                echo $link['nom_app'];
+                                echo '<input type="text" class="form-control" id="links_'. $link['id'] .'" name="linksValues['. $link['id'] .']" value="' . (isset($linksEtudiant[0]['lien']) ? $linksEtudiant[0]['lien'] : '') . '">';
+                                echo '<input type="hidden" name="nom_app_'.$link['id'].'" value="' . $link['nom_app'] . '">';
+                                echo '<label class="form-check-label" for="' . $link['id'] . '">';
+                                echo '</label>';
+                                echo '</div>';
+                            };
+                            ?>
+                            
+                        </div>
                         <div class="mb-3">
                             <label for="vehicule" class="form-label">Véhiculé(e)</label>
                             <select name="vehicule" id="vehicule" class="form-select" aria-label="Default select example">

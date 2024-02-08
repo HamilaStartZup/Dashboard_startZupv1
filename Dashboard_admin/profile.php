@@ -136,6 +136,10 @@
       display: flex;
       align-items: center;
       justify-content: end;}
+    /* CSS pour les lien des étudiants */
+    .list-group-item p a {
+      text-decoration: underline;
+    }
   </style>
 
 </head>
@@ -272,60 +276,62 @@
               <div class="card mb-4 mb-lg-0">
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush rounded-3">
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i class="fas fa-globe fa-lg text-warning"></i>
-                      <p class="mb-0">https://mdbootstrap.com</p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i class="fab fa-github fa-lg" style="color: #333333;"></i>
-                      <p class="mb-0">mdbootstrap</p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
-                      <p class="mb-0">@mdbootstrap</p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
-                      <p class="mb-0">mdbootstrap</p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
-                      <p class="mb-0">mdbootstrap</p>
-                    </li>
+                    <?php
+                      $id_student = $_GET["id"]; // On récupère l'id de l'étudiant depuis l'URL
+                      $sqlLinks = 'SELECT * FROM link_student WHERE id_student = :id_student';
+                      $stmtLinks = $conn->prepare($sqlLinks);
+                      $stmtLinks->bindParam(':id_student', $id_student);
+                      $stmtLinks->execute();
+                      $linksStudent = $stmtLinks->fetchAll(PDO::FETCH_ASSOC);
+
+                      foreach ($linksStudent as $linkStudent) {
+                        $sqlLink = 'SELECT * FROM links WHERE nom_app = :nom_app';
+                        $stmtLink = $conn->prepare($sqlLink);
+                        $stmtLink->bindParam(':nom_app', $linkStudent['nom_app']);
+                        $stmtLink->execute();
+                        $logoLink = $stmtLink->fetch(PDO::FETCH_ASSOC);
+                        echo "
+                        <li class='list-group-item d-flex justify-content-between align-items-center p-3'>
+                          <i class=$logoLink[code_app]></i> 
+                          <p class='mb-0'><a href='$linkStudent[lien]' target='_blank'>$linkStudent[nom_app]</a></p>
+                        </li>
+                        ";
+                      }
+                    ?>
                   </ul>
                 </div>
               </div>
 
               <!--langues-->
-            <div class="card mb-4 ">
-              <div class="shadow-lg p-3 mb-5 bg-body  rounded">
-                <p class="text-muted"><b>LANGUES</b></p>
-              </div>
-              <div class="card-body ">
-                <ul>
-
-                  <?php
-                  //get list of  Languages
-                  $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `student_languages` WHERE `id_student`=$Profile[id]) as L ON languages.id=L.id_language;";
-                  $stmtLanguages = $conn->prepare($queryLanguages);
-                  $stmtLanguages->execute();
-                  $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
-                  foreach ($Languages as $Language) {
-                    echo " <li class='list-group-item d-flex justify-content-between align-items-center'>
-                      <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
-                      <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
-                    
-                    
-                      </li> <br>";
-                  }
+              <div class="card mb-4 ">
+                  <div class="shadow-lg p-3 mb-5 bg-body  rounded">
+                    <p class="text-muted"><b>LANGUES</b></p>
+                  </div>
+                  <div class="card-body ">
+                    <ul>
+              <?php
+              //get list of  Languages
+              $queryLanguages = "SELECT * FROM `languages` RIGHT JOIN(SELECT * FROM `student_languages` WHERE `id_student`=$Profile[id]) as L ON languages.id=L.id_language;";
+              $stmtLanguages = $conn->prepare($queryLanguages);
+              $stmtLanguages->execute();
+              $Languages =  $stmtLanguages->fetchAll(PDO::FETCH_ASSOC);
+              if ($Languages){
+                foreach ($Languages as $Language) {
+                  echo " 
+                  <li class='list-group-item d-flex justify-content-between align-items-center'>
+                    <span class='badge'><i class='flag flag-$Language[code]'></i> </span>
+                    <div class='fw-bold'>$Language[nom_language] :</div> <div class='fw-normal'>$Language[language_level] </div>
+                  </li> <br>";
+                }
+              } else {
+                echo "<li class='list-group-item d-flex justify-content-between align-items-center'>
+                 Aucune langue n'a été enregistré pour ce profil 
+                 </li>";
+              }
                   ?>
-
-
-                </ul>
-
-
-                <P> </P>
-              </div>
+                  </ul>
+                    <P> </P>
+                  </div>
             </div>
             <!--langues end-->
             </div>
