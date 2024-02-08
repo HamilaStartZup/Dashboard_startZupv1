@@ -596,18 +596,24 @@ $result = $query->fetch();
 
 
   <script>
-    var docPDF = new jsPDF();
+    var docPDF = new jsPDF('p', 'mm', 'a4');
 
     function downloadPDF() {
       var elementHTML = document.getElementById("Profile");
 
       var option = {
-        scrollY: 0
+        scrollY: 0,
+        scrollX: 0,
+        x:100,
+        y:60,
       };
 
       html2canvas(elementHTML, option).then(function(canvas) {
+        var imgwidth= 245;
+        var imgheight= canvas.height * imgwidth / canvas.width ;
+        var imgX = 2;
         var imgData = canvas.toDataURL('image/png');
-        docPDF.addImage(imgData, 'PNG', -15, -10, 240, 310);
+        docPDF.addImage(imgData, 'PNG', imgX, imgX, (imgwidth - imgX),(1 * imgheight));
 
         //  Sauvegarder le fichier PDF
         docPDF.save('profil_<?php echo $result['code_profile'] ?>.pdf');
