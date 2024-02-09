@@ -72,34 +72,35 @@ if ($_SESSION['status'] === "Admin" && $_SERVER['REQUEST_METHOD'] === 'POST') {
     // Si aucun lien n'ai rempli on supprime tout les liens de l'étudiant
     foreach ($linkStudent as $key => $value) {
         
-        $oldLinkQuery = "SELECT lien FROM link_student WHERE id_student = :id_student AND id = :id";
+        $oldLinkQuery = "SELECT * FROM link_student WHERE id_student = :id_student AND nom_app = :nom_app";
         $stmtOldLink = $conn->prepare($oldLinkQuery);
         $stmtOldLink->bindParam(':id_student', $id_student, PDO::PARAM_INT);
-        $stmtOldLink->bindParam(':id', $key);
+        $stmtOldLink->bindParam(':nom_app', $_POST['nom_app_'.$key]);
         $stmtOldLink->execute();
-        $oldLink = $stmtOldLink->fetch(PDO::FETCH_ASSOC);
+        $oldLink = $stmtOldLink->fetchAll(PDO::FETCH_ASSOC);
         $nomApp = $_POST['nom_app_'.$key];
+
         
         if (trim($value) == "") {
-            $queryDelete = "DELETE FROM link_student WHERE id_student = :id_student AND id = :id";
+            $queryDelete = "DELETE FROM link_student WHERE id_student = :id_student AND nom_app = :nom_app";
             $stmtDelete = $conn->prepare($queryDelete);
             $stmtDelete->bindParam(':id_student', $id_student, PDO::PARAM_INT);
-            $stmtDelete->bindParam(':id', $key);
+            $stmtDelete->bindParam(':nom_app', $nomApp);
             $stmtDelete->execute();
-        } elseif (trim($value) != "" && $oldLink !== false) { // Si le lien n'existe pas, on l'ajoute
+        } elseif (trim($value) != "" && $oldLink == true && $oldLink[0]['lien'] != $value) { // Si le lien est modifié, on le modifie
+            $queryUpdate = "UPDATE link_student SET lien = :lien WHERE id_student = :id_student AND nom_app = :nom_app";
+            $stmtUpdate = $conn->prepare($queryUpdate);
+            $stmtUpdate->bindParam(':id_student', $id_student, PDO::PARAM_INT);
+            $stmtUpdate->bindParam(':lien', $value);
+            $stmtUpdate->bindParam(':nom_app', $nomApp);
+            $stmtUpdate->execute();
+        } elseif (trim($value) != "" && !$oldLink) { // Si le lien n'existe pas, on l'ajoute
             $queryInsert = "INSERT INTO link_student (id_student, nom_app, lien) VALUES (:id_student, :nom_app, :lien)";
             $stmtInsert = $conn->prepare($queryInsert);
             $stmtInsert->bindParam(':id_student', $id_student);
             $stmtInsert->bindParam(':nom_app', $nomApp);
             $stmtInsert->bindParam(':lien', $value);
             $stmtInsert->execute();
-        } elseif (trim($value) != "") { // Si le lien est modifié, on le modifie
-            $queryUpdate = "UPDATE link_student SET lien = :lien WHERE id_student = :id_student AND id = :id";
-            $stmtUpdate = $conn->prepare($queryUpdate);
-            $stmtUpdate->bindParam(':lien', $value);
-            $stmtUpdate->bindParam(':id_student', $id_student);
-            $stmtUpdate->bindParam(':id', $key);
-            $stmtUpdate->execute();
         }
     }
     
