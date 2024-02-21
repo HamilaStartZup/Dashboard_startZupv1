@@ -486,7 +486,7 @@ $Next = $page + 1;
                     stagiaires</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/Dashboard_startZupv1/favoris">List
+                  <a class="nav-link" href="/Dashboard_startZupv1/favoris">Liste
                     des favoris</a>
                 </li>
                 <li class="nav-item">

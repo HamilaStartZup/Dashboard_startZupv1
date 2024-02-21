@@ -15,9 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Renvoyer un popup de confirmation
     echo "<script>
-    alert('L appel a été enregistré avec succès.')
+    // alert('L appel a été enregistré avec succès.')
 
-    window.location.href = '/Dashboard_startZupv1/liste-des-appels'
+    window.location.href = '/Dashboard_startZupv1/appel'
     </script>";
 
 
@@ -30,6 +30,11 @@ function saveAppelData($etudiants, $conn)
     try {
         // Préparez et exécutez la requête d'insertion pour chaque étudiant
         $dateEnregistrement = date('Y-m-d');
+
+        // Vérifier si un enregistrement existe déjà pour cette date
+        $stmtCheckDate = $conn->prepare("SELECT COUNT(*) FROM appel WHERE date_enregistrement = ?");
+        $stmtCheckDate->execute([$dateEnregistrement]);
+        $count = $stmtCheckDate->fetchColumn();
 
         foreach ($etudiants as $index => $etudiant) {
             $nom = $etudiant['nom'];
@@ -51,8 +56,13 @@ function saveAppelData($etudiants, $conn)
 
 
             // Enregistrer les données en base de données
-            $stmtInsert = $conn->prepare("INSERT INTO appel (nom, prenom, status, matin, apres_midi, commentaire, date_enregistrement) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmtInsert->execute([$nom, $prenom, $status, $matin, $apresMidi, $commentaire, $dateEnregistrement]);
+            if ($count > 0) {
+                $stmtUpdate = $conn->prepare("UPDATE appel SET matin = ?, apres_midi = ?, commentaire = ? WHERE date_enregistrement= ? AND nom = ? AND prenom = ?");
+                $stmtUpdate->execute([$matin, $apresMidi, $commentaire, $dateEnregistrement, $nom, $prenom]);
+            } else {
+                $stmtInsert = $conn->prepare("INSERT INTO appel (nom, prenom, status, matin, apres_midi, commentaire, date_enregistrement) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmtInsert->execute([$nom, $prenom, $status, $matin, $apresMidi, $commentaire, $dateEnregistrement]);
+            }
         }
         return ['success' => true, 'message' => 'Les données de l\'appel ont été enregistrées avec succès.'];
     } catch (PDOException $e) {

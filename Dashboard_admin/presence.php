@@ -51,6 +51,9 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <!-- AJAX -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <style>
   body {
@@ -156,8 +159,15 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
     width: 25%;
     /*donner une width au td pour que tout soit aligner */
     text-align: center;
+    display: flex;
+    align-items: center;
   }
-
+  .feuille th {
+    padding: 5px;
+    width: 25%;
+    /*donner une width au td pour que tout soit aligner */
+    text-align: center;
+  }
   .feuille input[type="text"]:disabled {
     border: none !important;
     width: 100%;
@@ -353,17 +363,17 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
               <!-- Feuille de présence -->
               <div class="row">
                 <div class="col-sm feuille ">
-                  <form action="./fonctions/saveAppel.php" method="POST">
+                  <form action="./fonctions/saveAppel.php" method="POST" id="formId">
                     <table>
                       <tbody>
-                        <tr class="headerTableau shadow p-3 mb-5 rounded">
-                          <td>Nom</td>
-                          <td>Prénom</td>
-                          <td>Matin</td>
-                          <td>Après-midi</td>
-                          <td>Commentaire</td>
+                        <tr class="headerTableau shadow py-3 mb-5 rounded">
+                          <th>Nom</th>
+                          <th>Prénom</th>
+                          <th>Matin</th>
+                          <th>Après-midi</th>
+                          <th>Commentaire</th>
                         </tr>
-                        <?php foreach ($etudiants as $index => $etudiant) : ?>
+                        <?php foreach ($etudiants as $index => $etudiant)  : ?>
                           <?php if ($etudiant['status'] !== 'active') : ?>
                             <tr class="listeTableau" style="opacity: 0.5;pointer-events:none; background-image: repeating-linear-gradient(135deg, rgba(0,0,0, 0.46) 0px, rgba(0,0,0, 0.46) 2px,transparent 2px, transparent 4px),linear-gradient(90deg, rgba(213,213,213, 0.23),rgba(213,213,213, 0.23));">
                               <td class="nom">
@@ -385,29 +395,28 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
                                 <input type="text" name="prenom[<?php echo $index; ?>]" value="<?php echo $etudiant['prenom']; ?>" disabled="disabled">
                               </td>
                               <td>
-                                <input type="checkbox" id="presentM<?php echo $index; ?>" name="presentM[<?php echo $index; ?>]"><br><br>
+                                <input type="checkbox" id="presentM<?php echo $index; ?>" name="presentM[<?php echo $index; ?>]" <?php echo isset($rows[$index]['matin']) && $rows[$index]['matin'] === 'présent' ? 'checked' : ''; ?>><br><br>
                               </td>
                               <td>
-                                <input type="checkbox" id="presentAM<?php echo $index; ?>" name="presentAM[<?php echo $index; ?>]"><br><br>
+                                <input type="checkbox" id="presentAM<?php echo $index; ?>" name="presentAM[<?php echo $index; ?>]" <?php echo isset($rows[$index]['apres_midi']) && $rows[$index]['apres_midi'] === 'présent' ? 'checked' : ''; ?>><br><br>
                               </td>
                               <td>
-                                <input type="text" id="commentaire<?php echo $index; ?>" name="commentaire<?php echo $index; ?>"><br><br>
+                                <input type="text" id="commentaire<?php echo $index; ?>" name="commentaire<?php echo $index; ?>" value="<?php echo isset($rows[$index]['commentaire']) ? $rows[$index]['commentaire'] : ''; ?>" ><br><br>
                               </td>
                             </tr>
                           <?php endif; ?>
                         <?php endforeach; ?>
                         <?php foreach ($etudiants as $index => $etudiant) : ?>
-                          <?php if ($etudiant['status'] == 'active') { ?>
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][nom]" value="<?php echo $etudiant['nom']; ?>">
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][prenom]" value="<?php echo $etudiant['prenom']; ?>">
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][presentM]" value="<?php echo isset($_POST['presentM'][$index]) ? 'présent' : 'absent'; ?>">
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][presentAM]" value="<?php echo isset($_POST['presentAM'][$index]) ? 'présent' : 'absent'; ?>">
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][commentaire]" value="<?php echo isset($_POST['commentaire'][$index]) ? $_POST['commentaire'][$index] : ''; ?>">
-                          <?php } ?>
+                          <?php  ?>
                         <?php endforeach; ?>
                       </tbody>
                     </table>
-                    <?php if (count($rows) == 0) : ?>
+                    <?php if (count($rows) == 0 ): ?>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary btn-validation" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                       Valider
@@ -441,6 +450,25 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
             </div>
           </div>
         </div>
+        <script>
+ // Ajoutez un gestionnaire d'événements change aux cases à cocher
+$('input').blur(function() {
+  // Récupération des données du formulaire
+  const formData = $('#formId').serialize(); 
+  // Envoyez les données au serveur via AJAX
+  $.ajax({
+    url: './fonctions/saveAppel.php',
+    type: 'POST',
+    data: formData,
+    success: function(response) {
+      console.log('Base de données mise à jour avec succès !');
+    },
+    error: function(xhr, status, error) {
+      console.error('Erreur lors de la mise à jour de la base de données : ' + error);
+    }
+  });
+});
+        </script>
       </section>
       <!-- Section: Statistics with subtitles -->
     </div>
