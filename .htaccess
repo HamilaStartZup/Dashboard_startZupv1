@@ -30,6 +30,7 @@ RewriteRule ^login$ Login.html
 RewriteRule ^acces-echoue$ ./failedAccess.php
 RewriteRule ^ajouter-une-langue$ ./Dashboard_admin/addLanguage.php
 RewriteRule ^ajouter-une-promotion$ ./Dashboard_admin/addPromo.php
+RewriteRule ^tracer-un-etudiant$ ./Dashboard_admin/traceStudent.php
 
 ## url client
 RewriteRule ^home$ ./Dashboard_client/dashboard_client.php
