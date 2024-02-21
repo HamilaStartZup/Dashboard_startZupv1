@@ -15,21 +15,20 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Récupérer les infos de l'étudiant
 $queryEtudiant = "SELECT * FROM student WHERE nom = :nom AND prenom = :prenom";
 $stmt = $conn->prepare($queryEtudiant);
-$stmt->bindParam(':nom', $_GET['nomStudent']);
-$stmt->bindParam(':prenom', $_GET['prenomStudent']);
+$stmt->bindParam(':nom', $_POST['nomStudent']);
+$stmt->bindParam(':prenom', $_POST['prenomStudent']);
 $stmt->execute();
 $etudiant = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Fonction pour récupérer le taux d'absence chaque semaine
-function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
-{
+function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn){
   try {
     // calculer le taux d'absence pour chaque étudiant un par un
     $stmtSelect = $conn->prepare("SELECT nom, prenom, date_enregistrement, COUNT(*) AS total, SUM(CASE WHEN matin = 'absent' AND apres_midi = 'absent' THEN 2 WHEN matin = 'absent' OR apres_midi = 'absent' THEN 1 ELSE 0 END) AS absence_count FROM appel WHERE date_enregistrement BETWEEN ? AND ? AND nom = ? AND prenom = ? GROUP BY nom, prenom");
     $stmtSelect->bindParam(1, $weekStartDate);
     $stmtSelect->bindParam(2, $weekEndDate);
-    $stmtSelect->bindParam(3, $_GET['nomStudent']);
-    $stmtSelect->bindParam(4, $_GET['prenomStudent']);
+    $stmtSelect->bindParam(3, $_POST['nomStudent']);
+    $stmtSelect->bindParam(4, $_POST['prenomStudent']);
     $stmtSelect->execute();
     $resultSelect = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
 
@@ -61,7 +60,7 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
 
     // Calcul du taux d'absence total de la semaine
     // Somme des absence de tous les étudiants
-    $absenceCount = array_sum(array_column($resultSelect, 'absence_count'));
+    $absenceCount = array_sum(array_column($resultSelect, 'absence_count')); // array_sum() permet de sommer les valeurs d'un tableau et array_column() permet de récupérer les valeurs d'une colonne d'un tableau cette ligne permet de récupérer les valeurs de la colonne 'absence_count' du tableau $resultSelect
     // Nombre total de demi-journée de cours dans la semaine
     $totalCoursSemaine = 10;
 
@@ -74,37 +73,49 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
   }
 }
 
-if (!isset($_GET['date'])) {
+if (isset($_POST['date'])) {
+  $dateExacte = $_POST['date'];
+} else {
   $dateExacte = "";
-} else {
-  $dateExacte = $_GET['date'];
 }
-if (!isset($_GET['semaineOfYear'])) {
+if (isset($_POST['semaineOfYear'])) {
+  $semaineOfYear = $_POST['semaineOfYear'];
+} else {
   $semaineOfYear = "";
-} else {
-  $semaineOfYear = $_GET['semaineOfYear'];
 }
-
-if (!isset($_GET['mois'])) {
-  $mois = "";
+if (isset($_POST['mois'])) {
+  $mois = $_POST['mois'];
 } else {
-  $mois = $_GET['mois'];
+  $mois = "";
 }
 
 $currentYear = date('Y');
 
-if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GET['prenomStudent'])) {
-  $weekStartDate = $dateExacte;
-  $weekEndDate = $dateExacte;
-  $infosEtudiant = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
-} else if ($semaineOfYear && $semaineOfYear != "" && isset($_GET['nomStudent']) && isset($_GET['prenomStudent'])) {
-  $weekStartDate = date('Y-m-d', strtotime($currentYear . 'W' . $semaineOfYear));
-  $weekEndDate = date('Y-m-d', strtotime($currentYear . 'W' . $semaineOfYear . 5)); // 5 pour vendredi 
-  $infosEtudiant = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
-} else if ($mois && $mois != "" && isset($_GET['nomStudent']) && isset($_GET['prenomStudent'])) {
-  $weekStartDate = date('Y-m-d', strtotime($currentYear . '-' . $mois . '-01'));
-  $weekEndDate = date('Y-m-d', strtotime($currentYear . '-' . $mois . '-31'));
-  $infosEtudiant = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // On défini quel variable on utilise pour récupérer les informations selon se qui est rempli dans le formulaire
+
+  if ($dateExacte && isset($_POST['nomStudent']) && isset($_POST['prenomStudent'])) {
+    $weekStartDate = $dateExacte;
+    $weekEndDate = $dateExacte;
+    $infosEtudiant = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
+  } else if ($semaineOfYear && isset($_POST['nomStudent']) && isset($_POST['prenomStudent'])) {
+    // Créer une date à partir de l'année et de la semaine
+    $startDate = new DateTime();
+    $startDate->setISODate($currentYear, $semaineOfYear);
+
+    // Obtenez le début de la semaine
+    $weekStartDate = $startDate->format('Y-m-d');
+
+    // Obtenez la fin de la semaine (vendredi)
+    $weekEndDate = $startDate->modify('+4 days')->format('Y-m-d');
+    
+    $infosEtudiant = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
+  }
+  else if ($mois && isset($_POST['nomStudent']) && isset($_POST['prenomStudent'])) {
+    $weekStartDate = date('Y-m-d', strtotime($currentYear . '-' . $mois . '-01'));
+    $weekEndDate = date('Y-m-d', strtotime($currentYear . '-' . $mois . '-31'));
+    $infosEtudiant = getAbsenceSemaine($weekStartDate, $weekEndDate, $conn);
+  }
 }
 
 
@@ -192,7 +203,7 @@ if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GE
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
       <div class="position-sticky">
         <div class="list-group list-group-flush mx-3 mt-4">
-          <a href="/Dashboard_startZupv1/accueil" class="list-group-item list-group-item-action py-2 ripple active " aria-current="true"><i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span></a>
+          <a href="/Dashboard_startZupv1/accueil" class="list-group-item list-group-item-action py-2 ripple " aria-current="true"><i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span></a>
           <a href="/Dashboard_startZupv1/ajouter-un-candidat" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-user-graduate me-3"></i><span>Ajouter des candidats</span></a>
           <a href="/Dashboard_startZupv1/ajouter-client-admin" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-users fa-fw me-3"></i><span>Ajouter client & administrateur</span></a>
           <a href="/Dashboard_startZupv1/liste-de-rdv" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-lock fa-fw me-3"></i><span>Gérer RDV</span></a>
@@ -200,6 +211,7 @@ if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GE
           <a href="/Dashboard_startZupv1/ajouter-un-skill" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-brain me-3"></i><span>Ajouter un skill</span></a>
           <a href="/Dashboard_startZupv1/liste-des-appels" class="list-group-item list-group-item-action py-2 ripple ripple s"><i class="fa-sharp fa-solid fa-list me-3"></i><span>Liste d'appels</span></a>
           <a href="/Dashboard_startZupv1/appel" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i><span>Présence</span></a>
+          <a href="/Dashboard_startZupv1/tracer-un-etudiant" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-binoculars me-3"></i><span>Tracer un étudiant</span></a>
           <a href="/Dashboard_startZupv1/ajouter-une-langue" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-line fa-fw me-3"></i><span>Ajouter une langue</span></a>
           <a href="/Dashboard_startZupv1/ajouter-une-promotion" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-bar fa-fw me-3"></i><span>Ajouter une promotion</span></a>
           <a href="../logout.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-right-from-bracket me-3"></i><span>Logout</span></a>
@@ -219,7 +231,7 @@ if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GE
 
         <!-- Brand -->
         <a class="navbar-brand" href="#">
-          <img src="../images/icon.png" height="25" alt="KJJJ" />
+          <img src="../images/icon.png" height="25" alt="" />
         </a>
         <?php if ($_SESSION['status'] === "Admin") : ?>
           <a class="btn btn-warning d-none d-md-flex input-group w-auto my-auto" href="/Dashboard_StartZupv1/home">Aller vers le côté client</a>
@@ -243,11 +255,11 @@ if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GE
         Entrez les informations afin de récupérer les présences et absences de l'étudiant concerné.
       </h3>
 
-      <form action="">
+      <form action="" method="POST">
         <div class="row">
           <h4>
             Informations de l'étudiant
-          </h2>
+          </h4>
           <div class="col-md-3">
             <div class="form-outline mb-4">
               <label class="form-label" for="nomStudent">Nom de l'étudiant</label>
@@ -363,7 +375,7 @@ if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GE
                   </tr>
               </thead>
               <tbody>
-              <?php if ($infosEtudiant ) : ?>
+              <?php if ( $_SERVER['REQUEST_METHOD'] === 'POST' && $infosEtudiant && !empty($infosEtudiant['absence_rate_etudiant'])) : ?>
                 <?php foreach ($infosEtudiant['absence_rate_etudiant'] as $absence) { ?>
                   <tr>
                     <td><?= $absence['nom'] ?></td>
@@ -384,10 +396,15 @@ if ($dateExacte && $dateExacte != "" && isset($_GET['nomStudent']) && isset($_GE
                     </td>
                   </tr>
                 <?php } ?>
+              <?php elseif ( $_SERVER['REQUEST_METHOD'] === 'POST' && $infosEtudiant ): ?>
+                <tr>
+                  <td colspan="4">Aucune donnée disponible pour cette date</td>
+                </tr>
               <?php else : ?>
                 <tr>
-                  <td colspan="4">Aucune donnée disponible</td>
+                  <td colspan="4">Les informations seront afficher ici</td>
                 </tr>
+              
               <?php endif; ?>
               
               </tbody>
