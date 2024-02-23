@@ -4,29 +4,64 @@ include('../../config.php');
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+//Load Composer's autoloader
+require '../../vendor/autoload.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {    
     $etudiants = $_POST['etudiants']; 
 
     // Appeler la fonction pour enregistrer les données en base de données
     $result = saveAppelData($etudiants, $conn);
 
-    // Appeler la fonction pour générer le fichier Excel
-    $excelFilePath = generateExcelFile($etudiants);
+    // Déclancher la fonction lors du clique sur le btn de validation
+    if ($_POST['btn-submit']){
+        // Appeler la fonction pour générer le fichier Excel
+        $excelFilePath = generateExcelFile($etudiants);
 
-    // Renvoyer un popup de confirmation
-    echo "<script>
-    // alert('L appel a été enregistré avec succès.')
+        foreach ($etudiants as $index => $etudiant) {
+            $presentMValue = isset($_POST['presentM'][$index]) ? 'présent' : 'absent';
+            $presentAMValue = isset($_POST['presentAM'][$index]) ? 'présent' : 'absent';
 
-    window.location.href = '/Dashboard_startZupv1/appel'
-    </script>";
+            if ($etudiant['status'] == 'active'){
+                $messageAbsence = ''; // initialiser la variable pour stocker le message d'absence
+                // Vérifier si l'étudiant était absent le matin
+                if ($presentMValue == 'absent' && $presentAMValue == 'présent') {
+                    $messageAbsence .= ' le matin';
+                    sendMail($etudiant, $messageAbsence);
+                }
+                // Vérifier si l'étudiant était absent l'après-midi
+                elseif ($presentAMValue == 'absent' && $presentMValue == 'présent') {
+                    $messageAbsence .= ' l\'après-midi';
+                    sendMail($etudiant, $messageAbsence);
+                }
+                // Vérifier si l'étudiant était absent toute la journée
+                elseif ($presentMValue == 'absent' && $presentAMValue == 'absent') {
+                    $messageAbsence = ' toute la journée';
+                    sendMail($etudiant, $messageAbsence);
+                }
+                else {
+                    // Ne rien faire
+                }
+            }
+        }
 
+    }
+
+    // Renvoyer à la page avec la liste des appels
+    echo "
+        <script>
+            window.location.href = '/Dashboard_startZupv1/liste-des-appels'
+        </script>";
 
     exit; // Arrêter l'exécution du reste de la page
 }
 
 // Fonction pour enregistrer les données en base de données
-function saveAppelData($etudiants, $conn)
-{
+function saveAppelData($etudiants, $conn){
     try {
         // Préparez et exécutez la requête d'insertion pour chaque étudiant
         $dateEnregistrement = date('Y-m-d');
@@ -71,8 +106,7 @@ function saveAppelData($etudiants, $conn)
 }
 
 // Fonction pour générer le fichier Excel
-function generateExcelFile($etudiants)
-{
+function generateExcelFile($etudiants){
     require_once '../../vendor/autoload.php'; // Inclure le fichier d'autoloading de PhpSpreadsheet
 
     $spreadsheet = new Spreadsheet();
@@ -117,5 +151,38 @@ function generateExcelFile($etudiants)
     $writer->save($excelFilePath);
 
     return $excelFilePath;
+}
+
+// Fonction qui va envoyer un mail pour prévenir de l'absence d'un étudiant, l'administrateur et l'étudiant recevront le mail
+function sendMail($etudiants, $messageAbsence){
+    var_dump($etudiants);
+    //Create an instance; passing `true` enables exceptions
+    $mail = new PHPMailer(true);
+
+    try {
+        //Server settings
+        // $mail->SMTPDebug = 2;                      //Enable verbose debug output
+        $mail->isSMTP();                                            //Send using SMTP
+        $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+        $mail->Username   = 'emailDeSZARemplir';                     //SMTP username
+        $mail->Password   = 'MDPAConfigurer';                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+        $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+        //Recipients
+        $mail->addAddress($etudiants['email']);
+        $mail->addAddress('emailDeSZARemplir');
+        
+        $mail->isHTML(true);
+        $mail->Subject = 'Absence le ' . date('d/m/Y');
+        $mail->Body = 'Bonjour '. $etudiants['nom'] . ' ' . $etudiants['prenom'] . 
+        '<br>  vous avez été absent(e) à l\'appel le ' . date('d/m/Y') . $messageAbsence . '. <br>
+        Merci de nous envoyer un justificatif au plus vite à l\'adresse mail suivante : XXXXX <br> Cordialement, <br> L\'équipe StartZup';
+        $mail->send();
+        echo 'Message has been sent';
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
 }
 ?>

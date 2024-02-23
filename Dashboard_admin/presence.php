@@ -413,6 +413,8 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][presentM]" value="<?php echo isset($_POST['presentM'][$index]) ? 'présent' : 'absent'; ?>">
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][presentAM]" value="<?php echo isset($_POST['presentAM'][$index]) ? 'présent' : 'absent'; ?>">
                             <input type="hidden" name="etudiants[<?php echo $index; ?>][commentaire]" value="<?php echo isset($_POST['commentaire'][$index]) ? $_POST['commentaire'][$index] : ''; ?>">
+                            <input type="hidden" name="etudiants[<?php echo $index; ?>][status]" value="<?php echo $etudiant['status']; ?>">
+                            <input type="hidden" name="etudiants[<?php echo $index; ?>][email]" value="<?php echo $etudiant['email']; ?>">
                           <?php  ?>
                         <?php endforeach; ?>
                       </tbody>
@@ -435,7 +437,7 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <input type="submit" value="Valider" class="btn btn-primary">
+                            <input type="submit" value="Valider" class="btn btn-primary" name="btn-submit">
                           </div>
                         </div>
                       </div>
