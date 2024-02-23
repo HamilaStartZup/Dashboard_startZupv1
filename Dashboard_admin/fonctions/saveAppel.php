@@ -155,20 +155,29 @@ function generateExcelFile($etudiants){
 
 // Fonction qui va envoyer un mail pour prévenir de l'absence d'un étudiant, l'administrateur et l'étudiant recevront le mail
 function sendMail($etudiants, $messageAbsence){
+    require '../../config.php'; // Inclure le fichier de configuration pour PHPMailer
     var_dump($etudiants);
     //Create an instance; passing `true` enables exceptions
     $mail = new PHPMailer(true);
 
     try {
-        //Server settings
-        // $mail->SMTPDebug = 2;                      //Enable verbose debug output
-        $mail->isSMTP();                                            //Send using SMTP
-        $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-        $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-        $mail->Username   = 'contact@start-zup.com';                     //SMTP username
-        $mail->Password   = 'MDPAConfigurer';                               //SMTP password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-        $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+        // server setting
+        // Encoding utf-8
+        $mail->CharSet = 'UTF-8';
+        //Send using SMTP
+        $mail->isSMTP();
+        //Set the SMTP server to send through
+        $mail->Host       = 'smtp.gmail.com';
+        //Enable SMTP authentication
+        $mail->SMTPAuth   = true;
+        //SMTP username
+        $userMailer;
+        //SMTP password
+        $pwdMailer;
+        //Enable implicit TLS encryption
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+        $mail->Port       = 465;
 
         //Recipients
         $mail->addAddress($etudiants['email']);
@@ -178,7 +187,7 @@ function sendMail($etudiants, $messageAbsence){
         $mail->Subject = 'Absence le ' . date('d/m/Y');
         $mail->Body = 'Bonjour '. $etudiants['nom'] . ' ' . $etudiants['prenom'] . 
         '<br>  vous avez été absent(e) à l\'appel le ' . date('d/m/Y') . $messageAbsence . '. <br>
-        Merci de nous envoyer un justificatif au plus vite à l\'adresse mail suivante : XXXXX <br> Cordialement, <br> L\'équipe StartZup';
+        Merci de nous envoyer un justificatif au plus vite à l\'adresse mail suivante : contact@start-zup.com <br> Cordialement, <br> L\'équipe StartZup';
         $mail->send();
         echo 'Message has been sent';
     } catch (Exception $e) {

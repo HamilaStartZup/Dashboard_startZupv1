@@ -10,6 +10,20 @@ $dbname = "start_zup";
 // $password = "ENgiML0xml6uzxqr";
 // $dbname = "startzldashboard";
 
+// PHPMailer
+require 'vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+
+//SMTP username
+$userMailer = $mail->Username   = 'contact@start-zup.com';
+//SMTP password
+$pwdMailer = $mail->Password   = 'mqkeyidmxdijurxa';
+
+
 
 try {
   $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
