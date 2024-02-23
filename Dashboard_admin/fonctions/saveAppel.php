@@ -165,14 +165,14 @@ function sendMail($etudiants, $messageAbsence){
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-        $mail->Username   = 'emailDeSZARemplir';                     //SMTP username
+        $mail->Username   = 'contact@start-zup.com';                     //SMTP username
         $mail->Password   = 'MDPAConfigurer';                               //SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
         $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
         //Recipients
         $mail->addAddress($etudiants['email']);
-        $mail->addAddress('emailDeSZARemplir');
+        $mail->addAddress('contact@start-zup.com');
         
         $mail->isHTML(true);
         $mail->Subject = 'Absence le ' . date('d/m/Y');
