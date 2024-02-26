@@ -13,17 +13,16 @@ $dbname = "start_zup";
 // PHPMailer
 require 'vendor/autoload.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+$mail = null;
 
-
-//SMTP username
-$userMailer = $mail->Username   = 'contact@start-zup.com';
-//SMTP password
-$pwdMailer = $mail->Password   = 'mqkeyidmxdijurxa';
-
-
+if ($mail !== null) {
+  //SMTP username
+  $userMailer = $mail->Username = 'contact@start-zup.com';
+  //SMTP password
+  $pwdMailer = $mail->Password = 'mqkeyidmxdijurxa';
+} else {
+  echo "";
+}
 
 try {
   $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);

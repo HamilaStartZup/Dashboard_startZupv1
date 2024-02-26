@@ -787,22 +787,58 @@ $Next = $page + 1;
                 <div class="player-features-col">';
                 // Les 3 premières compétences
                 $numSkills = count($Skills);
-                  for($i = 0; $i < min(3, $numSkills); $i++){
-                    echo '<span>
-                      <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
-                      <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
-                    </span>';
-                  };
+                $competencesDesirees = array("HTML", "CSS", "PHP");
+
+                foreach ($competencesDesirees as $competence) {
+                    $competenceTrouvee = false;
+                
+                    for ($i = 0; $i < $numSkills; $i++) {
+                        if ($Skills[$i]["nom_skills"] == $competence) {
+                            echo '<span>
+                                    <div class="player-feature-value">' . $Skills[$i]["value_skills"] . '</div>
+                                    <div class="player-feature-title">' . $Skills[$i]["nom_skills"] . '</div>
+                                  </span>';
+                            $competenceTrouvee = true;
+                            break; // Sortir de la boucle interne une fois que la compétence est trouvée
+                        }
+                    }
+                
+                    // Si la compétence n'est pas trouvée, afficher 0
+                    if (!$competenceTrouvee) {
+                        echo '<span>
+                                <div class="player-feature-value">0</div>
+                                <div class="player-feature-title">' . $competence . '</div>
+                              </span>';
+                    }
+                }
                   echo'</div>
                   <div class="barre-features-col">
                   </div>
                 <div class="player-features-col">';
-                  for($i=3; $i < min(6, $numSkills); $i++){
-                    echo '<span>
-                      <div class="player-feature-value">'.$Skills[$i]["value_skills"].'</div>
-                      <div class="player-feature-title">'.$Skills[$i]["nom_skills"].'</div>
-                    </span>';
-                  };
+                $competencesDesirees2 = array("Js", "SQL");
+
+                for ($j = 0; $j < count($competencesDesirees2); $j++) {
+                    $competenceTrouvee2 = false;
+
+                    for ($i = 0; $i < $numSkills; $i++) {
+                        if ($Skills[$i]["nom_skills"] == $competencesDesirees2[$j]) {
+                            echo '<span>
+                                    <div class="player-feature-value">' . $Skills[$i]["value_skills"] . '</div>
+                                    <div class="player-feature-title">' . $Skills[$i]["nom_skills"] . '</div>
+                                  </span>';
+                            $competenceTrouvee2 = true;
+                            break; // Sortir de la boucle interne une fois que la compétence est trouvée
+                        }
+                    }
+
+                    // Si la compétence n'est pas trouvée, afficher 0
+                    if (!$competenceTrouvee2) {
+                        echo '<span>
+                                <div class="player-feature-value">0</div>
+                                <div class="player-feature-title">' . $competencesDesirees2[$j] . '</div>
+                              </span>';
+                    }
+                }
                 $querySoftSkills ="SELECT *
                                   FROM soft_skills
                                   JOIN student_soft_skills ON soft_skills.id = student_soft_skills.soft_skills_id
@@ -828,8 +864,8 @@ $Next = $page + 1;
                   $moyenneSoftSkills = $total / $diviseur;
                 }
                   echo '<span>
-                    <div class="player-feature-value">'.$moyenneSoftSkills.'</div>
-                    <div class="player-feature-title">SOFT</div>
+                    <div class="player-feature-value">'. count($SoftSkills) .'</div>
+                    <div class="player-feature-title">SOFT SKILL</div>
                   </span>
                 </div>
               </div>

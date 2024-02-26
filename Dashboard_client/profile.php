@@ -408,7 +408,7 @@ $result = $query->fetch();
                   <div class="col-sm-9">
                     <?php
                     // recuperation mobilite 
-                    $queryMobility = "SELECT * FROM `villes_france_free` RIGHT JOIN (SELECT * FROM `student_mobility` WHERE `student_id`=113) as mo ON mo.id=villes_france_free.ville_id";
+                    $queryMobility = "SELECT * FROM `villes_france_free` RIGHT JOIN (SELECT * FROM `student_mobility` WHERE `student_id`= $result[id]) as mo ON mo.id=villes_france_free.ville_id";
                     $stmtMobility = $conn->prepare($queryMobility);
                     $stmtMobility->execute();
                     $Mobility =  $stmtMobility->fetchAll(PDO::FETCH_ASSOC);
@@ -464,7 +464,7 @@ $result = $query->fetch();
                     <ul>
                       <?php
                       // recuperation CENTRES D'INTERET
-                      $querySkills = "SELECT * FROM `soft_skills` RIGHT JOIN (SELECT * FROM `student_soft_skills` WHERE `student_id`=113) as SF ON soft_skills.id=SF.soft_skills_id;";
+                      $querySkills = "SELECT * FROM `soft_skills` RIGHT JOIN (SELECT * FROM `student_soft_skills` WHERE `student_id`= $result[id]) as SF ON soft_skills.id=SF.soft_skills_id;";
                       $stmtSkills = $conn->prepare($querySkills);
                       $stmtSkills->execute();
                       $Skills =  $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
@@ -496,7 +496,7 @@ $result = $query->fetch();
                       <div class="col-md-6 offset-md-3">
                         <h4 style="margin-left: 1.2rem;">FORMATION</h4>
                         <ul class="timeline-3">
-                          <?php $queryFormations = "SELECT * FROM `formation` RIGHT JOIN (SELECT * FROM `student_formation` WHERE `student_id`=113) as F ON formation.id=F.formation_id ORDER BY `F`.`start_date` DESC";
+                          <?php $queryFormations = "SELECT * FROM `formation` RIGHT JOIN (SELECT * FROM `student_formation` WHERE `student_id`= $result[id]) as F ON formation.id=F.formation_id ORDER BY `F`.`start_date` DESC";
                           $stmtFormations = $conn->prepare($queryFormations);
                           $stmtFormations->execute();
                           $Formations =  $stmtFormations->fetchAll(PDO::FETCH_ASSOC);
