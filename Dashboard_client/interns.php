@@ -715,7 +715,28 @@ $Next = $page + 1;
           <div class="player-card-top">
             <div class="player-master-info">
               <div class="player-rating">
-                <span>97</span>
+                <span>';
+                  $queryMoyenneSkill = "SELECT AVG(`value_skills`) as moyenne FROM `student_skills` WHERE `id_student`=$row[id]";
+                  $stmtMoyenneSkill = $conn->prepare($queryMoyenneSkill);
+                  $stmtMoyenneSkill->execute();
+                  $moyenneSkill = $stmtMoyenneSkill->fetch(PDO::FETCH_ASSOC);
+                  
+
+                  $queryMoyenneSoftSkill = "SELECT AVG(`value_skills`) as moyenne FROM `student_soft_skills` WHERE `student_id`=$row[id]";
+                  $stmtMoyenneSoftSkill = $conn->prepare($queryMoyenneSoftSkill);
+                  $stmtMoyenneSoftSkill->execute();
+                  $moyenneSoftSkill = $stmtMoyenneSoftSkill->fetch(PDO::FETCH_ASSOC);
+
+                  $moyenne = ($moyenneSkill['moyenne'] + $moyenneSoftSkill['moyenne']) / 2;
+
+                  if (!$moyenne || $moyenne == 0) {
+                    echo '00';
+                  } elseif ($moyenne && $moyenne > 10) {
+                    echo round($moyenne, 0);
+                  } else {
+                    echo "0".round($moyenne, 0);
+                  }
+                echo '</span>
               </div>
               <div class="player-position">
                 <span></span>
