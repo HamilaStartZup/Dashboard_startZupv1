@@ -40,7 +40,7 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn){
       $totalCoursSemaine = 10; // représente le total des cours de la semaine
     } 
     if (isset($_POST['mois']) && $_POST['mois'] !== "") {
-      $totalCoursSemaine = 40; // représente le total des cours du mois
+      $totalCoursSemaine = 44; // représente le total des cours du mois
     }
 
     foreach ($resultSelect as $index => $etudiant) {
