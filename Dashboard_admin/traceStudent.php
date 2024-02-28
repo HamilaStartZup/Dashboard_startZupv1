@@ -32,7 +32,16 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn){
     $stmtSelect->execute();
     $resultSelect = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
 
-    $totalCoursSemaine = 10;
+    
+    if (isset($_POST['date']) && $_POST['date'] !== "") {
+      $totalCoursSemaine = 2; // représente le total des cours de la journée
+    }
+    if (isset($_POST['semaineOfYear']) && $_POST['semaineOfYear'] !== "") {
+      $totalCoursSemaine = 10; // représente le total des cours de la semaine
+    } 
+    if (isset($_POST['mois']) && $_POST['mois'] !== "") {
+      $totalCoursSemaine = 40; // représente le total des cours du mois
+    }
 
     foreach ($resultSelect as $index => $etudiant) {
       if ($etudiant['total'] > 0) {
@@ -62,7 +71,7 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn){
     // Somme des absence de tous les étudiants
     $absenceCount = array_sum(array_column($resultSelect, 'absence_count')); // array_sum() permet de sommer les valeurs d'un tableau et array_column() permet de récupérer les valeurs d'une colonne d'un tableau cette ligne permet de récupérer les valeurs de la colonne 'absence_count' du tableau $resultSelect
     // Nombre total de demi-journée de cours dans la semaine
-    $totalCoursSemaine = 10;
+    // $totalCoursSemaine = 10;
 
     // Calculer le taux d'absence total de la semaine
     $absenceRate = ($absenceCount / $totalCoursSemaine) * 100;
