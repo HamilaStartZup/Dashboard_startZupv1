@@ -1,6 +1,11 @@
 <?php
+include("../config.php");
+
 session_start();
-include '../config.php';
+// Si l'utilisateur n'ai pas administrateur, il est redirigé vers la page d'accueil
+if ($_SESSION['status'] != "Admin") {
+  header("Location: /Dashboard_startZupv1/acces-echoue");
+}
 
 // Vérifiez si l'ID est défini et n'est pas vide
 if (!empty($_GET['id'])) {
@@ -22,17 +27,16 @@ if (!empty($_GET['id'])) {
     $stmtRdv->execute();
 
     // Vérification du succès de la suppression
-    if ($stmtCreneau->rowCount() > 0 && $stmtRdv->rowCount() > 0) {
+    if ($stmtCreneau->rowCount() < 0 && $stmtRdv->rowCount() < 0) {
         $users_id = isset($_GET['id_student']) ? $_GET['id_student'] : '';
-        echo "<script>alert('Le RDV a été supprimé.');";
-        echo "location.replace('/Dashboard_admin/gerer-rdv-$users_id-{$_GET['email']}');</script>";
+        echo "<script>window.location.href='/Dashboard_startZupv1/gerer-rdv-$users_id-{$_GET['email']}';</script>";
     } else {
         $users_id = isset($_GET['id_student']) ? $_GET['id_student'] : '';
-        echo "<script>alert('Échec de la suppression du RDV.');";
-        echo "location.replace('/Dashboard_admin/gerer-rdv-$users_id-{$_GET['email']}');</script>";
+        echo "<script>window.location.href='/Dashboard_startZupv1/gerer-rdv-$users_id-{$_GET['email']}';</script>";
+
     }
 } else {
-    echo "<script>alert('ID non défini ou vide.');";
-    echo "location.replace('/Dashboard_admin/gerer-rdv');</script>";
+    echo "<script>windows.location.href='/Dashboard_startZupv1/gerer-rdv';</script>";
 }
+
 ?>

@@ -1,9 +1,17 @@
 <?php 
 session_start();
-include '../config.php';
+include ('../config.php');
 
-$validateRDV = "UPDATE `creneaux` SET `status`='oui' WHERE `id`=$_POST[creneaux]";
-$conn->exec($validateRDV);
+$idCreneaux = $_POST['creneaux'];
+
+
+$validateCreneaux = "UPDATE `creneaux` SET `status`='oui' WHERE `id`=$_POST[creneaux]";
+$conn->exec($validateCreneaux);
+$delOldCreneaux = "DELETE FROM `creneaux` WHERE `status`!= 'oui' AND `id_rdv` = (SELECT id_rdv FROM `creneaux` WHERE `id` = $idCreneaux)";
+$conn->exec($delOldCreneaux);
+
+$validateRDV_rdv = "UPDATE `rdv` SET `validate`='oui' WHERE `id` = (SELECT id_rdv FROM `creneaux` WHERE `id` = $idCreneaux)";
+$conn->exec($validateRDV_rdv);
    
 ?>
 <script>
