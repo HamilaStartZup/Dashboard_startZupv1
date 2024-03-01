@@ -40,7 +40,28 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn){
       $totalCoursSemaine = 10; // représente le total des cours de la semaine
     } 
     if (isset($_POST['mois']) && $_POST['mois'] !== "") {
-      $totalCoursSemaine = 44; // représente le total des cours du mois
+        $mois = (int)$_POST['mois']; // Assurez-vous de convertir la valeur du mois en entier
+        $annee = date('Y'); // Vous pouvez ajuster l'année selon vos besoins
+    
+        // Obtenir le nombre de jours dans le mois
+        $nb_jours = cal_days_in_month(CAL_GREGORIAN, $mois, $annee);
+    
+        // Initialiser le compteur de jours de la semaine
+        $jours_semaine = 0;
+    
+        // Parcourir chaque jour du mois
+        for ($jour = 1; $jour <= $nb_jours; $jour++) {
+            // Obtenir le timestamp du jour
+            $timestamp = strtotime("$annee-$mois-$jour");
+    
+            // Vérifier si le jour est un jour de la semaine (du lundi au vendredi)
+            if (date('N', $timestamp) <= 5) {
+                $jours_semaine++;
+            }
+        }
+    
+        $totalCoursSemaine = $jours_semaine * 2; // représente le total de cours du mois (matin et après-midi)
+
     }
 
     foreach ($resultSelect as $index => $etudiant) {
