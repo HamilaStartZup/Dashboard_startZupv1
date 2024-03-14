@@ -36,7 +36,7 @@
   <meta charset="UTF-8" />
   <base href="/Dashboard_startZupv1/Dashboard_admin/">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -390,18 +390,18 @@
                     </div>
                     <div class="col-sm-9">
                     <?php
-                    if ($mobility){
-                      foreach ($mobility as $key => $value) {
-                        echo "<div class='col-sm-9' style='display: flex;'>";
-                        echo "<p class='text-muted mb-0'> $value[ville_code_postal] </p>";
-                        echo "<span> - </span>";
-                        echo "<p class='text-muted mb-0'> $value[ville_nom_reel] </p>";
-                        echo "</div>";
+                      if ($mobility){
+                        foreach ($mobility as $key => $value) {
+                          echo "<div class='col-sm-9' style='display: flex;'>";
+                          echo "<p class='text-muted mb-0'> $value[ville_code_postal] </p>";
+                          echo "<span> - </span>";
+                          echo "<p class='text-muted mb-0'> $value[ville_nom_reel] </p>";
+                          echo "</div>";
+                        }
+                      } else {
+                        echo "<p> Aucune mobilité n'a été enregistré pour ce profil </p>";
                       }
-                    } else {
-                      echo "<p> Aucune mobilité n'a été enregistré pour ce profil </p>";
-                    }
-                      ?>
+                    ?>
                     </div>
                   </div>
                 </div>
@@ -556,22 +556,19 @@ echo $e->getMessage();
   </script>
   <script>
     
-    window.jsPDF = window.jspdf.jsPDF;
-var docPDF = new jsPDF();
-function print(){
-var elementHTML = document.querySelector("#Profile");
-docPDF.html(elementHTML, {
- callback: function(docPDF) {
-  docPDF.save('HTML Linuxhint web page.pdf');
- },
- x: 15,
- y: 15,
- width:100,
- windowWidth: 100
-
-
-});
-}
+    var docPDF = new jsPDF();
+    function print(){
+      var elementHTML = document.querySelector("#Profile");
+      docPDF.html(elementHTML, {
+        callback: function(docPDF) {
+          docPDF.save('HTML Linuxhint web page.pdf');
+        },
+        x: 15,
+        y: 15,
+        width:100,
+        windowWidth: 100
+      });
+    }
   </script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
 </body>
