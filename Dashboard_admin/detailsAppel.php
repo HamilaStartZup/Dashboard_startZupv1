@@ -49,7 +49,7 @@ function getAbsenceSemaine($weekStartDate, $weekEndDate, $conn)
 {
   try {
     // calculer le taux d'absence pour chaque étudiant un par un
-    $stmtSelect = $conn->prepare("SELECT nom, prenom, date_enregistrement, COUNT(*) AS total, SUM(CASE WHEN matin = 'absent' AND apres_midi = 'absent' THEN 2 WHEN matin = 'absent' OR apres_midi = 'absent' THEN 1 ELSE 0 END) AS absence_count FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
+    $stmtSelect = $conn->prepare("SELECT nom, prenom,status, date_enregistrement, COUNT(*) AS total, SUM(CASE WHEN matin = 'absent' AND apres_midi = 'absent' THEN 2 WHEN matin = 'absent' OR apres_midi = 'absent' THEN 1 ELSE 0 END) AS absence_count FROM appel WHERE date_enregistrement BETWEEN ? AND ? GROUP BY nom, prenom");
     $stmtSelect->bindParam(1, $weekStartDate);
     $stmtSelect->bindParam(2, $weekEndDate);
     $stmtSelect->execute();
@@ -152,6 +152,7 @@ function RapportSemaineExcel($result)
   // Ajouter les données dans le fichier Excel
   $row = 2;
   foreach ($result['absence_rate_etudiant'] as $etudiant) { // Parcourir les étudiants
+    if ($etudiant['status'] == 'active'){
       $sheet->setCellValue('A' . $row, $etudiant['nom']); // Ajouter le nom de l'étudiant
       $sheet->setCellValue('B' . $row, $etudiant['prenom']); // Ajouter le prénom de l'étudiant
       $sheet->setCellValue('C' . $row, $etudiant['absence_rate'] . ' %'); // Ajouter le taux d'absence de l'étudiant
@@ -175,6 +176,8 @@ function RapportSemaineExcel($result)
       $sheet->setCellValue('D' . $row, $absenceInfo);
       $sheet->setCellValue('E' . $row, $etudiant['absence_count']); // Ajouter le nombre de jours d'absence de l'étudiant
       $row++; // Incrémenter le numéro de ligne
+
+    }
   }
 
   // Enregistrer le fichier Excel
@@ -419,7 +422,7 @@ function RapportSemaineExcel($result)
   <!-- afficher les taux d'absence de la semaine de chaque étudiants -->
 
   <!-- on affiche si vendredi -->
-  <?php if (date('l', strtotime($dateParams)) == 'Friday') { ?>
+  <?php // if (date('l', strtotime($dateParams)) == 'Friday') { ?>
       <div class="container" style="width: 100%; margin-top: 4rem;">
         <div class="row">
           <div class="col-12">
@@ -435,7 +438,8 @@ function RapportSemaineExcel($result)
                   </tr>
               </thead>
               <tbody>
-                  <?php foreach ($result['absence_rate_etudiant'] as $row) { ?>
+                <?php foreach ($result['absence_rate_etudiant'] as $row) { ?>
+                  <?php if ($row['status'] == "active"){ ?>
                   <tr>
                       <td><?php echo $row['nom']; ?></td>
                       <td><?php echo $row['prenom']; ?></td>
@@ -454,12 +458,13 @@ function RapportSemaineExcel($result)
                         <?php } ?>
                   </tr>
                   <?php } ?>
+                <?php } ?>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-  <?php } ?>
+  <?php // } ?>
 </div>
 <?php
 // Supprimer cette appel

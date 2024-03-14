@@ -128,6 +128,9 @@ function generateExcelFile($etudiants){
     $sheet->getColumnDimension('D')->setWidth(20);
     $sheet->getColumnDimension('E')->setWidth(40);
     foreach ($etudiants as $index => $etudiant) {
+        if ($etudiant['status'] == 'not active') {
+            continue; // Passer à l'itération suivante si l'étudiant est inactif
+        } else {
         $sheet->setCellValue('A' . $row, $etudiant['nom']);
         $sheet->setCellValue('B' . $row, $etudiant['prenom']);
         // Récupérer les données du formulaire
@@ -135,6 +138,7 @@ function generateExcelFile($etudiants){
         $sheet->setCellValue('D' . $row, empty($_POST['presentAM'][$index]) ? 'n' : 'yes');
         $sheet->setCellValue('E' . $row, isset($_POST['commentaire' . $index]) ? $_POST['commentaire' . $index] : ''); // Utilisation de isset() pour vérifier si le commentaire existe
         $row++; // Incrémenter le numéro de ligne
+        };
     }
 
     // Création d'un répertoire pour stocker les fichiers Excel
@@ -160,6 +164,14 @@ function sendMail($etudiants, $messageAbsence){
     //Create an instance; passing `true` enables exceptions
     $mail = new PHPMailer(true);
 
+    $mail->SMTPOptions = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true,
+        ]
+    ];
+
     try {
         // server setting
         // Encoding utf-8
@@ -167,13 +179,13 @@ function sendMail($etudiants, $messageAbsence){
         //Send using SMTP
         $mail->isSMTP();
         //Set the SMTP server to send through
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host = 'smtp.gmail.com';
         //Enable SMTP authentication
         $mail->SMTPAuth   = true;
         //SMTP username
-        $userMailer;
+        $mail->Username = 'contact@start-zup.com';
         //SMTP password
-        $pwdMailer;
+        $mail->Password = 'mqkeyidmxdijurxa';
         //Enable implicit TLS encryption
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
@@ -185,7 +197,7 @@ function sendMail($etudiants, $messageAbsence){
         
         $mail->isHTML(true);
         $mail->Subject = 'Absence le ' . date('d/m/Y');
-        $mail->Body = 'Bonjour '. $etudiants['nom'] . ' ' . $etudiants['prenom'] . 
+        $mail->Body = 'Bonjour '. $etudiants['nom'] . ' ' . $etudiants['prenom'] .
         '<br>  vous avez été absent(e) à l\'appel le ' . date('d/m/Y') . $messageAbsence . '. <br>
         Merci de nous envoyer un justificatif au plus vite à l\'adresse mail suivante : contact@start-zup.com <br> Cordialement, <br> L\'équipe StartZup';
         $mail->send();
