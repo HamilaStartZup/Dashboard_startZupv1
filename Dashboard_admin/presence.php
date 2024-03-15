@@ -8,7 +8,7 @@ if ($_SESSION['status'] !== 'Admin' && $_SESSION['status'] !== 'Formateur') {
 }
 
 
-$query = $conn->prepare("SELECT * FROM student INNER JOIN promo ON id_promo = promo.id WHERE NOW() BETWEEN promo.date_debut AND promo.date_fin");
+$query = $conn->prepare("SELECT student.nom, prenom, email, status, id_promo, code_profile, promo.date_debut, promo.date_fin, promo.nom AS promo_nom, promo.id FROM student INNER JOIN promo ON id_promo = promo.id WHERE NOW() BETWEEN promo.date_debut AND promo.date_fin");
 $query->execute();
 $etudiants = $query->fetchAll();
 $length = count($etudiants);

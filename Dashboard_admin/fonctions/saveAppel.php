@@ -31,17 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Vérifier si l'étudiant était absent le matin
                 if ($presentMValue == 'absent' && $presentAMValue == 'présent') {
                     $messageAbsence .= ' le matin';
-                    sendMail($etudiant, $messageAbsence);
+                    sendMail($etudiant, $messageAbsence , $conn);
                 }
                 // Vérifier si l'étudiant était absent l'après-midi
                 elseif ($presentAMValue == 'absent' && $presentMValue == 'présent') {
                     $messageAbsence .= ' l\'après-midi';
-                    sendMail($etudiant, $messageAbsence);
+                    sendMail($etudiant, $messageAbsence , $conn);
                 }
                 // Vérifier si l'étudiant était absent toute la journée
                 elseif ($presentMValue == 'absent' && $presentAMValue == 'absent') {
                     $messageAbsence = ' toute la journée';
-                    sendMail($etudiant, $messageAbsence);
+                    sendMail($etudiant, $messageAbsence , $conn);
                 }
                 else {
                     // Ne rien faire
@@ -158,7 +158,16 @@ function generateExcelFile($etudiants){
 }
 
 // Fonction qui va envoyer un mail pour prévenir de l'absence d'un étudiant, l'administrateur et l'étudiant recevront le mail
-function sendMail($etudiants, $messageAbsence){
+function sendMail($etudiants, $messageAbsence, $conn){
+    $stmtGenre = $conn->prepare("SELECT gender FROM student WHERE nom = ? AND prenom = ?");
+    $stmtGenre->execute([$etudiants['nom'], $etudiants['prenom']]);
+    $genre = $stmtGenre->fetchColumn();
+
+    if ($genre == 'homme') {
+        $genre = 'Monsieur';
+    } elseif ($genre == 'femme'){
+        $genre = 'Madame';
+    }
     require '../../config.php'; // Inclure le fichier de configuration pour PHPMailer
     var_dump($etudiants);
     //Create an instance; passing `true` enables exceptions
@@ -183,9 +192,11 @@ function sendMail($etudiants, $messageAbsence){
         //Enable SMTP authentication
         $mail->SMTPAuth   = true;
         //SMTP username
-        $mail->Username = 'contact@start-zup.com';
+        $mail->Username = 'anaselkhiat78@gmail.com';
+        // $mail->Username = 'contact@start-zup.com';
         //SMTP password
-        $mail->Password = 'mqkeyidmxdijurxa';
+        $mail->Password = 'pdubmyiprdgsqvmg';
+        // $mail->Password = 'mqkeyidmxdijurxa';
         //Enable implicit TLS encryption
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
@@ -193,11 +204,12 @@ function sendMail($etudiants, $messageAbsence){
 
         //Recipients
         $mail->addAddress($etudiants['email']);
-        $mail->addAddress('contact@start-zup.com');
+        $mail->addAddress('anaselkhiat78@gmail.com');
+        // $mail->addAddress('contact@start-zup.com');
         
         $mail->isHTML(true);
         $mail->Subject = 'Absence le ' . date('d/m/Y');
-        $mail->Body = 'Bonjour '. $etudiants['nom'] . ' ' . $etudiants['prenom'] .
+        $mail->Body = $genre . ' '. $etudiants['nom'] . ' ' . $etudiants['prenom'] .
         '<br>  vous avez été absent(e) à l\'appel le ' . date('d/m/Y') . $messageAbsence . '. <br>
         Merci de nous envoyer un justificatif au plus vite à l\'adresse mail suivante : contact@start-zup.com <br> Cordialement, <br> L\'équipe StartZup';
         $mail->send();
