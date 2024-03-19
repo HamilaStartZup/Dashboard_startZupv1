@@ -17,6 +17,15 @@ $stmt = $conn->prepare($query);
 $stmt->execute();
 $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Requête pour la recherche d'un étudiant
+if (isset($_POST['searchStudent']) && !empty($_POST['searchStudent'])) {
+  $querySearch = "SELECT * FROM student WHERE nom LIKE :search OR prenom LIKE :search ORDER BY nom ASC";
+  $stmtSearch = $conn->prepare($querySearch);
+  $stmtSearch->bindValue(':search', '%' . $_POST['searchStudent'] . '%');
+  $stmtSearch->execute();
+  $etudiants = $stmtSearch->fetchAll(PDO::FETCH_ASSOC);
+}
+
 $queryTotal = "SELECT COUNT(*) AS total FROM student";
 $stmtTotal = $conn->prepare($queryTotal);
 $stmtTotal->execute();
@@ -240,10 +249,17 @@ $pourcentageActif = round($pourcentageActif, 2); // on arrondi le pourcentage à
       <div class="card">
         <div class="card-header text-center py-3">
           <h5 class="mb-0 text-center">
-            <strong>Liste candidat</strong>
+            <strong>Liste des candidats</strong>
           </h5>
         </div>
         <div class="card-body">
+          <!-- barre de recherche -->
+          <form action="" method="POST">
+            <div class="input-group ">
+              <input type="text" class="form-control" name="searchStudent" placeholder="Rechercher un candidat">
+              <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+            </div>
+          </form>
           <div class="table-responsive">
             <table class="table align-middle mb-0 bg-white">
               <thead class="bg-light">
@@ -293,11 +309,13 @@ $pourcentageActif = round($pourcentageActif, 2); // on arrondi le pourcentage à
               </tbody>
             </table>
             <!-- Ajout des boutons de navigation -->
-            <div class="pagination">
-              <?php for ($i = 1; $i <= $pages; $i++) : ?>
-                <a href="/Dashboard_startZupv1/accueil-<?php echo $i; ?>" class="btn btn-info"><?php echo $i; ?></a>
-              <?php endfor; ?>
-            </div>
+            <?php if (empty($_POST['searchStudent'])) { ?>
+              <div class="pagination">
+                <?php for ($i = 1; $i <= $pages; $i++) : ?>
+                  <a href="/Dashboard_startZupv1/accueil-<?php echo $i; ?>" class="btn btn-info"><?php echo $i; ?></a>
+                <?php endfor; ?>
+              </div>
+            <?php } ?>
           </div>
         </div>
       </div>
