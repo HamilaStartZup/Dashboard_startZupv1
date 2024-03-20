@@ -211,7 +211,8 @@ function sendMail($etudiants, $messageAbsence, $conn){
         $mail->Subject = 'Absence le ' . date('d/m/Y');
         $mail->Body = $genre . ' '. $etudiants['nom'] . ' ' . $etudiants['prenom'] .
         '<br>  vous avez été absent(e) à l\'appel le ' . date('d/m/Y') . $messageAbsence . '. <br>
-        Merci de nous envoyer un justificatif au plus vite à l\'adresse mail suivante : contact@start-zup.com <br> Cordialement, <br> L\'équipe StartZup';
+        Merci de nous envoyer un justificatif à l\'adresse mail suivante : contact@start-zup.com ou de prévenir votre formateur/trice
+        <br> Cordialement, <br> L\'équipe StartZup';
         $mail->send();
         echo 'Message has been sent';
     } catch (Exception $e) {
